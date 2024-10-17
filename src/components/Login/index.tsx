@@ -34,6 +34,16 @@ function Login() {
       })
     }
   })
+  const encriptarSenha = (senhaPura: string | undefined) =>
+    crypto.subtle
+      .digest('SHA-256', new TextEncoder().encode(senhaPura))
+      .then((h) => {
+        const hexes = [],
+          view = new DataView(h)
+        for (let i = 0; i < view.byteLength; i += 4)
+          hexes.push(('00000000' + view.getUint32(i).toString(16)).slice(-8))
+        return hexes.join('')
+      })
   const togglePage = () => {
     if (paginaAtual == 'login') {
       setPaginaAtual('cadastroSenha')
@@ -53,8 +63,11 @@ function Login() {
     }
   }
   const fetchResposta = async () => {
+    const senhaEncriptada = await encriptarSenha(senha)
+    console.log(senha)
+    console.log(senhaEncriptada)
     const respostaLogin = await fetch(
-      `https://davidsenra.pythonanywhere.com/?usuario=${usuario}&senha=${senha}`
+      `https://davidsenra.pythonanywhere.com/?usuario=${usuario}&senha=${senhaEncriptada}`
     )
     const corpo_resposta = respostaLogin.text()
     const resposta = (await corpo_resposta).toString()
@@ -79,7 +92,15 @@ function Login() {
         texto_erro.style.color = 'red'
       }
       return 'nao-encontrado'
-    } else if (resposta.includes('senha')) {
+    } else if (resposta.includes('senha_nao_cadastrada')) {
+      const texto_erro = document.getElementById('text_error')
+      texto_erro?.scrollIntoView()
+      if (texto_erro != null) {
+        texto_erro.textContent = 'Usuário ainda não criou uma senha!'
+        texto_erro.style.color = 'red'
+      }
+      return 'nao-encontrado'
+    } else if (resposta.includes('erro_senha')) {
       const texto_erro = document.getElementById('text_error')
       texto_erro?.scrollIntoView()
       if (texto_erro != null) {
@@ -90,10 +111,13 @@ function Login() {
     }
   }
   const fetchRespostaCadastro = async () => {
+    const senhaEncriptada = await encriptarSenha(senhaCadastro1)
+    console.log(senhaCadastro1)
+    console.log(senhaEncriptada)
     const jsonCadastroSenha = {
       requisicao: 'criacaoSenhaUsuario',
       usuario: usuarioCadastro,
-      senha: senhaCadastro1
+      senha: senhaEncriptada
     }
     const respostaLogin = await fetch(
       `https://davidsenra.pythonanywhere.com/`,
