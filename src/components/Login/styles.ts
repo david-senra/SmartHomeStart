@@ -100,3 +100,21 @@ export const TextError = styled.p`
   padding-bottom: 5px;
   font-size: 18px;
 `
+
+export const DivBotaoInvisivelHome = styled.div`
+  background-color: transparent;
+  position: absolute;
+  width: 340px;
+  height: 90px;
+  padding: 0px;
+  margin: 0px;
+  top: 10px;
+  left: 39vw;
+  button {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+`

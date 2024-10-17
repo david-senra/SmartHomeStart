@@ -5,6 +5,7 @@ import {
   ItemUserPass,
   TextError,
   DivBotaoCadastrarSenha,
+  DivBotaoInvisivelHome,
   BotaoCadastrarSenha
 } from './styles'
 import { useNavigate } from 'react-router-dom'
@@ -36,6 +37,11 @@ function Login() {
     if (paginaAtual == 'login') {
       setPaginaAtual('cadastroSenha')
     } else {
+      setPaginaAtual('login')
+    }
+  }
+  const resetMainPage = () => {
+    if (paginaAtual != 'login') {
       setPaginaAtual('login')
     }
   }
@@ -182,6 +188,9 @@ function Login() {
   }
   return (
     <>
+      <DivBotaoInvisivelHome>
+        <button onClick={resetMainPage}></button>
+      </DivBotaoInvisivelHome>
       {paginaAtual == 'login' && (
         <LoginDiv>
           <main>
