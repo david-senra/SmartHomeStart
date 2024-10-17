@@ -6,7 +6,8 @@ import {
   TextError,
   DivBotaoCadastrarSenha,
   DivBotaoInvisivelHome,
-  BotaoCadastrarSenha
+  BotaoCadastrarSenha,
+  TextSuccess
 } from './styles'
 import { useNavigate } from 'react-router-dom'
 
@@ -109,10 +110,10 @@ function Login() {
     const corpo_resposta = respostaLogin.text()
     const resposta = (await corpo_resposta).toString()
     if (resposta.includes('sucesso_cadastro')) {
-      const texto_erro = document.getElementById('text_error')
-      if (texto_erro != null) {
-        texto_erro.textContent = 'Senha Cadastrada com Sucesso!'
-        texto_erro.style.color = 'green'
+      const texto_sucesso = document.getElementById('text_sucesso')
+      if (texto_sucesso != null) {
+        texto_sucesso.textContent = 'Senha Cadastrada com Sucesso!'
+        texto_sucesso.style.color = 'green'
       }
       setPaginaAtual('cadastrado')
       return 'sucesso'
@@ -288,9 +289,11 @@ function Login() {
           <main>
             <h1>Criação de Senha - Novo Usuário</h1>
             <div>
-              <TextError id="text_error"></TextError>
+              <TextSuccess id="text_sucesso">
+                Senha Cadastrada com Sucesso!
+              </TextSuccess>
               <DivBotaoCadastrarSenha>
-                <BotaoCadastrarSenha type="button" onClick={togglePage}>
+                <BotaoCadastrarSenha type="button" onClick={resetMainPage}>
                   Fazer Login
                 </BotaoCadastrarSenha>
               </DivBotaoCadastrarSenha>

@@ -101,6 +101,14 @@ export const TextError = styled.p`
   font-size: 18px;
 `
 
+export const TextSuccess = styled.p`
+  color: green;
+  font-weight: bold;
+  padding-top: 30px;
+  padding-bottom: 35px;
+  font-size: 22px;
+`
+
 export const DivBotaoInvisivelHome = styled.div`
   background-color: transparent;
   position: absolute;
