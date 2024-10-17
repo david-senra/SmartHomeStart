@@ -3,7 +3,7 @@ import { cores } from '../../styles'
 
 export const LoginDiv = styled.div`
   text-align: center;
-  padding-bottom: 30px;
+  padding-bottom: 10px;
   padding-top: 50px;
   color: ${cores.corPrincipal};
 `
@@ -12,7 +12,7 @@ export const UserPassDiv = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  padding-top: 40px;
+  padding-top: 30px;
   align-items: center;
 `
 
@@ -41,7 +41,7 @@ export const ItemUserPass = styled.div`
     color: rgb(100, 100, 100);
   }
   button {
-    margin-top: 50px;
+    margin-top: 40px;
     width: 80px;
     height: 35px;
     border: none;
@@ -54,6 +54,9 @@ export const ItemUserPass = styled.div`
     &:hover {
       background-color: #1859c9db;
     }
+    &.cadastroSenha {
+      width: 90px;
+    }
   }
   :is(input:focus, input:valid) ~ label {
     transform: translateY(-80%) scale(0.9);
@@ -64,8 +67,36 @@ export const ItemUserPass = styled.div`
   :is(input:focus, input:valid) {
     border-color: rgb(0, 0, 0);
   }
+  &.confirmarSenha {
+    margin-top: 5px;
+  }
+  &.senha {
+    margin-top: 30px;
+  }
+`
+
+export const DivBotaoCadastrarSenha = styled.div`
+  border-top: 1px solid;
+  width: 180px;
+  margin: auto;
+`
+
+export const BotaoCadastrarSenha = styled.button`
+  margin-top: 20px;
+  padding: 7px;
+  border: none;
+  font-size: 16px;
+  background-color: #296e01;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #008631;
+  }
 `
 
 export const TextError = styled.p`
   color: ${cores.corSecundaria};
+  padding-bottom: 5px;
+  font-size: 18px;
 `

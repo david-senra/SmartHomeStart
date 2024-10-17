@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import { LoginDiv, UserPassDiv, ItemUserPass, TextError } from './styles'
+import {
+  LoginDiv,
+  UserPassDiv,
+  ItemUserPass,
+  TextError,
+  DivBotaoCadastrarSenha,
+  BotaoCadastrarSenha
+} from './styles'
 import { useNavigate } from 'react-router-dom'
 
 function Login() {
   let usuario = ''
   let senha = ''
+  let usuarioCadastro = ''
+  let senhaCadastro1 = ''
+  let senhaCadastro2 = ''
   const navigate = useNavigate()
   const [acesso, setAcesso] = useState(false)
   const [nivel_acesso, setNivelAcesso] = useState(0)
   const [nome_usuario, setNomeUsuario] = useState('')
   const [usuarioId, setUsuarioId] = useState('')
+  const [paginaAtual, setPaginaAtual] = useState('login')
   useEffect(() => {
     if (acesso == true) {
       navigate('/sistema', {
@@ -21,6 +32,19 @@ function Login() {
       })
     }
   })
+  const togglePage = () => {
+    if (paginaAtual == 'login') {
+      setPaginaAtual('cadastroSenha')
+    } else {
+      setPaginaAtual('login')
+    }
+  }
+  const resetErrorMessage = () => {
+    const texto_erro = document.getElementById('text_error')
+    if (texto_erro != null && texto_erro.textContent != '') {
+      texto_erro.textContent = ''
+    }
+  }
   const fetchResposta = async () => {
     const respostaLogin = await fetch(
       `https://davidsenra.pythonanywhere.com/?usuario=${usuario}&senha=${senha}`
@@ -58,6 +82,38 @@ function Login() {
       return 'senha_incorreta'
     }
   }
+  const fetchRespostaCadastro = async () => {
+    const respostaLogin = await fetch(
+      `https://davidsenra.pythonanywhere.com/?criacaosenha&usuario=${usuarioCadastro}&senha=${senhaCadastro1}`
+    )
+    const corpo_resposta = respostaLogin.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('sucesso_cadastro')) {
+      const texto_erro = document.getElementById('text_error')
+      if (texto_erro != null) {
+        texto_erro.textContent = 'Senha Cadastrada com Sucesso!'
+        texto_erro.style.color = 'green'
+      }
+      return 'sucesso'
+    } else if (resposta.includes('usuario_ja_cadastrado')) {
+      const texto_erro = document.getElementById('text_error')
+      texto_erro?.scrollIntoView()
+      if (texto_erro != null) {
+        texto_erro.textContent = 'Usuário já cadastrado!'
+        texto_erro.style.color = 'red'
+      }
+      return 'ja_cadastrado'
+    } else if (resposta.includes('nao_encontrado')) {
+      const texto_erro = document.getElementById('text_error')
+      texto_erro?.scrollIntoView()
+      if (texto_erro != null) {
+        texto_erro.textContent =
+          'Nome de usuário não encontrado para cadastro de senha!'
+        texto_erro.style.color = 'red'
+      }
+      return 'nao_encontrado'
+    }
+  }
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = event.currentTarget
@@ -75,38 +131,150 @@ function Login() {
     formElements.usuario.value = ''
     formElements.senha.value = ''
   }
+  async function handleSubmitCriacaoSenha(
+    event: React.SyntheticEvent<HTMLFormElement>
+  ) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const formElements = form.elements as typeof form.elements & {
+      usuarioCad: { value: string }
+    } & {
+      senhaCad1: { value: string }
+    } & {
+      senhaCad2: { value: string }
+    }
+    usuarioCadastro = formElements.usuarioCad.value
+    senhaCadastro1 = formElements.senhaCad1.value
+    senhaCadastro2 = formElements.senhaCad2.value
+    if (senhaCadastro1 != senhaCadastro2) {
+      const texto_erro = document.getElementById('text_error')
+      if (texto_erro != null) {
+        texto_erro.textContent =
+          'Os dois campos de senha precisam ser idênticos!'
+        texto_erro.style.color = 'red'
+        formElements.senhaCad1.value = ''
+        formElements.senhaCad2.value = ''
+      }
+    } else {
+      const resposta = fetchRespostaCadastro()
+      if ((await resposta) == 'sucesso') {
+        setPaginaAtual('cadastrado')
+      }
+      formElements.usuarioCad.value = ''
+      formElements.senhaCad1.value = ''
+      formElements.senhaCad2.value = ''
+    }
+  }
   return (
-    <LoginDiv>
-      <main>
-        <h1>Login no Sistema:</h1>
-        <form onSubmit={handleSubmit}>
-          <UserPassDiv>
-            <ItemUserPass>
-              <input
-                id="usuario"
-                name="usuario"
-                type="text"
-                required
-                autoComplete="off"
-              ></input>
-              <label>Usuário</label>
-            </ItemUserPass>
-            <ItemUserPass>
-              <input
-                id="senha"
-                name="senha"
-                type="password"
-                required
-                autoComplete="off"
-              ></input>
-              <label>Senha</label>
-              <button>Login</button>
-            </ItemUserPass>
-          </UserPassDiv>
-          <TextError id="text_error"></TextError>
-        </form>
-      </main>
-    </LoginDiv>
+    <>
+      {paginaAtual == 'login' && (
+        <LoginDiv>
+          <main>
+            <h1>Login no Sistema:</h1>
+            <form onSubmit={handleSubmit}>
+              <UserPassDiv>
+                <ItemUserPass>
+                  <input
+                    id="usuario"
+                    name="usuario"
+                    type="text"
+                    required
+                    autoComplete="off"
+                    onChange={resetErrorMessage}
+                  ></input>
+                  <label>Usuário</label>
+                </ItemUserPass>
+                <ItemUserPass>
+                  <input
+                    id="senha"
+                    name="senha"
+                    type="password"
+                    required
+                    autoComplete="off"
+                    onChange={resetErrorMessage}
+                  ></input>
+                  <label>Senha</label>
+                  <button>Login</button>
+                </ItemUserPass>
+              </UserPassDiv>
+              <TextError id="text_error"></TextError>
+              <DivBotaoCadastrarSenha>
+                <BotaoCadastrarSenha type="button" onClick={togglePage}>
+                  Cadastrar Senha
+                </BotaoCadastrarSenha>
+              </DivBotaoCadastrarSenha>
+            </form>
+          </main>
+        </LoginDiv>
+      )}
+      {paginaAtual == 'cadastroSenha' && (
+        <LoginDiv>
+          <main>
+            <h1>Criação de Senha - Novo Usuário</h1>
+            <form onSubmit={handleSubmitCriacaoSenha}>
+              <UserPassDiv>
+                <ItemUserPass>
+                  <input
+                    id="usuarioCad"
+                    name="usuarioCad"
+                    type="text"
+                    required
+                    autoComplete="off"
+                    onChange={resetErrorMessage}
+                  ></input>
+                  <label>Usuário</label>
+                </ItemUserPass>
+                <ItemUserPass className="senha">
+                  <input
+                    id="senhaCad1"
+                    name="senhaCad1"
+                    type="password"
+                    required
+                    autoComplete="off"
+                    onChange={resetErrorMessage}
+                  ></input>
+                  <label>Senha</label>
+                </ItemUserPass>
+                <ItemUserPass className="confirmarSenha">
+                  <input
+                    id="senhaCad2"
+                    name="senhaCad2"
+                    type="password"
+                    required
+                    autoComplete="off"
+                    className="confirmarSenha"
+                    onChange={resetErrorMessage}
+                  ></input>
+                  <label className={'confirmarSenha'}>Confirmar Senha</label>
+                  <button className={'cadastroSenha'}>Cadastrar</button>
+                </ItemUserPass>
+              </UserPassDiv>
+              <TextError id="text_error"></TextError>
+              <DivBotaoCadastrarSenha>
+                <BotaoCadastrarSenha type="button" onClick={togglePage}>
+                  Fazer Login
+                </BotaoCadastrarSenha>
+              </DivBotaoCadastrarSenha>
+            </form>
+          </main>
+        </LoginDiv>
+      )}
+      {paginaAtual == 'cadastrado' && (
+        <LoginDiv>
+          <main>
+            <h1>Criação de Senha - Novo Usuário</h1>
+            <div>
+              <TextError id="text_error"></TextError>
+              <DivBotaoCadastrarSenha>
+                <BotaoCadastrarSenha type="button" onClick={togglePage}>
+                  Fazer Login
+                </BotaoCadastrarSenha>
+              </DivBotaoCadastrarSenha>
+            </div>
+          </main>
+        </LoginDiv>
+      )}
+    </>
   )
 }
 
