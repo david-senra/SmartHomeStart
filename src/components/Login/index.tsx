@@ -96,7 +96,7 @@ function Login() {
       const texto_erro = document.getElementById('text_error')
       texto_erro?.scrollIntoView()
       if (texto_erro != null) {
-        texto_erro.textContent = 'Usuário ainda não criou uma senha!'
+        texto_erro.textContent = 'Usuário ainda não cadastrou uma senha!'
         texto_erro.style.color = 'red'
       }
       return 'nao-encontrado'

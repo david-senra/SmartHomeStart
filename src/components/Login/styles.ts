@@ -19,7 +19,8 @@ export const UserPassDiv = styled.div`
 export const ItemUserPass = styled.div`
   font-family: 'Segoe UI', sans-serif;
   margin: 1em 0 1em 0;
-  max-width: 190px;
+  max-width: 320px;
+  width: 250px;
   position: relative;
   input {
     font-size: 100%;
