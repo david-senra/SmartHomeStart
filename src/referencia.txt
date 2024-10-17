@@ -1,0 +1,22 @@
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { adicionar } from '../../store/reducers/carrinho'
+
+import { RootState } from '../../store'
+import { useGetProdutosQuery } from '../services/api'
+
+const Header = () => {
+  const itensCarrinho = useSelector((state: RootState) => state.carrinho.itens)
+  const dispatch = useDispatch()
+  const { data: produtos, isLoading, isSuccess } = useGetProdutosQuery()
+  if (isLoading) return <h2>Carregando...</h2>
+  const produto = x
+  const adicionarProduto = dispatch.adicionar(produto)
+
+  return (
+    <>
+      <h1>Header</h1>
+      <div></div>
+    </>
+  )
+}
