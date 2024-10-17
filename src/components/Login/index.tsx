@@ -83,8 +83,22 @@ function Login() {
     }
   }
   const fetchRespostaCadastro = async () => {
+    const jsonCadastroSenha = {
+      requisicao: 'criacaoSenhaUsuario',
+      usuario: usuarioCadastro,
+      senha: senhaCadastro1
+    }
     const respostaLogin = await fetch(
-      `https://davidsenra.pythonanywhere.com/?criacaosenha&usuario=${usuarioCadastro}&senha=${senhaCadastro1}`
+      `https://davidsenra.pythonanywhere.com/`,
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonCadastroSenha)
+      }
     )
     const corpo_resposta = respostaLogin.text()
     const resposta = (await corpo_resposta).toString()
@@ -94,6 +108,7 @@ function Login() {
         texto_erro.textContent = 'Senha Cadastrada com Sucesso!'
         texto_erro.style.color = 'green'
       }
+      setPaginaAtual('cadastrado')
       return 'sucesso'
     } else if (resposta.includes('usuario_ja_cadastrado')) {
       const texto_erro = document.getElementById('text_error')
@@ -108,7 +123,7 @@ function Login() {
       texto_erro?.scrollIntoView()
       if (texto_erro != null) {
         texto_erro.textContent =
-          'Nome de usuário não encontrado para cadastro de senha!'
+          'Usuário não registrado para cadastro de senha!'
         texto_erro.style.color = 'red'
       }
       return 'nao_encontrado'
