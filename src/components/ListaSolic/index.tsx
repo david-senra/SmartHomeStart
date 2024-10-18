@@ -23,8 +23,10 @@ import {
   IconeEntregueImg,
   LinhaDiv,
   ItemCheckDiv,
+  ItemCheckDivCaminhao,
   ItemCheckImg,
   DivTraco,
+  DivEntregue,
   IconeLapisDiv,
   IconeLapisImg,
   IconeCancelarImg,
@@ -39,7 +41,8 @@ import {
   InputCentroCusto,
   InputSugest,
   ItemCabecalhoSituacao,
-  InputObservacaoItem
+  InputObservacaoItem,
+  ItemCaminhaokImg
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -48,6 +51,7 @@ import IconeEntregue from '../../assets/images/iconeEntregue.png'
 import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
+import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
 
 const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   class Compra {
@@ -513,6 +517,48 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       item_encontrado.status = 'entregue'
     } else {
       item_encontrado.status = 'aberto'
+    }
+    const novoElemento = elemento
+    novoElemento.itens.splice(indice_item, 1)
+    novoElemento.itens.splice(indice_item, 0, item_encontrado)
+    const resposta_atualizacao_servidor =
+      atualizarSolicitacaoNoServidor(novoElemento)
+    if (await resposta_atualizacao_servidor) {
+      elemento.itens.splice(indice_item, 1)
+      elemento.itens.splice(indice_item, 0, item_encontrado)
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else {
+      console.log('erro!')
+    }
+  }
+  const finalizarItemPedido = async (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    let id_elemento = ''
+    if (e.currentTarget.parentElement != null) {
+      id_elemento = e.currentTarget.parentElement.id
+    }
+    console.log(id_elemento)
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    console.log(elemento)
+    const id_item = e.currentTarget.id
+    function isItem(compra: Compra) {
+      return compra.id == parseInt(id_item)
+    }
+    const array_itens = elemento.itens
+    const indice_item = array_itens.findIndex(isItem)
+    const item_encontrado = array_itens.filter(isItem)[0]
+    if (item_encontrado.status == 'entregue') {
+      item_encontrado.status = 'finalizado'
+    } else {
+      item_encontrado.status = 'entregue'
     }
     const novoElemento = elemento
     novoElemento.itens.splice(indice_item, 1)
@@ -1144,8 +1190,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         )}
                     </li>
                     <ItemCabecalhoSituacao
-                      onClick={(e) => nivelusur == 2 && toggleCard(e)}
-                      style={{ cursor: nivelusur == 2 ? 'pointer' : 'default' }}
+                      className={
+                        (pedido.statusSolicitacao == 'andamento' &&
+                          nivelusur == 2) ||
+                        (nivelusur > 2 &&
+                          (pedido.statusSolicitacao == 'aberto' ||
+                            pedido.statusSolicitacao == 'andamento'))
+                          ? 'noPointer'
+                          : ''
+                      }
                     >
                       <b>
                         {textoSituacao(pedido.statusSolicitacao)}{' '}
@@ -1163,7 +1216,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               ></IconeTranca>
                             </IconeDiv>
                           )}
-                        {nivelusur > 2 &&
+                        {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'andamento' && (
                             <IconeEntregueDiv>
                               <IconeEntregueImg
@@ -1183,10 +1236,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                   >
                     <GridCabecalhoItemsPedido id={pedido.id}>
                       <LinhaCabecalhoItems>
-                        <b>Quantidade</b>
+                        <b>Qtd.</b>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItems>
-                        <b>Unidade</b>
+                        <b>Und.</b>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItems>
                         <b>Descrição</b>
@@ -1199,7 +1252,14 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       </LinhaCabecalhoItemsUltimo>
                     </GridCabecalhoItemsPedido>
                     {pedido.itens.map((item) => (
-                      <GridItemsPedido key={item.id} className="classeItems">
+                      <GridItemsPedido
+                        key={item.id}
+                        className={`classeItems ${
+                          pedido.statusSolicitacao != 'aberto' &&
+                          item.status == 'entregue' &&
+                          'boldText'
+                        }`}
+                      >
                         <li
                           className={
                             nivelusur == 2 &&
@@ -1225,9 +1285,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           ></InputQuantidade>
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
-                          item.editandoQuantidade == true
-                            ? ''
-                            : item.quantidade}
+                          item.editandoQuantidade == true ? (
+                            ''
+                          ) : (
+                            <p>{item.quantidade}</p>
+                          )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             item.editandoQuantidade != true && (
@@ -1317,9 +1379,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           </InputUnidade>
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
-                          item.editandoUnidade == true
-                            ? ''
-                            : item.unidade}
+                          item.editandoUnidade == true ? (
+                            ''
+                          ) : (
+                            <p>{item.unidade}</p>
+                          )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             item.editandoUnidade != true && (
@@ -1506,9 +1570,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           </InputCentroCusto>
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
-                          item.editandoCentroDeCusto == true
-                            ? ''
-                            : item.centrocusto}
+                          item.editandoCentroDeCusto == true ? (
+                            ''
+                          ) : (
+                            <p>{item.centrocusto}</p>
+                          )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             item.editandoCentroDeCusto != true && (
@@ -1606,7 +1672,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                 textoObservacao={item.observacao}
                                 larguraTexto={item.observacao.length}
                                 className={
-                                  item.observacao.length > 46
+                                  item.observacao.length > 41
                                     ? 'textoObsOverflow'
                                     : ''
                                 }
@@ -1676,23 +1742,58 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             )}
                         </li>
                         {nivelusur > 2 &&
-                          pedido.statusSolicitacao != 'aberto' && (
+                          pedido.statusSolicitacao != 'aberto' &&
+                          pedido.statusSolicitacao != 'entregue' &&
+                          item.status != 'finalizado' && (
+                            <ItemCheckDivCaminhao id={pedido.id}>
+                              <ItemCaminhaokImg
+                                id={String(item.id)}
+                                src={
+                                  item.status == 'aberto'
+                                    ? IconeCaminhaoEntrega
+                                    : IconeUncheckItem
+                                }
+                                onClick={marcarItemPedido}
+                                className={
+                                  item.status == 'entregue' ? 'andamento' : ''
+                                }
+                              ></ItemCaminhaokImg>
+                            </ItemCheckDivCaminhao>
+                          )}
+                        {nivelusur == 2 &&
+                          pedido.statusSolicitacao != 'aberto' &&
+                          pedido.statusSolicitacao != 'entregue' &&
+                          item.status != 'aberto' && (
                             <ItemCheckDiv id={pedido.id}>
                               <ItemCheckImg
                                 id={String(item.id)}
                                 src={
-                                  item.status == 'aberto'
-                                    ? IconeCheckItem
-                                    : IconeUncheckItem
+                                  item.status == 'finalizado'
+                                    ? IconeUncheckItem
+                                    : IconeCheckItem
                                 }
-                                onClick={marcarItemPedido}
+                                onClick={finalizarItemPedido}
+                                className={
+                                  item.status == 'finalizado'
+                                    ? 'finalizado'
+                                    : ''
+                                }
                               ></ItemCheckImg>
                             </ItemCheckDiv>
                           )}
-                        {nivelusur > 2 &&
-                          pedido.statusSolicitacao != 'aberto' &&
-                          item.status == 'entregue' && (
-                            <DivTraco id={pedido.id}></DivTraco>
+                        {pedido.statusSolicitacao != 'aberto' &&
+                          (item.status == 'entregue' ||
+                            item.status == 'finalizado') && (
+                            <DivEntregue id={pedido.id}></DivEntregue>
+                          )}
+                        {pedido.statusSolicitacao != 'aberto' &&
+                          item.status == 'finalizado' && (
+                            <DivTraco
+                              id={pedido.id}
+                              tipoUsuario={
+                                nivelusur == 2 ? 'solicitante' : 'comprador'
+                              }
+                            ></DivTraco>
                           )}
                       </GridItemsPedido>
                     ))}

@@ -38,9 +38,9 @@ export const ListaSolicitacoes = styled.ul`
 
 export const CardSolicitacao = styled.ul<{ tamanho: number }>`
   max-height: ${(props) => (120 + props.tamanho * 60).toString()}px;
+  overflow-x: visible;
   position: relative;
   display: grid;
-  overflow: hidden;
   justify-items: center;
   justify-content: center;
   border-radius: 5px;
@@ -62,7 +62,9 @@ export const CardSolicitacao = styled.ul<{ tamanho: number }>`
 
 export const DivGridCabecalho = styled.div<{ tamanho: number }>`
   position: relative;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: visible;
+  width: 100%;
   z-index: -2;
   &.open {
   }
@@ -145,6 +147,7 @@ export const GridItemsPedido = styled.ul`
     overflow-y: hidden;
     line-height: 1.5;
     text-align: center;
+    background-color: transparent;
     &.textoObservacaoItem {
       justify-content: center;
     }
@@ -187,9 +190,9 @@ export const TextoDescricaoItem = styled.p<{
         content: '${(props) => props.textoDescricao}';
         position: absolute;
         background-color: yellow;
-        z-index: 30;
+        z-index: 2;
         margin-top: 25px;
-        left: ${(props) => props.larguraTexto / 4.7 + 'vw'};
+        left: ${(props) => props.larguraTexto / 2.6 + 'vw'};
         border: solid 1px;
         padding: 3px;
       }
@@ -208,9 +211,9 @@ export const TextoObservacaoItem = styled.p<{
         content: '${(props) => props.textoObservacao}';
         position: absolute;
         background-color: yellow;
-        z-index: 50;
+        z-index: 30;
         margin-top: 25px;
-        right: ${(props) => props.larguraTexto - 28 + 'px'};
+        right: ${(props) => 3.3 * props.larguraTexto + 'px'};
         border: solid 1px;
         padding: 3px;
       }
@@ -231,15 +234,32 @@ export const ItemCabecalhoSituacao = styled.li`
     padding-right: 5px;
     padding-left: 5px;
   }
+  &.noPointer {
+    cursor: default;
+  }
 `
 
-export const DivTraco = styled.div`
+export const DivTraco = styled.div<{
+  tipoUsuario: string
+}>`
   position: relative;
-  right: -10px;
-  width: 63vw;
+  right: ${(props) => (props.tipoUsuario == 'solicitante' ? '0.1' : '60')}vw;
+  width: 60vw;
   bottom: 13.5px;
   border-bottom: solid 2px;
   border-top: hidden 2px;
+  z-index: -1;
+`
+
+export const DivEntregue = styled.div`
+  position: absolute;
+  height: 24px;
+  width: 60vw;
+  left: 9.5vw;
+  border-bottom: hidden 2px;
+  border-top: hidden 2px;
+  background-color: #d2f8d2;
+  z-index: -1;
 `
 
 export const IconeDiv = styled.div`
@@ -282,7 +302,7 @@ export const IconeEntregueImg = styled.img`
 `
 
 export const IconeLapisDiv = styled.div`
-  z-index: 7;
+  z-index: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -513,22 +533,47 @@ export const IconeLapisImg = styled.img`
 `
 
 export const ItemCheckDiv = styled.div`
-  position: absolute;
-  right: 1.8%;
-  padding-top: 5px;
-  padding-left: 0.5vw;
-  padding-right: 7px;
+  position: relative;
+  z-index: 7;
+`
+
+export const ItemCheckDivCaminhao = styled.div`
+  position: relative;
   z-index: 7;
 `
 
 export const ItemCheckImg = styled.img`
-  height: 15px;
+  height: 20px;
+  width: 18px;
+  padding-top: 2px;
   cursor: pointer;
+  margin-bottom: 10px;
+  overflow-clip-margin: 40px;
+  overflow: visible;
+  &.finalizado {
+    height: 22px;
+    width: 20px;
+  }
+`
+
+export const ItemCaminhaokImg = styled.img`
+  height: 30px;
+  width: 32px;
+  padding-top: 2px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  overflow-clip-margin: 40px;
+  overflow: visible;
+  &.andamento {
+    height: 22px;
+    width: 20px;
+  }
 `
 
 export const DivSugestFornecedoresObs = styled.div`
   display: grid;
   grid-template-columns: 10vw 60vw;
+  margin-left: 5vw;
   margin-top: 15px;
   div {
     margin: auto;
