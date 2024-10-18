@@ -1190,7 +1190,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         <b>Descrição</b>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItems>
-                        <b>C. de Custo</b>
+                        <b>C. Custo</b>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItemsUltimo>
                         <b>Observação</b>
