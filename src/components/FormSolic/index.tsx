@@ -106,6 +106,27 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     editandoObservacao: false,
     novaObservacao: ''
   }
+  const listaCentrosCusto = [
+    '03 - ADMINISTRATIVO',
+    '04 - RESERVA TÉCNICA',
+    '05 - OBRAS FINALIZADAS',
+    '20 - PIRAPORA DO BOM JESUS',
+    '22 - COMERCIAL',
+    '34 - EMPRÉSTIMOS',
+    '35 - MACACOS/CAPELA DE SÃO SEBASTIÃO',
+    '38 - MORRO DO PILAR/INTENDENTE CAMARA',
+    '42 - CAMARGOS',
+    '48 - ENCARGOS BANCARIOS',
+    '51 - CONGONHAS HOTEL DO JUCÃO',
+    '52 - SANTA BÁRBARA/IGREJA MATRIZ DE SANTO ANTÔNIO',
+    '53 - CMD MERCADO MUNICIPAL',
+    '54 - SERRO',
+    '55 - SERRO',
+    '56 - BH - RESIDENCIAL ARTHUR BERNARDES',
+    '57 - CATAS ALTAS IGREJA MATRIZ DE SANTO ANTÔNIO',
+    '98 - DIRETORIA & TECNOLOGIAS',
+    '99 - OBRAS DE PEQUENO PORTE'
+  ]
   const [ResetPedido, SetResetPedido] = React.useState<string>('off')
   const [SituacaoPedido, SetSituacaoPedido] =
     React.useState<string>('solicitando')
@@ -406,7 +427,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
   return (
     <>
       <FormularioCompra>
-        <h1>Solicitação de Compra de Produtos e Serviços</h1>
+        <h1>Solicitar Compra de Materiais e/ou Serviços</h1>
         <br></br>
         {ResetPedido == 'off' && (
           <div
@@ -424,7 +445,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
               </select>
             </DivEmpresa>
             <br></br>
-            <DivItem>
+            <DivItem className="headerItems">
               <DivItemQuant>
                 <label>Qtd:</label>
               </DivItemQuant>
@@ -464,6 +485,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                     <option value="Und">Und</option>
                     <option value="Kg">Kg</option>
                     <option value="L">L</option>
+                    <option value="scs">scs</option>
                     <option value="cm">cm</option>
                     <option value="m">m</option>
                     <option value="m²">m²</option>
@@ -493,18 +515,11 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                       value=""
                       style={{ display: 'none' }}
                     ></option>
-                    <option value="01">01 - ADMINISTRATIVO</option>
-                    <option value="02">
-                      02 - CAMARGOS - IGREJA DE NOSSA SENHORA DA CONCEIÇÃO
-                    </option>
-                    <option value="03">
-                      03 - MORRO DO PILAR/INTENDENTE CAMARA
-                    </option>
-                    <option value="04">
-                      04 - RESERVA TÉCNICA - RENOVA - AÇÕES DE SALVAGUARDA
-                    </option>
-                    <option value="05">05 - CMD MERCADO MUNICIPAL</option>
-                    <option value="06">06 - EMPRÉSTIMOS</option>
+                    {listaCentrosCusto.map((centroCusto) => (
+                      <option key={centroCusto} value={centroCusto[1]}>
+                        {centroCusto}
+                      </option>
+                    ))}
                   </select>
                 </DivItemCentroCusto>
                 <DivItemDesc>

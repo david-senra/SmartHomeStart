@@ -86,6 +86,9 @@ export const DivItem = styled.div`
   flex-direction: horizontal;
   justify-content: center;
   gap: 16px;
+  &.headerItems {
+    height: 35px;
+  }
   select,
   label {
     font-size: 18px;
@@ -198,6 +201,8 @@ export const DivItemCentroCusto = styled.div`
   flex-direction: horizontal;
   justify-content: center;
   gap: 10px;
+  height: 50px;
+  overflow-y: visible;
   input,
   select {
     width: 5.5vw;
@@ -205,7 +210,14 @@ export const DivItemCentroCusto = styled.div`
     padding-right: 8px;
     font-size: 18px;
     max-width: 6ch;
+    max-height: 100px;
     -moz-appearance: textfield;
+    option {
+      font-size: 15px;
+    }
+    &:focus {
+      size: 8;
+    }
   }
   select {
     margin-right: 10px;

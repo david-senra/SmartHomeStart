@@ -46,12 +46,12 @@ const Sistema = () => {
                 Exibir Solicitações
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso >= 3 && (
+            {nivel_acesso >= 4 && nivel_acesso != 3 && (
               <ItemMenuPrincipal onClick={() => setOpcao('movimentar_pessoal')}>
                 Movimentar Pessoal
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso >= 4 && (
+            {nivel_acesso >= 4 && nivel_acesso != 3 && (
               <ItemMenuPrincipal
                 onClick={() => setOpcao('exibir_movimentacao_pessoal')}
               >

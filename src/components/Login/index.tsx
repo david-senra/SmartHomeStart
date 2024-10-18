@@ -55,6 +55,10 @@ function Login() {
     if (paginaAtual != 'login') {
       setPaginaAtual('login')
     }
+    const texto_erro = document.getElementById('text_error')
+    if (texto_erro != null) {
+      texto_erro.textContent = ''
+    }
   }
   const resetErrorMessage = () => {
     const texto_erro = document.getElementById('text_error')

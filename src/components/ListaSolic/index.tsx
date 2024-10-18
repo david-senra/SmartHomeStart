@@ -1,5 +1,4 @@
 import React, { ChangeEvent } from 'react'
-import * as Excel from 'exceljs'
 import { useEffect } from 'react'
 import {
   DivGeral,
@@ -15,7 +14,6 @@ import {
   LinhaCabecalhoItemsUltimo,
   DivSugestFornecedoresObs,
   DivGridCabecalho,
-  BoxTextoObs,
   BoxTextoSugest,
   IconeTranca,
   IconeDiv,
@@ -29,9 +27,7 @@ import {
   DivTraco,
   IconeLapisDiv,
   IconeLapisImg,
-  IconeCancelarDiv,
   IconeCancelarImg,
-  IconeConfirmarDiv,
   IconeConfirmarImg,
   SelectEdicaoEmpresa,
   InputDataLimite,
@@ -40,8 +36,8 @@ import {
   InputDescricao,
   InputCentroCusto,
   InputSugest,
-  InputObservacaoItem,
-  ItemCabecalhoSituacao
+  ItemCabecalhoSituacao,
+  InputObservacaoItem
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -176,6 +172,27 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       this.requisicao = data.requisicao
     }
   }
+  const listaCentrosCusto = [
+    '03 - ADMINISTRATIVO',
+    '04 - RESERVA TÉCNICA',
+    '05 - OBRAS FINALIZADAS',
+    '20 - PIRAPORA DO BOM JESUS',
+    '22 - COMERCIAL',
+    '34 - EMPRÉSTIMOS',
+    '35 - MACACOS/CAPELA DE SÃO SEBASTIÃO',
+    '38 - MORRO DO PILAR/INTENDENTE CAMARA',
+    '42 - CAMARGOS',
+    '48 - ENCARGOS BANCARIOS',
+    '51 - CONGONHAS HOTEL DO JUCÃO',
+    '52 - SANTA BÁRBARA/IGREJA MATRIZ DE SANTO ANTÔNIO',
+    '53 - CMD MERCADO MUNICIPAL',
+    '54 - SERRO',
+    '55 - SERRO',
+    '56 - BH - RESIDENCIAL ARTHUR BERNARDES',
+    '57 - CATAS ALTAS IGREJA MATRIZ DE SANTO ANTÔNIO',
+    '98 - DIRETORIA & TECNOLOGIAS',
+    '99 - OBRAS DE PEQUENO PORTE'
+  ]
   const [firstLoad, SetFirstLoad] = React.useState<boolean>(true)
   const [ListaPedidos, SetListaPedidos] = React.useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] =
@@ -356,7 +373,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     solicitarPedidos()
     SetFirstLoad(false)
   }
-  const MINUTE_MS = 60000
+  const MINUTE_MS = 180000
   useEffect(() => {
     const interval = setInterval(() => {
       nivelusur > 2 && solicitarPedidos()
@@ -843,6 +860,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         valor_atribuivel = item_encontrado.descricao
         const inputMudanca: any =
           e.currentTarget.parentElement?.previousElementSibling
+            .previousElementSibling
         inputMudanca.value = valor_atribuivel
       } else if (acao == 'descricaoAlterada') {
         const novaDescricaoRecebida = e.currentTarget.value
@@ -856,25 +874,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         valor_atribuivel = item_encontrado.centrocusto
         const inputMudanca: any =
           e.currentTarget.parentElement?.previousElementSibling
-        if (valor_atribuivel == '01') {
-          valor_atribuivel = '01'
-          inputMudanca.value = valor_atribuivel
-        } else if (valor_atribuivel == '02') {
-          valor_atribuivel = '02'
-          inputMudanca.value = valor_atribuivel
-        } else if (valor_atribuivel == '03') {
-          valor_atribuivel = '03'
-          inputMudanca.value = valor_atribuivel
-        } else if (valor_atribuivel == '04') {
-          valor_atribuivel = '04'
-          inputMudanca.value = valor_atribuivel
-        } else if (valor_atribuivel == '05') {
-          valor_atribuivel = '05'
-          inputMudanca.value = valor_atribuivel
-        } else if (valor_atribuivel == '06') {
-          valor_atribuivel = '06'
-          inputMudanca.value = valor_atribuivel
-        }
+        inputMudanca.value = valor_atribuivel
         console.log(valor_atribuivel)
       } else if (acao == 'centroCustoAlterado') {
         const novoCentroCustoRecebido = e.currentTarget.value
@@ -888,6 +888,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         valor_atribuivel = item_encontrado.observacao
         const inputMudanca: any =
           e.currentTarget.parentElement?.previousElementSibling
+            .previousElementSibling
         inputMudanca.value = valor_atribuivel
       } else if (acao == 'observacaoAlterada') {
         const novaObservacaoRecebida = e.currentTarget.value
@@ -907,7 +908,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   return (
     <>
       <DivGeral>
-        <h1>Lista de Solicitações de Compras e Serviços</h1>
+        <h1>Solicitações de Compra de Materiais e/ou Serviços</h1>
         <br></br>
         {SituacaoExibicao == 'carregando' && (
           <TextoCarregando>Carregando...</TextoCarregando>
@@ -1307,6 +1308,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             <option value="Und">Und</option>
                             <option value="Kg">Kg</option>
                             <option value="L">L</option>
+                            <option value="scs">scs</option>
                             <option value="cm">cm</option>
                             <option value="m">m</option>
                             <option value="m²">m²</option>
@@ -1388,9 +1390,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           ></InputDescricao>
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
-                          item.editandoDescricao == true
-                            ? ''
-                            : item.descricao}
+                          item.editandoDescricao == true ? (
+                            ''
+                          ) : (
+                            <p>{item.descricao}</p>
+                          )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             item.editandoDescricao != true && (
@@ -1475,22 +1479,14 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               handleAlteracaoItem(e, 'centroCustoAlterado')
                             }
                           >
-                            <option value="01">01 - ADMINISTRATIVO</option>
-                            <option value="02">
-                              02 - CAMARGOS - IGREJA DE NOSSA SENHORA DA
-                              CONCEIÇÃO
-                            </option>
-                            <option value="03">
-                              03 - MORRO DO PILAR/INTENDENTE CAMARA
-                            </option>
-                            <option value="04">
-                              04 - RESERVA TÉCNICA - RENOVA - AÇÕES DE
-                              SALVAGUARDA
-                            </option>
-                            <option value="05">
-                              05 - CMD MERCADO MUNICIPAL
-                            </option>
-                            <option value="06">06 - EMPRÉSTIMOS</option>
+                            {listaCentrosCusto.map((centroCusto) => (
+                              <option
+                                key={centroCusto}
+                                value={centroCusto.split(' - ')[0]}
+                              >
+                                {centroCusto}
+                              </option>
+                            ))}
                           </InputCentroCusto>
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
@@ -1562,14 +1558,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             )}
                         </li>
                         <li
-                          className={
-                            nivelusur == 2 &&
-                            pedido.statusSolicitacao == 'aberto'
-                              ? 'editar'
-                              : ''
-                          }
+                          className={`textoObservacaoItem ${item.observacao.length > 62 && 'textoObsOverflow'}
+                            ${
+                              nivelusur == 2 &&
+                              pedido.statusSolicitacao == 'aberto'
+                                ? 'editar'
+                                : ''
+                            }`}
                         >
-                          <InputDescricao
+                          <InputObservacaoItem
                             id={pedido.id + ';' + item.id + ';' + 'observacao'}
                             style={{
                               visibility:
@@ -1582,12 +1579,18 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             onChange={(e) =>
                               handleAlteracaoItem(e, 'observacaoAlterada')
                             }
-                          ></InputDescricao>
+                          ></InputObservacaoItem>
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
-                          item.editandoObservacao == true
-                            ? ''
-                            : item.observacao}
+                          item.editandoObservacao == true ? (
+                            ''
+                          ) : (
+                            <p
+                              className={`textoObservacaoItem ${item.observacao.length > 62 && 'textoObsOverflow'}`}
+                            >
+                              <p>{item.observacao}</p>
+                            </p>
+                          )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             item.editandoObservacao != true && (
@@ -1623,7 +1626,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'confirmarEdicaoObservacao'
                                   )
                                 }
-                                className="confirmarDescricao"
+                                className="confirmarEdicaoObservacao"
                               ></IconeConfirmarImg>
                             )}
                           {nivelusur == 2 &&
@@ -1643,7 +1646,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                 className={
                                   item.observacao != item.novaObservacao
                                     ? 'uhu'
-                                    : 'cancelarDescricao'
+                                    : 'cancelarEdicaoObservacao'
                                 }
                               ></IconeCancelarImg>
                             )}

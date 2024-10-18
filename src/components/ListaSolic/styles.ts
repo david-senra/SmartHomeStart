@@ -112,12 +112,78 @@ export const GridCabecalhoSolto = styled.ul`
 
 export const GridCabecalhoItemsPedido = styled.ul`
   display: grid;
-  grid-template-columns: 10vw 10vw 18vw 10vw 18vw;
-  margin-left: 20px;
+  grid-template-columns: 6.5vw 6.5vw 16vw 6.5vw 25vw 0.6vw;
   justify-content: center;
   padding-top: 15px;
+  margin-right: 0px;
+  padding-right: 0px;
   li {
     border-bottom: solid 1px black;
+  }
+`
+
+export const GridItemsPedido = styled.ul`
+  display: grid;
+  grid-template-columns: 6.5vw 6.5vw 16vw 6.5vw 25vw 0.6vw;
+  grid-template-rows: 25px;
+  margin-right: 0px;
+  padding-right: 0px;
+  justify-content: center;
+  &:last-of-type {
+    li {
+      border-bottom: none;
+    }
+  }
+  li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: solid 1px black;
+    border-bottom: solid 1px black;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    line-height: 1.5;
+    white-space: normal;
+    &.textoObservacaoItem {
+      justify-content: center;
+    }
+    &.textoObsOverflow {
+      justify-content: start;
+    }
+    p {
+      &.textoObservacaoItem {
+        padding-left: 5px;
+        display: flex;
+        justify-content: center;
+      }
+      &.textoObsOverflow {
+        padding-right: 0px;
+        padding-left: 2px;
+        margin-right: 0px;
+        gap: 0px;
+        justify-content: center;
+        justify-items: center;
+        width: 100%;
+        &:after {
+          content: '...';
+          font-size: 18px;
+          width: 10px;
+          margin-right: 0px;
+          margin-left: 0px;
+          position: relative;
+          padding-left: 0px;
+          padding-right: 4px;
+          font-weight: 800;
+        }
+      }
+    }
+    &:last-of-type {
+      border-right: 0px;
+    }
+    &.editar {
+      display: flex;
+      flex-direction: row;
+    }
   }
 `
 
@@ -216,6 +282,12 @@ export const IconeConfirmarImg = styled.img`
     padding-left: 202px;
     padding-right: 3px;
   }
+  &.confirmarEdicaoObservacao {
+    z-index: 7;
+    margin-top: 4px;
+    padding-left: 21.5vw;
+    padding-right: 3px;
+  }
   &.SuggestionEdition {
     position: relative;
     z-index: 15;
@@ -245,6 +317,10 @@ export const IconeCancelarImg = styled.img`
   }
   &.cancelarDescricao {
     padding-left: 190px;
+    margin-top: 4px;
+  }
+  &.cancelarEdicaoObservacao {
+    padding-left: 22vw;
     margin-top: 4px;
   }
   &.uhu {
@@ -349,9 +425,11 @@ export const InputDescricao = styled.input`
 
 export const InputObservacaoItem = styled.input`
   position: absolute;
-  margin-right: 50px;
-  width: 120px;
-  height: 34px;
+  margin-right: 1vw;
+  margin-left: 0.5vw;
+  margin-top: 1px;
+  width: 20.5vw;
+  height: 22px;
   font-size: 15px;
   padding-top: 2px;
   text-align: center;
@@ -435,8 +513,10 @@ export const InputSugest = styled.textarea`
     white-space: pre-wrap;
     border: solid 1px black;
     height: auto;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     padding-left: 5px;
     padding-right: 5px;
     width: 100%;
@@ -459,33 +539,6 @@ export const LinhaCabecalhoItems = styled.li`
 
 export const LinhaCabecalhoItemsUltimo = styled.li`
   padding-bottom: 4px;
-`
-
-export const GridItemsPedido = styled.ul`
-  display: grid;
-  grid-template-columns: 10vw 10vw 18vw 10vw 18vw;
-  grid-template-rows: 25px;
-  margin-left: 20px;
-  justify-content: center;
-  &:last-of-type {
-    li {
-      border-bottom: none;
-    }
-  }
-  li {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: solid 1px black;
-    border-bottom: solid 1px black;
-    &:last-of-type {
-      border-right: 0px;
-    }
-    &.editar {
-      display: flex;
-      flex-direction: row;
-    }
-  }
 `
 
 export const LinhaGridItems = styled.li`
