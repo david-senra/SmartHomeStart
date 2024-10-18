@@ -34,6 +34,8 @@ import {
   InputQuantidade,
   InputUnidade,
   InputDescricao,
+  TextoDescricaoItem,
+  TextoObservacaoItem,
   InputCentroCusto,
   InputSugest,
   ItemCabecalhoSituacao,
@@ -1393,7 +1395,17 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           item.editandoDescricao == true ? (
                             ''
                           ) : (
-                            <p>{item.descricao}</p>
+                            <TextoDescricaoItem
+                              textoDescricao={item.descricao}
+                              larguraTexto={item.descricao.length}
+                              className={
+                                item.descricao.length > 25
+                                  ? 'descricaoOverflow'
+                                  : ''
+                              }
+                            >
+                              {item.descricao}
+                            </TextoDescricaoItem>
                           )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
@@ -1411,7 +1423,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                   onClick={(e) =>
                                     handleAlteracaoItem(e, 'editarDescricao')
                                   }
-                                  className="lapisMenor"
+                                  className={`lapisMenor ${
+                                    item.descricao.length > 25
+                                      ? 'descricaoOverflow'
+                                      : ''
+                                  }`}
                                 ></IconeLapisImg>
                               </IconeLapisDiv>
                             )}
@@ -1580,15 +1596,23 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               handleAlteracaoItem(e, 'observacaoAlterada')
                             }
                           ></InputObservacaoItem>
-                          {nivelusur == 2 &&
-                          pedido.statusSolicitacao == 'aberto' &&
-                          item.editandoObservacao == true ? (
+                          {nivelusur == 2 && item.editandoObservacao == true ? (
                             ''
                           ) : (
                             <p
-                              className={`textoObservacaoItem ${nivelusur > 2 && 'visualizacao'} ${item.observacao.length > 62 && 'textoObsOverflow'}`}
+                              className={`textoObservacaoItem ${nivelusur > 2 && 'visualizacao'}`}
                             >
-                              <p>{item.observacao}</p>
+                              <TextoObservacaoItem
+                                textoObservacao={item.observacao}
+                                larguraTexto={item.observacao.length}
+                                className={
+                                  item.observacao.length > 46
+                                    ? 'textoObsOverflow'
+                                    : ''
+                                }
+                              >
+                                {item.observacao}
+                              </TextoObservacaoItem>
                             </p>
                           )}
                           {nivelusur == 2 &&

@@ -148,9 +148,6 @@ export const GridItemsPedido = styled.ul`
     &.textoObservacaoItem {
       justify-content: center;
     }
-    &.textoObsOverflow {
-      justify-content: start;
-    }
     &.visualizacao {
       justify-content: center;
       text-align: center;
@@ -160,28 +157,8 @@ export const GridItemsPedido = styled.ul`
         padding-left: 5px;
         max-width: 23vw;
         overflow-x: hidden;
-        display: flex;
-        justify-content: start;
-      }
-      &.textoObsOverflow {
-        padding-right: 0px;
-        padding-left: 2px;
-        margin-right: 0px;
-        gap: 0px;
         justify-content: center;
-        justify-items: center;
-        width: 100%;
-        &:after {
-          content: '...';
-          font-size: 18px;
-          width: 10px;
-          margin-right: 0px;
-          margin-left: 0px;
-          position: relative;
-          padding-left: 0px;
-          padding-right: 4px;
-          font-weight: 800;
-        }
+        display: flex;
       }
       &.visualizacao {
         justify-content: center;
@@ -194,6 +171,49 @@ export const GridItemsPedido = styled.ul`
     &.editar {
       display: flex;
       flex-direction: row;
+    }
+  }
+`
+
+export const TextoDescricaoItem = styled.p<{
+  textoDescricao: string
+  larguraTexto: number
+}>`
+  max-width: 14.5vw;
+  &.descricaoOverflow {
+    max-width: 14.5vw;
+    &:hover {
+      &::after {
+        content: '${(props) => props.textoDescricao}';
+        position: absolute;
+        background-color: yellow;
+        z-index: 30;
+        margin-top: 25px;
+        left: ${(props) => props.larguraTexto / 4.7 + 'vw'};
+        border: solid 1px;
+        padding: 3px;
+      }
+    }
+  }
+`
+
+export const TextoObservacaoItem = styled.p<{
+  textoObservacao: string
+  larguraTexto: number
+}>`
+  &.textoObsOverflow {
+    max-width: 24vw;
+    &:hover {
+      &::after {
+        content: '${(props) => props.textoObservacao}';
+        position: absolute;
+        background-color: yellow;
+        z-index: 50;
+        margin-top: 25px;
+        right: ${(props) => props.larguraTexto - 28 + 'px'};
+        border: solid 1px;
+        padding: 3px;
+      }
     }
   }
 `
@@ -482,6 +502,13 @@ export const IconeLapisImg = styled.img`
     z-index: 10;
     bottom: -2px;
     left: 57.6vw;
+  }
+  &.descricaoOverflow {
+    background-color: white;
+    height: 21px;
+    width: 21px;
+    padding: 4px;
+    margin-left: 0.5vw;
   }
 `
 
