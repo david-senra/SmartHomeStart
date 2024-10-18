@@ -1262,7 +1262,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'confirmarEdicaoQuantidade'
                                   )
                                 }
-                                className="itemButtom"
+                                className="itemButtom quantidade"
                               ></IconeConfirmarImg>
                             )}
                           {nivelusur == 2 &&
@@ -1279,7 +1279,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'cancelarEdicaoQuantidade'
                                   )
                                 }
-                                className="itemButtom"
+                                className="itemButtom quantidade"
                               ></IconeCancelarImg>
                             )}
                         </li>
@@ -1347,7 +1347,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'confirmarEdicaoUnidade'
                                   )
                                 }
-                                className="itemButtom"
+                                className="itemButtom unidade"
                               ></IconeConfirmarImg>
                             )}
                           {nivelusur == 2 &&
@@ -1362,7 +1362,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'cancelarEdicaoUnidade'
                                   )
                                 }
-                                className="itemButtom"
+                                className="itemButtom unidade"
                               ></IconeCancelarImg>
                             )}
                         </li>
@@ -1532,7 +1532,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'confirmarEdicaoCentroCusto'
                                   )
                                 }
-                                className="itemButtom"
+                                className="itemButtom centrocusto"
                               ></IconeConfirmarImg>
                             )}
                           {nivelusur == 2 &&
@@ -1553,12 +1553,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     'cancelarEdicaoCentroCusto'
                                   )
                                 }
-                                className="itemButtom"
+                                className="itemButtom centrocusto"
                               ></IconeCancelarImg>
                             )}
                         </li>
                         <li
-                          className={`textoObservacaoItem ${item.observacao.length > 62 && 'textoObsOverflow'}
+                          className={`textoObservacaoItem ${nivelusur > 2 && 'visualizacao'} ${item.observacao.length > 62 && 'textoObsOverflow'}
                             ${
                               nivelusur == 2 &&
                               pedido.statusSolicitacao == 'aberto'
@@ -1586,7 +1586,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             ''
                           ) : (
                             <p
-                              className={`textoObservacaoItem ${item.observacao.length > 62 && 'textoObsOverflow'}`}
+                              className={`textoObservacaoItem ${nivelusur > 2 && 'visualizacao'} ${item.observacao.length > 62 && 'textoObsOverflow'}`}
                             >
                               <p>{item.observacao}</p>
                             </p>

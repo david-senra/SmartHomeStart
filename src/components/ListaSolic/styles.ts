@@ -129,6 +129,7 @@ export const GridItemsPedido = styled.ul`
   margin-right: 0px;
   padding-right: 0px;
   justify-content: center;
+  white-space: nowrap;
   &:last-of-type {
     li {
       border-bottom: none;
@@ -137,24 +138,30 @@ export const GridItemsPedido = styled.ul`
   li {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     border-right: solid 1px black;
     border-bottom: solid 1px black;
+    justify-content: center;
     overflow-x: hidden;
     overflow-y: hidden;
     line-height: 1.5;
-    white-space: normal;
+    text-align: center;
     &.textoObservacaoItem {
       justify-content: center;
     }
     &.textoObsOverflow {
       justify-content: start;
     }
+    &.visualizacao {
+      justify-content: center;
+      text-align: center;
+    }
     p {
       &.textoObservacaoItem {
         padding-left: 5px;
+        max-width: 23vw;
+        overflow-x: hidden;
         display: flex;
-        justify-content: center;
+        justify-content: start;
       }
       &.textoObsOverflow {
         padding-right: 0px;
@@ -175,6 +182,10 @@ export const GridItemsPedido = styled.ul`
           padding-right: 4px;
           font-weight: 800;
         }
+      }
+      &.visualizacao {
+        justify-content: center;
+        text-align: center;
       }
     }
     &:last-of-type {
@@ -263,7 +274,7 @@ export const IconeConfirmarDiv = styled.div`
 `
 
 export const IconeConfirmarImg = styled.img`
-  padding-left: 18px;
+  padding-left: 2vw;
   height: 15px;
   cursor: pointer;
   display: flex;
@@ -272,21 +283,21 @@ export const IconeConfirmarImg = styled.img`
   justify-content: center;
   &.itemButtom {
     margin-top: 4px;
-    padding-left: 24px;
-    padding-right: 4px;
+    padding-left: 3.2vw;
+    padding-right: 0.3vw;
     margin-right: 0px;
   }
   &.confirmarDescricao {
     z-index: 7;
     margin-top: 4px;
-    padding-left: 202px;
-    padding-right: 3px;
+    padding-left: 13vw;
+    padding-right: 0.2vw;
   }
   &.confirmarEdicaoObservacao {
     z-index: 7;
     margin-top: 4px;
     padding-left: 21.5vw;
-    padding-right: 3px;
+    padding-right: 0.1vw;
   }
   &.SuggestionEdition {
     position: relative;
@@ -296,7 +307,23 @@ export const IconeConfirmarImg = styled.img`
     margin-right: 8px;
   }
   &.editandoEmpresa {
-    padding-left: 32px;
+    padding-left: 2.2vw;
+  }
+  &.quantidade {
+    z-index: 10;
+    margin-left: 3vw;
+    position: absolute;
+    margin-right: 3.8vw;
+  }
+  &.unidade {
+    z-index: 10;
+    margin-left: 3.3vw;
+    position: absolute;
+    margin-right: 3.5vw;
+  }
+  &.centrocusto {
+    z-index: 15;
+    position: absolute;
   }
 `
 
@@ -308,15 +335,11 @@ export const IconeCancelarDiv = styled.div`
 export const IconeCancelarImg = styled.img`
   height: 15px;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   &.itemButtom {
     margin-top: 4px;
   }
   &.cancelarDescricao {
-    padding-left: 190px;
+    padding-left: 12vw;
     margin-top: 4px;
   }
   &.cancelarEdicaoObservacao {
@@ -334,7 +357,18 @@ export const IconeCancelarImg = styled.img`
     margin-right: 8px;
   }
   &.editandoEmpresa {
-    padding-left: 12px;
+    padding-left: 1vw;
+  }
+  &.quantidade {
+    margin-left: 4.2vw;
+  }
+  &.unidade {
+    margin-left: 5vw;
+  }
+  &.centrocusto {
+    z-index: 5;
+    position: absolute;
+    margin-left: 4.5vw;
   }
 `
 
@@ -366,9 +400,9 @@ export const InputDataLimite = styled.input`
 
 export const InputQuantidade = styled.input`
   position: absolute;
-  margin-right: 55px;
+  margin-right: 1.5vw;
   margin-top: 1px;
-  width: 35px;
+  width: 2.1vw;
   height: 22px;
   font-size: 15px;
   padding-top: 5px;
@@ -384,7 +418,7 @@ export const InputQuantidade = styled.input`
 
 export const InputUnidade = styled.select`
   position: absolute;
-  margin-right: 65px;
+  margin-right: 1.7vw;
   margin-top: 1px;
   width: 45px;
   height: 22px;
@@ -399,9 +433,9 @@ export const InputUnidade = styled.select`
 
 export const InputCentroCusto = styled.select`
   position: absolute;
-  margin-right: 65px;
+  margin-right: 1.2vw;
   margin-top: 1px;
-  width: 45px;
+  width: 2.75vw;
   height: 22px;
   font-size: 15px;
   padding-top: 2px;
@@ -413,9 +447,9 @@ export const InputCentroCusto = styled.select`
 
 export const InputDescricao = styled.input`
   position: absolute;
-  margin-right: 55px;
+  margin-right: 2.7vw;
   margin-top: 1px;
-  width: 215px;
+  width: 13vw;
   height: 22px;
   font-size: 15px;
   padding-top: 5px;
@@ -425,10 +459,9 @@ export const InputDescricao = styled.input`
 
 export const InputObservacaoItem = styled.input`
   position: absolute;
-  margin-right: 1vw;
-  margin-left: 0.5vw;
+  margin-right: 2vw;
   margin-top: 1px;
-  width: 20.5vw;
+  width: 21vw;
   height: 22px;
   font-size: 15px;
   padding-top: 2px;
