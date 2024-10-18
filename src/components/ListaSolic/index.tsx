@@ -132,6 +132,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     novaSugFor: string
     editandoObsFinal: boolean
     novaObsFinal: string
+    podeDestrancar: boolean
     requisicao: string
 
     constructor(data: {
@@ -154,6 +155,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novaSugFor: string
       editandoObsFinal: boolean
       novaObsFinal: string
+      podeDestrancar: boolean
       requisicao: string
     }) {
       this.id = data.id
@@ -175,6 +177,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       this.novaSugFor = data.novaSugFor
       this.editandoObsFinal = data.editandoObsFinal
       this.novaObsFinal = data.novaObsFinal
+      this.podeDestrancar = data.podeDestrancar
       this.requisicao = data.requisicao
     }
   }
@@ -308,6 +311,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           novaSugFor: value.sugestfornecedor,
           editandoObsFinal: false,
           novaObsFinal: value.obsFinal,
+          podeDestrancar: value.podeDestrancar,
           requisicao: value.requisicao
         }
         const numeroItens = solicitacao.itens.length
@@ -521,9 +525,21 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const novoElemento = elemento
     novoElemento.itens.splice(indice_item, 1)
     novoElemento.itens.splice(indice_item, 0, item_encontrado)
+    let haItensNaoAbertos = true
+    const itensNaoAbertos: Compra[] = []
+    novoElemento.itens.filter(
+      (item) => item.status != 'aberto' && itensNaoAbertos.push(item)
+    )
+    haItensNaoAbertos = itensNaoAbertos.length > 0
+    haItensNaoAbertos
+      ? (novoElemento.podeDestrancar = false)
+      : (novoElemento.podeDestrancar = true)
     const resposta_atualizacao_servidor =
       atualizarSolicitacaoNoServidor(novoElemento)
     if (await resposta_atualizacao_servidor) {
+      haItensNaoAbertos
+        ? (elemento.podeDestrancar = false)
+        : (elemento.podeDestrancar = true)
       elemento.itens.splice(indice_item, 1)
       elemento.itens.splice(indice_item, 0, item_encontrado)
       nova_lista.splice(indice_elemento, 1)
@@ -566,6 +582,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const resposta_atualizacao_servidor =
       atualizarSolicitacaoNoServidor(novoElemento)
     if (await resposta_atualizacao_servidor) {
+      elemento.podeDestrancar = false
       elemento.itens.splice(indice_item, 1)
       elemento.itens.splice(indice_item, 0, item_encontrado)
       nova_lista.splice(indice_elemento, 1)
@@ -1203,7 +1220,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       <b>
                         {textoSituacao(pedido.statusSolicitacao)}{' '}
                         {nivelusur > 2 &&
-                          pedido.statusSolicitacao != 'entregue' && (
+                          pedido.statusSolicitacao != 'entregue' &&
+                          pedido.podeDestrancar == true && (
                             <IconeDiv>
                               <IconeTranca
                                 id={pedido.id}

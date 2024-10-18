@@ -372,6 +372,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       novaSugFor: sugestaoFornecedores,
       editandoObsFinal: false,
       novaObsFinal: ObservacaoGeral,
+      podeDestrancar: true,
       requisicao: 'criacaoSolicitacao'
     }
     const respostaEnvio = await fetch(
