@@ -42,7 +42,8 @@ import {
   InputSugest,
   ItemCabecalhoSituacao,
   InputObservacaoItem,
-  ItemCaminhaokImg
+  ItemCaminhaokImg,
+  TextoCabecalhoDescObs
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -1287,13 +1288,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         <b>Und.</b>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItems>
-                        <b>Descrição</b>
+                        <TextoCabecalhoDescObs>Descrição</TextoCabecalhoDescObs>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItems>
                         <b>C. Custo</b>
                       </LinhaCabecalhoItems>
                       <LinhaCabecalhoItemsUltimo>
-                        <b>Observação</b>
+                        <TextoCabecalhoDescObs>
+                          Observação
+                        </TextoCabecalhoDescObs>
                       </LinhaCabecalhoItemsUltimo>
                     </GridCabecalhoItemsPedido>
                     {pedido.itens.map((item) => (

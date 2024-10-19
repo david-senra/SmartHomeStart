@@ -500,6 +500,10 @@ export const InputCentroCusto = styled.select`
   }
 `
 
+export const TextoCabecalhoDescObs = styled.b`
+  padding-right: 20px;
+`
+
 export const InputDescricao = styled.input`
   position: absolute;
   margin-right: 2.7vw;
