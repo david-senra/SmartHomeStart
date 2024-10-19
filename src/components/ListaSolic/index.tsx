@@ -1224,10 +1224,18 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         (pedido.statusSolicitacao == 'andamento' &&
                           nivelusur == 2) ||
                         (nivelusur > 2 &&
+                          pedido.podeDestrancar == true &&
                           (pedido.statusSolicitacao == 'aberto' ||
                             pedido.statusSolicitacao == 'andamento'))
                           ? 'noPointer'
                           : ''
+                      }
+                      onClick={(e) =>
+                        (pedido.statusSolicitacao == 'entregue' ||
+                          (pedido.statusSolicitacao == 'andamento' &&
+                            nivelusur == 2) ||
+                          (nivelusur > 2 && pedido.podeDestrancar == false)) &&
+                        toggleCard(e)
                       }
                     >
                       <b>
