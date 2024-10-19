@@ -579,10 +579,23 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const novoElemento = elemento
     novoElemento.itens.splice(indice_item, 1)
     novoElemento.itens.splice(indice_item, 0, item_encontrado)
+    novoElemento.podeDestrancar = false
+    let haItensNaoFinalizados = true
+    const itensNaoFinalizados: Compra[] = []
+    novoElemento.itens.filter(
+      (item) => item.status != 'finalizado' && itensNaoFinalizados.push(item)
+    )
+    haItensNaoFinalizados = itensNaoFinalizados.length > 0
+    haItensNaoFinalizados
+      ? (novoElemento.podeDestrancar = false)
+      : (novoElemento.statusSolicitacao = 'entregue')
     const resposta_atualizacao_servidor =
       atualizarSolicitacaoNoServidor(novoElemento)
     if (await resposta_atualizacao_servidor) {
       elemento.podeDestrancar = false
+      haItensNaoFinalizados
+        ? (elemento.podeDestrancar = false)
+        : (elemento.statusSolicitacao = 'entregue')
       elemento.itens.splice(indice_item, 1)
       elemento.itens.splice(indice_item, 0, item_encontrado)
       nova_lista.splice(indice_elemento, 1)
@@ -1800,11 +1813,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             </ItemCheckDiv>
                           )}
                         {pedido.statusSolicitacao != 'aberto' &&
+                          pedido.statusSolicitacao != 'entregue' &&
                           (item.status == 'entregue' ||
                             item.status == 'finalizado') && (
                             <DivEntregue id={pedido.id}></DivEntregue>
                           )}
                         {pedido.statusSolicitacao != 'aberto' &&
+                          pedido.statusSolicitacao != 'entregue' &&
                           item.status == 'finalizado' && (
                             <DivTraco
                               id={pedido.id}

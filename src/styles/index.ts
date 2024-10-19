@@ -48,6 +48,9 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     padding-bottom: 80px;
+    overflow-x: hidden;
+    width: 100vw;
+    margin-right: calc(100vw - 100%);
   }
 `
 
