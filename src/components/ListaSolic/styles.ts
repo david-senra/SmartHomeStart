@@ -48,7 +48,10 @@ export const CardSolicitacao = styled.ul<{ tamanho: number }>`
   border-radius: 5px;
   width: 80vw;
   z-index: 2;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
+  &.noBoxes {
+    padding-bottom: 10px;
+  }
   &.open {
   }
   &.closed {
@@ -132,10 +135,13 @@ export const GridItemsPedido = styled.ul`
   padding-right: 0px;
   justify-content: center;
   white-space: nowrap;
-  &:last-of-type {
+  &:nth-last-of-type(2) {
     li {
       border-bottom: none;
     }
+  }
+  &.gridFake {
+    grid-template-rows: 18px;
   }
   li {
     display: flex;
@@ -194,6 +200,7 @@ export const TextoDescricaoItem = styled.p<{
         margin-top: 25px;
         left: ${(props) => props.larguraTexto / 2.6 + 'vw'};
         border: solid 1px;
+        border-bottom: solid 1px !important;
         padding: 3px;
       }
     }
@@ -204,7 +211,7 @@ export const TextoObservacaoItem = styled.p<{
   textoObservacao: string
   larguraTexto: number
 }>`
-  &.textoObsOverflow {
+  &.textoObsOverflow#textoObservacaoOverflow {
     max-width: 24vw;
     &:hover {
       &::after {
@@ -215,7 +222,12 @@ export const TextoObservacaoItem = styled.p<{
         margin-top: 25px;
         right: ${(props) => 3.3 * props.larguraTexto + 'px'};
         border: solid 1px;
-        padding: 3px;
+        border-bottom: solid 1px !important;
+        padding: 2px;
+        overflow-y: visible;
+        &:last-of-type {
+          border-bottom: solid 1px !important;
+        }
       }
     }
   }

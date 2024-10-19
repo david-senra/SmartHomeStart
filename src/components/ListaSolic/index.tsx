@@ -899,7 +899,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       if (acao == 'editarQuantidade') {
         item_encontrado.editandoQuantidade = true
         novoValorInput = String(item_encontrado.quantidade)
-        inputMudanca = e.currentTarget.parentElement?.previousElementSibling
+        inputMudanca =
+          e.currentTarget.parentElement?.previousElementSibling
+            .previousElementSibling
         inputMudanca.value = novoValorInput
       } else if (acao == 'quantidadeAlterada') {
         const novaQuantidadeRecebida = e.currentTarget.value
@@ -913,7 +915,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       } else if (acao == 'editarUnidade') {
         item_encontrado.editandoUnidade = true
         novoValorInput = String(item_encontrado.unidade)
-        inputMudanca = e.currentTarget.parentElement?.previousElementSibling
+        console.log(novoValorInput)
+        inputMudanca =
+          e.currentTarget.parentElement?.previousElementSibling
+            .previousElementSibling
         if (novoValorInput == 'und') {
           novoValorInput = 'Und'
           inputMudanca.value = novoValorInput
@@ -952,6 +957,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         valor_atribuivel = item_encontrado.centrocusto
         const inputMudanca: any =
           e.currentTarget.parentElement?.previousElementSibling
+            .previousElementSibling
         inputMudanca.value = valor_atribuivel
         console.log(valor_atribuivel)
       } else if (acao == 'centroCustoAlterado') {
@@ -1025,7 +1031,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                   key={pedido.id}
                   tamanho={pedido.altura}
                   id={pedido.id}
-                  className={pedido.isCardOpen ? 'open' : 'closed'}
+                  className={`${pedido.isCardOpen ? 'open' : 'closed'} ${pedido.obsFinal == '' && pedido.sugestfornecedor == '' ? 'noBoxes' : 'boxes'}`}
                 >
                   <GridCabecalho
                     id={pedido.id}
@@ -1506,6 +1512,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                   ? 'descricaoOverflow'
                                   : ''
                               }
+                              id={'textoDescricaoOverflow'}
                             >
                               {item.descricao}
                             </TextoDescricaoItem>
@@ -1679,7 +1686,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             )}
                         </li>
                         <li
-                          className={`textoObservacaoItem ${nivelusur > 2 && 'visualizacao'} ${item.observacao.length > 62 && 'textoObsOverflow'}
+                          className={`textoObservacaoItem ${nivelusur > 2 && 'visualizacao'}
                             ${
                               nivelusur == 2 &&
                               pedido.statusSolicitacao == 'aberto'
@@ -1715,6 +1722,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     ? 'textoObsOverflow'
                                     : ''
                                 }
+                                id={'textoObservacaoOverflow'}
                               >
                                 {item.observacao}
                               </TextoObservacaoItem>
@@ -1838,8 +1846,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                       </GridItemsPedido>
                     ))}
-                    {(pedido.sugestfornecedor != '' ||
-                      pedido.obsFinal != '') && <br></br>}
+
+                    <GridItemsPedido className="gridFake"></GridItemsPedido>
                     {pedido.sugestfornecedor != '' && (
                       <DivSugestFornecedoresObs>
                         <div>
