@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DivGeral,
   ListaSolicitacoes,
@@ -203,10 +203,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
-  const [firstLoad, SetFirstLoad] = React.useState<boolean>(true)
-  const [ListaPedidos, SetListaPedidos] = React.useState<Solicitacao[]>([])
-  const [SituacaoExibicao, SetSituacaoExibicao] =
-    React.useState<string>('carregando')
+  const [triggerRefresh, setTriggerRefresh] = useState<boolean>(true)
+  const [numeroRefresh, setNumeroRefresh] = useState<string>(
+    localStorage.getItem('numeroRefresh') || '1'
+  )
+  const [firstLoad, SetFirstLoad] = useState<boolean>(true)
+  const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
+  const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
   async function gerarArquivoExcel(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestSpreadsheet&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
@@ -401,6 +404,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const finalDate = yyyy + '-' + mm + '-' + dd
     console.log(finalDate)
     return finalDate
+  }
+  const delay = async (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+  const atualizarAposFecharSolicitacao = async () => {
+    await delay(5000)
+    solicitarPedidos()
   }
   const toggleCard = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     let id_elemento = ''
@@ -602,6 +612,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
+      if (!haItensNaoFinalizados) {
+        atualizarAposFecharSolicitacao()
+      }
     } else {
       console.log('erro!')
     }
