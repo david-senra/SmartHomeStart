@@ -517,7 +517,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                       style={{ display: 'none' }}
                     ></option>
                     {listaCentrosCusto.map((centroCusto) => (
-                      <option key={centroCusto} value={centroCusto[1]}>
+                      <option
+                        key={centroCusto}
+                        value={centroCusto.split(' - ')[0]}
+                      >
                         {centroCusto}
                       </option>
                     ))}

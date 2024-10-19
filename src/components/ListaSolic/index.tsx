@@ -203,7 +203,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
-  const [triggerRefresh, setTriggerRefresh] = useState<boolean>(true)
   const [numeroRefresh, setNumeroRefresh] = useState<string>(
     localStorage.getItem('numeroRefresh') || '1'
   )
