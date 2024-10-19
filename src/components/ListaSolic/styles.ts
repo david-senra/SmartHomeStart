@@ -50,7 +50,7 @@ export const CardSolicitacao = styled.ul<{ tamanho: number }>`
   z-index: 2;
   padding-bottom: 20px;
   &.noBoxes {
-    padding-bottom: 10px;
+    padding-bottom: 0px;
   }
   &.open {
   }
@@ -141,7 +141,10 @@ export const GridItemsPedido = styled.ul`
     }
   }
   &.gridFake {
-    grid-template-rows: 18px;
+    grid-template-rows: 25px;
+  }
+  &.obsOrSugest {
+    grid-template-rows: 10px;
   }
   li {
     display: flex;

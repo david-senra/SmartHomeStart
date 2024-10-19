@@ -1238,7 +1238,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       }
                       onClick={(e) =>
                         (pedido.statusSolicitacao == 'entregue' ||
-                          (pedido.statusSolicitacao == 'andamento' &&
+                          (pedido.statusSolicitacao == 'aberto' &&
                             nivelusur == 2) ||
                           (nivelusur > 2 && pedido.podeDestrancar == false)) &&
                         toggleCard(e)
@@ -1847,7 +1847,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       </GridItemsPedido>
                     ))}
 
-                    <GridItemsPedido className="gridFake"></GridItemsPedido>
+                    <GridItemsPedido
+                      className={`gridFake ${(pedido.obsFinal != '' || pedido.sugestfornecedor != '') && 'obsOrSugest'}`}
+                    ></GridItemsPedido>
                     {pedido.sugestfornecedor != '' && (
                       <DivSugestFornecedoresObs>
                         <div>
