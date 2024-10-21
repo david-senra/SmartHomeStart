@@ -51,6 +51,9 @@ const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     width: 100vw;
     margin-right: calc(100vw - 100%);
+    .remove-scrolling {
+      overflow-y: hidden;
+    }
   }
 `
 

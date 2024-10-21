@@ -43,7 +43,14 @@ import {
   ItemCabecalhoSituacao,
   InputObservacaoItem,
   ItemCaminhaokImg,
-  TextoCabecalhoDescObs
+  TextoCabecalhoDescObs,
+  CoverPopupDiv,
+  PopupDiv,
+  CabecarioPopup,
+  TextoPopUp,
+  BotoesPopUp,
+  BotaoConfirmar,
+  BotaoVoltar
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -53,6 +60,7 @@ import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
 import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
+import WhiteCover from '../../assets/images/whitecover.png'
 import InfoData from '../../info_data.json'
 
 const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
@@ -206,6 +214,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   ]
   const [refreshNumber, setRefreshNumber] = useState<number>(0)
   const [firstLoad, SetFirstLoad] = useState<boolean>(true)
+  const [popUpOpen, SetPopupOpen] = useState<boolean>(false)
+  const [popupType, setPopupType] = useState<string>('')
+  const [popUpConfirmationPedido, setPopupConfirmationPedido] =
+    useState<string>('')
   const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
   const setDefaultRefreshNumber = () => {
@@ -245,7 +257,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     // const buffer = await blob.arrayBuffer()
   }
   const atualizarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
-    solicitacao.requisicao = 'atualizacaoSolicitacao'
+    solicitacao.requisicao = `atualizacaoSolicitacao;${nivelusur}`
+    console.log(solicitacao.requisicao)
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -261,9 +274,59 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const corpo_resposta = respostaEnvio.text()
     const resposta = (await corpo_resposta).toString()
     if (resposta.includes('atualizacao_realizada')) {
-      return true
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
     } else {
-      return false
+      return 'erro'
+    }
+  }
+  const fecharItemNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `fecharItemSolicitacao`
+    console.log(solicitacao.requisicao)
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else {
+      return 'erro'
+    }
+  }
+  const fecharSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `fecharSolicitacao`
+    console.log(solicitacao.requisicao)
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('finalizacao_realizada')) {
+      return 'ok'
+    } else {
+      return 'erro'
     }
   }
   const trancarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
@@ -424,6 +487,19 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     await delay(5000)
     solicitarPedidos()
   }
+  const returnFromPopUp = () => {
+    setPopupConfirmationPedido('')
+    SetPopupOpen(false)
+    setPopupType('')
+    document.body.style.overflowY = 'visible'
+  }
+  const returnFromPopUpWithUpdate = () => {
+    setPopupConfirmationPedido('')
+    SetPopupOpen(false)
+    setPopupType('')
+    document.body.style.overflowY = 'visible'
+    solicitarPedidos()
+  }
   const toggleCard = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     let id_elemento = ''
     if (e.currentTarget.parentElement != null) {
@@ -472,7 +548,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       } else if (
         (await respostaTrancamentoServidor) == 'erro_arquivos_distintos'
       ) {
-        console.log('erro de arquivos distintos!')
+        SetPopupOpen(true)
+        setPopupType('arquivos_distintos')
+        setPopupConfirmationPedido(id_elemento)
       } else if ((await respostaTrancamentoServidor) == 'erro_resposta') {
         console.log('erro ao tentar contato com o servidor!')
       }
@@ -480,21 +558,27 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       const novoElemento = elemento
       novoElemento.statusSolicitacao = 'aberto'
       const resposta_servidor = atualizarSolicitacaoNoServidor(novoElemento)
-      if (await resposta_servidor) {
+      const resposta_recebida = await resposta_servidor
+      if (resposta_recebida == 'ok') {
         elemento.statusSolicitacao = 'aberto'
         elemento.itens.forEach((item) => (item.status = 'aberto'))
         nova_lista.splice(indice_elemento, 1)
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
+      } else if (resposta_recebida == 'solicitacao_trancada') {
+        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+      } else if (resposta_recebida == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
-        console.log('erro!')
+        console.log('Erro!')
       }
     }
   }
-  const definirPedidoEntregue = async (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
-  ) => {
-    const id_elemento = e.currentTarget.id
+  const definirPedidoEntregueSistema = async (id_pedido: string) => {
+    const id_elemento = id_pedido
     const nova_lista = [...ListaPedidos]
     function isElement(solicitacao: Solicitacao) {
       return solicitacao.id == id_elemento
@@ -502,15 +586,28 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
     elemento.statusSolicitacao = 'entregue'
-    const resposta_atualizacao_servidor =
-      atualizarSolicitacaoNoServidor(elemento)
-    if (await resposta_atualizacao_servidor) {
+    const resposta_atualizacao_servidor = fecharSolicitacaoNoServidor(elemento)
+    const resposta_recebida = await resposta_atualizacao_servidor
+    if (resposta_recebida == 'ok') {
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
+      setPopupConfirmationPedido('')
+      SetPopupOpen(false)
+      setPopupType('')
+      document.body.style.overflowY = 'visible'
+      atualizarAposFecharSolicitacao()
     } else {
-      console.log('erro!')
+      console.log('Erro!')
     }
+  }
+  const definirPedidoEntregue = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    SetPopupOpen(true)
+    setPopupType('confirmacao_pedido')
+    setPopupConfirmationPedido(id_elemento)
   }
   const baixarExcelPedido = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
@@ -559,7 +656,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       : (novoElemento.podeDestrancar = true)
     const resposta_atualizacao_servidor =
       atualizarSolicitacaoNoServidor(novoElemento)
-    if (await resposta_atualizacao_servidor) {
+    const resposta_servidor = await resposta_atualizacao_servidor
+    if (resposta_servidor == 'ok') {
       haItensNaoAbertos
         ? (elemento.podeDestrancar = false)
         : (elemento.podeDestrancar = true)
@@ -568,8 +666,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
+    } else if (resposta_servidor == 'solicitacao_trancada') {
+      console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+      SetPopupOpen(true)
+      setPopupType('solicitacao_trancada')
+      setPopupConfirmationPedido(id_elemento)
+    } else if (resposta_servidor == 'solicitacao_aberta') {
+      console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
     } else {
-      console.log('erro!')
+      console.log('Erro!')
     }
   }
   const finalizarItemPedido = async (
@@ -609,26 +714,36 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       (item) => item.status != 'finalizado' && itensNaoFinalizados.push(item)
     )
     haItensNaoFinalizados = itensNaoFinalizados.length > 0
-    haItensNaoFinalizados
-      ? (novoElemento.podeDestrancar = false)
-      : (novoElemento.statusSolicitacao = 'entregue')
-    const resposta_atualizacao_servidor =
-      atualizarSolicitacaoNoServidor(novoElemento)
-    if (await resposta_atualizacao_servidor) {
-      elemento.podeDestrancar = false
-      haItensNaoFinalizados
-        ? (elemento.podeDestrancar = false)
-        : (elemento.statusSolicitacao = 'entregue')
+    if (haItensNaoFinalizados) {
+      console.log('here')
+      novoElemento.podeDestrancar = false
+      const resposta_atualizacao_servidor = fecharItemNoServidor(novoElemento)
+      const resposta_recebida = await resposta_atualizacao_servidor
+      if (resposta_recebida == 'ok') {
+        elemento.podeDestrancar = false
+        haItensNaoFinalizados && (elemento.podeDestrancar = false)
+        elemento.itens.splice(indice_item, 1)
+        elemento.itens.splice(indice_item, 0, item_encontrado)
+        nova_lista.splice(indice_elemento, 1)
+        nova_lista.splice(indice_elemento, 0, elemento)
+        SetListaPedidos(nova_lista)
+        if (!haItensNaoFinalizados) {
+          atualizarAposFecharSolicitacao()
+        }
+      } else {
+        console.log('Erro!')
+      }
+    } else {
+      document.body.style.overflowY = 'hidden'
+      item_encontrado.status = 'entregue'
       elemento.itens.splice(indice_item, 1)
       elemento.itens.splice(indice_item, 0, item_encontrado)
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
-      if (!haItensNaoFinalizados) {
-        atualizarAposFecharSolicitacao()
-      }
-    } else {
-      console.log('erro!')
+      SetPopupOpen(true)
+      setPopupType('confirmacao_pedido')
+      setPopupConfirmationPedido(id_elemento)
     }
   }
   const handleEmpresaSolicitacao = async (
@@ -655,14 +770,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novoElemento.empresa = elemento.novaEmpresa
       const resposta_atualizacao_servidor =
         atualizarSolicitacaoNoServidor(novoElemento)
-      if (await resposta_atualizacao_servidor) {
+      const resposta_servidor = await resposta_atualizacao_servidor
+      if (resposta_servidor == 'ok') {
         elemento.editandoEmpresa = false
         elemento.empresa = elemento.novaEmpresa
         nova_lista.splice(indice_elemento, 1)
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
+      } else if (resposta_servidor == 'solicitacao_trancada') {
+        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+      } else if (resposta_servidor == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
-        console.log('erro!')
+        console.log('Erro!')
       }
     } else {
       if (acao == 'editarEmpresa') {
@@ -708,14 +831,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novoElemento.dataLimite = elemento.novaDataLimite
       const resposta_atualizacao_servidor =
         atualizarSolicitacaoNoServidor(novoElemento)
-      if (await resposta_atualizacao_servidor) {
+      const resposta_servidor = await resposta_atualizacao_servidor
+      if (resposta_servidor == 'ok') {
         elemento.editandoDataLimite = false
         elemento.dataLimite = elemento.novaDataLimite
         nova_lista.splice(indice_elemento, 1)
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
+      } else if (resposta_servidor == 'solicitacao_trancada') {
+        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+      } else if (resposta_servidor == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
-        console.log('erro!')
+        console.log('Erro!')
       }
     } else {
       if (acao == 'editarDataLimite') {
@@ -771,14 +902,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novoElemento.sugestfornecedor = novoElemento.novaSugFor
       const resposta_atualizacao_servidor =
         atualizarSolicitacaoNoServidor(novoElemento)
-      if (await resposta_atualizacao_servidor) {
+      const resposta_servidor = await resposta_atualizacao_servidor
+      if (resposta_servidor == 'ok') {
         elemento.editandoSugFor = false
         elemento.sugestfornecedor = elemento.novaSugFor
         nova_lista.splice(indice_elemento, 1)
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
+      } else if (resposta_servidor == 'solicitacao_trancada') {
+        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+      } else if (resposta_servidor == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
-        console.log('erro!')
+        console.log('Erro!')
       }
     } else {
       if (acao == 'editarSugForn') {
@@ -825,14 +964,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novoElemento.obsFinal = novoElemento.novaObsFinal
       const resposta_atualizacao_servidor =
         atualizarSolicitacaoNoServidor(novoElemento)
-      if (await resposta_atualizacao_servidor) {
+      const resposta_servidor = await resposta_atualizacao_servidor
+      if (resposta_servidor == 'ok') {
         elemento.editandoObsFinal = false
         elemento.obsFinal = elemento.novaObsFinal
         nova_lista.splice(indice_elemento, 1)
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
+      } else if (resposta_servidor == 'solicitacao_trancada') {
+        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+      } else if (resposta_servidor == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
-        console.log('erro!')
+        console.log('Erro!')
       }
     } else {
       if (acao == 'editarObsFinal') {
@@ -913,13 +1060,21 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novoElemento.itens.splice(indice_item, 0, novoItem)
       const resposta_atualizacao_servidor =
         atualizarSolicitacaoNoServidor(novoElemento)
-      if (await resposta_atualizacao_servidor) {
+      const resposta_servidor = await resposta_atualizacao_servidor
+      if (resposta_servidor == 'ok') {
         elemento = novoElemento
         nova_lista.splice(indice_elemento, 1)
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
+      } else if (resposta_servidor == 'solicitacao_trancada') {
+        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+      } else if (resposta_servidor == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
-        console.log('erro!')
+        console.log('Erro!')
       }
     } else {
       if (acao == 'editarQuantidade') {
@@ -1017,7 +1172,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   }
   return (
     <>
-      <DivGeral>
+      <DivGeral className={popUpOpen ? 'noScrolling' : ''}>
         <h1>Solicitações de Compra de Materiais e/ou Serviços</h1>
         <br></br>
         {SituacaoExibicao == 'carregando' && (
@@ -2067,6 +2222,96 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           </ListaSolicitacoes>
         )}
       </DivGeral>
+      {popUpOpen && (
+        <>
+          <CoverPopupDiv></CoverPopupDiv>
+          <PopupDiv>
+            <CabecarioPopup>
+              <p>ATENÇÃO:</p>
+            </CabecarioPopup>
+            {popupType == 'confirmacao_pedido' && (
+              <TextoPopUp>
+                <p>
+                  Você está confirmando <b>recebimento</b> e <b>conformidade</b>{' '}
+                  de:
+                </p>
+                <p>
+                  <br></br>
+                  Pedido: <b>{popUpConfirmationPedido}</b>
+                </p>
+                <br></br>
+                <p className="warning">
+                  <b>
+                    Não será possível reverter essa confirmação posteriormente.
+                  </b>
+                </p>
+                <br></br>
+                <p>
+                  <b>Confirmar?</b>
+                </p>
+              </TextoPopUp>
+            )}
+            {popupType == 'solicitacao_trancada' && (
+              <TextoPopUp>
+                <p>
+                  A solicitação <b>{popUpConfirmationPedido}</b> foi colocada em
+                  andamento recentemente!
+                </p>
+                <br></br>
+                <p>
+                  <b>
+                    Se for necessário alterar um campo, entre em contato com o/a
+                    comprador(a).
+                  </b>
+                </p>
+                <br></br>
+              </TextoPopUp>
+            )}
+            {popupType == 'arquivos_distintos' && (
+              <TextoPopUp>
+                <p>
+                  A solicitação <b>{popUpConfirmationPedido}</b> foi editada
+                  recentemente!
+                </p>
+                <br></br>
+                <p>
+                  <b>
+                    Verifique novamente os dados da Solicitação antes de tentar
+                    dar andamento novamente.
+                  </b>
+                </p>
+                <br></br>
+              </TextoPopUp>
+            )}
+            {popupType == 'confirmacao_pedido' && (
+              <BotoesPopUp>
+                <BotaoVoltar onClick={returnFromPopUp}>Voltar</BotaoVoltar>
+                <BotaoConfirmar
+                  onClick={() =>
+                    definirPedidoEntregueSistema(popUpConfirmationPedido)
+                  }
+                >
+                  Confirmar
+                </BotaoConfirmar>
+              </BotoesPopUp>
+            )}
+            {popupType == 'solicitacao_trancada' && (
+              <BotoesPopUp>
+                <BotaoVoltar onClick={returnFromPopUpWithUpdate}>
+                  Voltar
+                </BotaoVoltar>
+              </BotoesPopUp>
+            )}
+            {popupType == 'arquivos_distintos' && (
+              <BotoesPopUp>
+                <BotaoVoltar onClick={returnFromPopUpWithUpdate}>
+                  Voltar
+                </BotaoVoltar>
+              </BotoesPopUp>
+            )}
+          </PopupDiv>
+        </>
+      )}
     </>
   )
 }

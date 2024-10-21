@@ -700,3 +700,105 @@ export const TextoCarregando = styled.h2`
 export const TextoListaVazia = styled.h2`
   color: #00008b;
 `
+
+export const CoverPopupDiv = styled.div`
+  position: absolute;
+  display: block;
+  background-color: #000000;
+  top: 0%;
+  right: 0%;
+  opacity: 0.8;
+  height: 500%;
+  width: 100%;
+  z-index: 2;
+`
+
+export const PopupDiv = styled.div`
+  background-color: #ffff;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  opacity: 1;
+  left: 33%;
+  top: 30%;
+  border-radius: 10px;
+  height: auto;
+  width: auto;
+  z-index: 3;
+  border: 2px solid black;
+`
+
+export const CabecarioPopup = styled.div`
+  display: flex;
+  background-color: lightgreen;
+  text-align: center;
+  justify-self: center;
+  height: 30px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid black;
+  p {
+    margin: auto;
+    justify-content: center;
+    font-weight: bold;
+  }
+`
+
+export const TextoPopUp = styled.div`
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-self: center;
+  height: fit-content;
+  p {
+    margin: auto;
+    justify-content: center;
+    &.warning {
+      color: red;
+    }
+  }
+`
+
+export const BotoesPopUp = styled.div`
+  padding-top: 5px;
+  padding-bottom: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  height: fit-content;
+`
+
+export const BotaoConfirmar = styled.div`
+  border: 1px solid black;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  width: 100px;
+  background-color: #4cbb17;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  &:hover {
+    background-color: green;
+  }
+`
+
+export const BotaoVoltar = styled.div`
+  border: 1px solid black;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  width: 100px;
+  background-color: #d8d8d8;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  &:hover {
+    background-color: gray;
+  }
+`
