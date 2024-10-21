@@ -53,6 +53,7 @@ import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
 import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
+import InfoData from '../../info_data.json'
 
 const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   class Compra {
@@ -203,12 +204,23 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
-  const [numeroRefresh, setNumeroRefresh] = useState<string>(
-    localStorage.getItem('numeroRefresh') || '1'
-  )
+  const [refreshNumber, setRefreshNumber] = useState<number>(0)
   const [firstLoad, SetFirstLoad] = useState<boolean>(true)
   const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
+  const setDefaultRefreshNumber = () => {
+    if (InfoData != null) {
+      setRefreshNumber(InfoData.updateNumber)
+    }
+    console.log(refreshNumber)
+  }
+  const getRefreshNumber = () => {
+    const foundRefreshNumber = InfoData.updateNumber
+    if (foundRefreshNumber != refreshNumber) {
+      solicitarPedidos()
+      setRefreshNumber(foundRefreshNumber)
+    }
+  }
   async function gerarArquivoExcel(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestSpreadsheet&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
@@ -383,13 +395,14 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     }
   }
   if (firstLoad) {
+    setDefaultRefreshNumber()
     solicitarPedidos()
     SetFirstLoad(false)
   }
-  const MINUTE_MS = 180000
+  const MINUTE_MS = 2000
   useEffect(() => {
     const interval = setInterval(() => {
-      nivelusur > 2 && solicitarPedidos()
+      getRefreshNumber()
     }, MINUTE_MS)
     return () => clearInterval(interval)
   }, [])

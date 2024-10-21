@@ -67,11 +67,27 @@ function Login() {
     }
   }
   const fetchResposta = async () => {
+    const dataAgora = new Date()
+    const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
+    const diaAgora = dataAgoraBrasil.split('/')[0]
+    const mesAgora = dataAgoraBrasil.split('/')[1]
+    const anoAgora = dataAgoraBrasil.split('/')[2]
+    const horaDataAgora = dataAgora.getHours()
+    const minutosDataAgora = dataAgora.getMinutes()
+    const dataHorario =
+      'h' +
+      horaDataAgora +
+      'min' +
+      minutosDataAgora +
+      'dia' +
+      diaAgora +
+      'mes' +
+      mesAgora +
+      'ano' +
+      anoAgora
     const senhaEncriptada = await encriptarSenha(senha)
-    console.log(senha)
-    console.log(senhaEncriptada)
     const respostaLogin = await fetch(
-      `https://davidsenra.pythonanywhere.com/?usuario=${usuario}&senha=${senhaEncriptada}`
+      `https://davidsenra.pythonanywhere.com/?datahorario=${dataHorario}&usuario=${usuario}&senha=${senhaEncriptada}`
     )
     const corpo_resposta = respostaLogin.text()
     const resposta = (await corpo_resposta).toString()
