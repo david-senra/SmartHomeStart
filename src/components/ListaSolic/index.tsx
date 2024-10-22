@@ -63,13 +63,12 @@ import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
 import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
 import WhiteCover from '../../assets/images/whitecover.png'
 import InfoData from '../../info_data.json'
-
 Pusher.logToConsole = true
 const pusher = new Pusher('cbf75472b9e1dfb532eb', {
   cluster: 'sa1',
   forceTLS: true
 })
-const channel: Channel = pusher.subscribe('cantaria-websocket')
+let channel: Channel
 
 const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   class Compra {
@@ -223,28 +222,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
-
-  const [refreshNumber, setRefreshNumber] = useState<number>(0)
-  const [firstLoad, SetFirstLoad] = useState<boolean>(true)
+  const [firstLoad, setFirstLoad] = useState<boolean>(true)
+  const [atualizacaoRecebida, setAtualizacaoRecebida] = useState<boolean>(false)
+  const [listaCardsOpen, setListaCardsOpen] = useState<string[]>([])
   const [popUpOpen, SetPopupOpen] = useState<boolean>(false)
   const [popupType, setPopupType] = useState<string>('')
   const [popUpConfirmationPedido, setPopupConfirmationPedido] =
     useState<string>('')
   const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
-  const setDefaultRefreshNumber = () => {
-    if (InfoData != null) {
-      setRefreshNumber(InfoData.updateNumber)
-    }
-    console.log(refreshNumber)
-  }
-  const getRefreshNumber = () => {
-    const foundRefreshNumber = InfoData.updateNumber
-    if (foundRefreshNumber != refreshNumber) {
-      solicitarPedidos()
-      setRefreshNumber(foundRefreshNumber)
-    }
-  }
   async function gerarArquivoExcel(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestSpreadsheet&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
@@ -260,7 +246,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       linkElement.click()
       document.body.removeChild(linkElement)
     }
-    console.log(resposta)
     // OR you can save/write file locally.
     // fs.writeFileSync(outputFilename, response.data)
     // const blob = new Blob(respostaEnvio, {
@@ -270,7 +255,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   }
   const atualizarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `atualizacaoSolicitacao;${nivelusur}`
-    console.log(solicitacao.requisicao)
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -297,7 +281,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   }
   const fecharItemNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `fecharItemSolicitacao`
-    console.log(solicitacao.requisicao)
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -347,7 +330,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   }
   const fecharSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `fecharSolicitacao`
-    console.log(solicitacao.requisicao)
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -393,21 +375,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     }
   }
   const solicitarPedidos = async () => {
+    console.log(listaCardsOpen)
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestSolicCompras&access=${nivelusur}&user=${nomeusur}`
     )
     const corpo_resposta = respostaEnvio.text()
     const resposta = (await corpo_resposta).toString()
     const json_resposta = JSON.parse(resposta)
-    console.log(json_resposta)
     const solicitacoes_json = json_resposta.Solicitacoes
-    console.log(solicitacoes_json)
     if (Object.keys(solicitacoes_json).length === 0) {
       SetSituacaoExibicao('listaVazia')
     } else {
       const dados_solicitacoes: Solicitacao[] = []
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       for (const [key, value] of Object.entries<any>(solicitacoes_json)) {
+        const resposta = listaCardsOpen.includes(key)
+        console.log(listaCardsOpen)
         const solicitacao = {
           id: key,
           usuario: value.usuario,
@@ -418,7 +401,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           empresa: value.empresa,
           itens: value.itens,
           statusSolicitacao: value.statusSolicitacao,
-          isCardOpen: false,
+          isCardOpen: resposta,
           altura: 0,
           editandoEmpresa: false,
           novaEmpresa: value.empresa,
@@ -444,20 +427,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
             const textos_isolado_fornec: string[] =
               solicitacao.sugestfornecedor.split(/\r\n|\r|\n/)
             const numero_quebras_fornec = textos_isolado_fornec.length
-            console.log(
-              solicitacao.id +
-                ' - Forn - numero de quebras -  ' +
-                numero_quebras_fornec
-            )
             let numero_linhas_corridas_forn = 0
             textos_isolado_fornec.forEach((texto) => {
               texto.length >= 91 && (numero_linhas_corridas_forn += 1)
             })
-            console.log(
-              solicitacao.id +
-                ' - Forn - numero de linhas corridas -  ' +
-                numero_linhas_corridas_forn
-            )
             linhasSugForn =
               numero_linhas_corridas_forn + numero_quebras_fornec / 1.65
           }
@@ -471,48 +444,32 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           } else {
             const textos_isolados: string[] =
               solicitacao.obsFinal.split(/\r\n|\r|\n/)
-            console.log(textos_isolados)
             const numero_quebras = textos_isolados.length
-            console.log(
-              solicitacao.id + ' - obs - numero de quebras -  ' + numero_quebras
-            )
             let numero_linhas_corridas_obs = 0
             textos_isolados.forEach((texto) => {
               texto.length >= 91 && (numero_linhas_corridas_obs += 1)
             })
-            console.log(
-              solicitacao.id +
-                ' - obs - numero de linhas corridas -  ' +
-                numero_linhas_corridas_obs
-            )
             linhasobs = numero_linhas_corridas_obs + numero_quebras / 1.65
           }
         }
         solicitacao.altura = linhasSugForn + linhasobs + numeroItens
-        console.log('solicitado a lista ao Servidor!')
         dados_solicitacoes.push(solicitacao)
+        solicitacao.isCardOpen = resposta
         SetListaPedidos(dados_solicitacoes)
         SetSituacaoExibicao('listaCarregada')
       }
     }
   }
-  const receberPusher = () => {
-    console.log('recebemos comunicacao')
-    solicitarPedidos()
-  }
   if (firstLoad) {
-    channel.bind('update_system', receberPusher)
-    setDefaultRefreshNumber()
+    channel = pusher.subscribe('cantaria-websocket')
+    channel.bind('update_system', () => setAtualizacaoRecebida(true))
+    setFirstLoad(false)
     solicitarPedidos()
-    SetFirstLoad(false)
   }
-  const MINUTE_MS = 2000
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getRefreshNumber()
-    }, MINUTE_MS)
-    return () => clearInterval(interval)
-  }, [])
+  if (atualizacaoRecebida) {
+    solicitarPedidos()
+    setAtualizacaoRecebida(false)
+  }
   const getMinimumDate = () => {
     const today = new Date()
     const minimumDate = new Date(today.getTime() + 1000 * 60 * 60 * 72)
@@ -521,7 +478,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const yyyy = minimumDate.getFullYear()
 
     const finalDate = yyyy + '-' + mm + '-' + dd
-    console.log(finalDate)
     return finalDate
   }
   const delay = async (ms: number) => {
@@ -555,9 +511,19 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
-    elemento.isCardOpen
-      ? (elemento.isCardOpen = false)
-      : (elemento.isCardOpen = true)
+    if (elemento.isCardOpen) {
+      elemento.isCardOpen = false
+      const nova_lista_cards_open = [...listaCardsOpen]
+      const nova_lista_filtrada = nova_lista_cards_open.filter(
+        (elemento) => elemento != id_elemento
+      )
+      setListaCardsOpen(nova_lista_filtrada)
+    } else {
+      elemento.isCardOpen = true
+      const nova_lista_cards_open = [...listaCardsOpen]
+      nova_lista_cards_open.push(id_elemento)
+      setListaCardsOpen(nova_lista_cards_open)
+    }
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     SetListaPedidos(nova_lista)
@@ -574,6 +540,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   const clickFechadura = async (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
+    console.log(listaCardsOpen)
     const id_elemento = e.currentTarget.id
     const nova_lista = [...ListaPedidos]
     function isElement(solicitacao: Solicitacao) {
@@ -611,7 +578,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
       } else if (resposta_recebida == 'solicitacao_trancada') {
-        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
@@ -669,14 +635,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     if (e.currentTarget.parentElement != null) {
       id_elemento = e.currentTarget.parentElement.id
     }
-    console.log(id_elemento)
     const nova_lista = [...ListaPedidos]
     function isElement(solicitacao: Solicitacao) {
       return solicitacao.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
-    console.log(elemento)
     const id_item = e.currentTarget.id
     function isItem(compra: Compra) {
       return compra.id == parseInt(id_item)
@@ -687,13 +651,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     if (item_encontrado.status == 'aberto') {
       item_encontrado.status = 'entregue'
     } else {
-      console.log('estamosaquihoje')
       const verificaoItemFinalizado = verificarSeItemFinalizado(
         elemento,
         String(item_encontrado.id)
       )
       const resposta_requisicao = await verificaoItemFinalizado
-      console.log(resposta_requisicao)
       if (resposta_requisicao == 'ok') {
         item_encontrado.status = 'aberto'
       } else if (resposta_requisicao == 'erro_ja_finalizado') {
@@ -704,7 +666,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         document.body.style.overflowY = 'hidden'
         return
       } else if (resposta_requisicao == 'erro') {
-        console.log('erro')
         return
       }
     }
@@ -733,7 +694,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
     } else if (resposta_servidor == 'solicitacao_trancada') {
-      console.log('Erro! Esse pedido já foi trancado pelo comprador!')
       SetPopupOpen(true)
       setPopupType('solicitacao_trancada')
       setPopupConfirmationPedido(id_elemento)
@@ -751,14 +711,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     if (e.currentTarget.parentElement != null) {
       id_elemento = e.currentTarget.parentElement.id
     }
-    console.log(id_elemento)
     const nova_lista = [...ListaPedidos]
     function isElement(solicitacao: Solicitacao) {
       return solicitacao.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
-    console.log(elemento)
     const id_item = e.currentTarget.id
     function isItem(compra: Compra) {
       return compra.id == parseInt(id_item)
@@ -782,7 +740,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     )
     haItensNaoFinalizados = itensNaoFinalizados.length > 0
     if (haItensNaoFinalizados) {
-      console.log('here')
       novoElemento.podeDestrancar = false
       const resposta_atualizacao_servidor = fecharItemNoServidor(novoElemento)
       const resposta_recebida = await resposta_atualizacao_servidor
@@ -845,7 +802,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
       } else if (resposta_servidor == 'solicitacao_trancada') {
-        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
@@ -907,7 +863,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
       } else if (resposta_servidor == 'solicitacao_trancada') {
-        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
@@ -979,7 +934,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
       } else if (resposta_servidor == 'solicitacao_trancada') {
-        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
@@ -1006,7 +960,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const inputMudanca: any =
         e.currentTarget.parentElement?.previousElementSibling
-      console.log(inputMudanca)
       inputMudanca.value = elemento.sugestfornecedor
     }
   }
@@ -1042,7 +995,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
       } else if (resposta_servidor == 'solicitacao_trancada') {
-        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
@@ -1069,7 +1021,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const inputMudanca: any =
         e.currentTarget.parentElement?.previousElementSibling
-      console.log(inputMudanca)
       inputMudanca.value = elemento.obsFinal
     }
   }
@@ -1138,7 +1089,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         nova_lista.splice(indice_elemento, 0, elemento)
         SetListaPedidos(nova_lista)
       } else if (resposta_servidor == 'solicitacao_trancada') {
-        console.log('Erro! Esse pedido já foi trancado pelo comprador!')
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
@@ -1168,7 +1118,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       } else if (acao == 'editarUnidade') {
         item_encontrado.editandoUnidade = true
         novoValorInput = String(item_encontrado.unidade)
-        console.log(novoValorInput)
         inputMudanca =
           e.currentTarget.parentElement?.previousElementSibling
             .previousElementSibling
@@ -1180,7 +1129,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         }
       } else if (acao == 'unidadeAlterada') {
         const novaUnidadeRecebida = e.currentTarget.value
-        console.log(novaUnidadeRecebida)
         if (novaUnidadeRecebida == 'Und') {
           e.currentTarget.value = 'Und'
           item_encontrado.novaUnidade = 'und'
@@ -1212,7 +1160,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           e.currentTarget.parentElement?.previousElementSibling
             .previousElementSibling
         inputMudanca.value = valor_atribuivel
-        console.log(valor_atribuivel)
       } else if (acao == 'centroCustoAlterado') {
         const novoCentroCustoRecebido = e.currentTarget.value
         item_encontrado.novoCentroCusto = novoCentroCustoRecebido
