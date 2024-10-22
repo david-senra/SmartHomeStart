@@ -102,6 +102,31 @@ export const TextError = styled.p`
   font-size: 18px;
 `
 
+export const TextSenha = styled.p`
+  padding-top: 5px;
+  font-size: 13px;
+  font-weight: bold;
+`
+
+export const ListaCondicoesSenha = styled.ul`
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 15px;
+  font-size: 10.5px;
+  font-weight: bolder;
+  li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 90px;
+    padding: 5px;
+    border: 1px solid;
+    border-radius: 10px;
+  }
+`
+
 export const TextSuccess = styled.p`
   color: green;
   font-weight: bold;

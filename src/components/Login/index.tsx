@@ -7,7 +7,9 @@ import {
   DivBotaoCadastrarSenha,
   DivBotaoInvisivelHome,
   BotaoCadastrarSenha,
-  TextSuccess
+  TextSenha,
+  TextSuccess,
+  ListaCondicoesSenha
 } from './styles'
 import { useNavigate } from 'react-router-dom'
 
@@ -23,6 +25,8 @@ function Login() {
   const [nome_usuario, setNomeUsuario] = useState('')
   const [usuarioId, setUsuarioId] = useState('')
   const [paginaAtual, setPaginaAtual] = useState('login')
+  const [passwordOne, setPasswordOne] = useState('')
+  const [caracteresEspeciais] = useState(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/)
   useEffect(() => {
     if (acesso == true) {
       navigate('/sistema', {
@@ -65,6 +69,11 @@ function Login() {
     if (texto_erro != null && texto_erro.textContent != '') {
       texto_erro.textContent = ''
     }
+  }
+  const checkPasswordOne = (e: React.ChangeEvent<HTMLInputElement>) => {
+    resetErrorMessage()
+    const valor = e.target.value
+    setPasswordOne(valor)
   }
   const fetchResposta = async () => {
     const dataAgora = new Date()
@@ -221,6 +230,42 @@ function Login() {
         formElements.senhaCad1.value = ''
         formElements.senhaCad2.value = ''
       }
+    } else if (senhaCadastro1.length < 8) {
+      const texto_erro = document.getElementById('text_error')
+      if (texto_erro != null) {
+        texto_erro.textContent = 'A senha deve possuir pelo menos 8 dígitos!'
+        texto_erro.style.color = 'red'
+        formElements.senhaCad1.value = ''
+        formElements.senhaCad2.value = ''
+      }
+    } else if (/\d/.test(senhaCadastro1) == false) {
+      const texto_erro = document.getElementById('text_error')
+      if (texto_erro != null) {
+        texto_erro.textContent = 'A senha deve possuir números!'
+        texto_erro.style.color = 'red'
+        formElements.senhaCad1.value = ''
+        formElements.senhaCad2.value = ''
+      }
+    } else if (
+      /[A-Z]/.test(senhaCadastro1) &&
+      /[a-z]/.test(senhaCadastro1) == false
+    ) {
+      const texto_erro = document.getElementById('text_error')
+      if (texto_erro != null) {
+        texto_erro.textContent =
+          'A senha deve possuir letras maiúsculas e minúsculas!'
+        texto_erro.style.color = 'red'
+        formElements.senhaCad1.value = ''
+        formElements.senhaCad2.value = ''
+      }
+    } else if (caracteresEspeciais.test(senhaCadastro1) == false) {
+      const texto_erro = document.getElementById('text_error')
+      if (texto_erro != null) {
+        texto_erro.textContent = 'A senha deve possuir caracteres especiais!'
+        texto_erro.style.color = 'red'
+        formElements.senhaCad1.value = ''
+        formElements.senhaCad2.value = ''
+      }
     } else {
       const resposta = fetchRespostaCadastro()
       if ((await resposta) == 'sucesso') {
@@ -293,6 +338,45 @@ function Login() {
                   ></input>
                   <label>Usuário</label>
                 </ItemUserPass>
+                <TextSenha>CONDIÇÕES DA SENHA:</TextSenha>
+                <ListaCondicoesSenha>
+                  <li
+                    style={{
+                      backgroundColor:
+                        passwordOne.length > 7 ? '#90EE90' : '#FFCCCB'
+                    }}
+                  >
+                    <p>8 CARACTERES</p>
+                  </li>
+                  <li
+                    style={{
+                      backgroundColor: /\d/.test(passwordOne)
+                        ? '#90EE90'
+                        : '#FFCCCB'
+                    }}
+                  >
+                    <p>NÚMEROS</p>
+                  </li>
+                  <li
+                    style={{
+                      backgroundColor:
+                        /[A-Z]/.test(passwordOne) && /[a-z]/.test(passwordOne)
+                          ? '#90EE90'
+                          : '#FFCCCB'
+                    }}
+                  >
+                    <p>MAIÚSCULAS E MINÚSCULAS</p>
+                  </li>
+                  <li
+                    style={{
+                      backgroundColor: caracteresEspeciais.test(passwordOne)
+                        ? '#90EE90'
+                        : '#FFCCCB'
+                    }}
+                  >
+                    <p>CARACTERES ESPECIAIS</p>
+                  </li>
+                </ListaCondicoesSenha>
                 <ItemUserPass className="senha">
                   <input
                     id="senhaCad1"
@@ -300,7 +384,7 @@ function Login() {
                     type="password"
                     required
                     autoComplete="off"
-                    onChange={resetErrorMessage}
+                    onChange={(e) => checkPasswordOne(e)}
                   ></input>
                   <label>Senha</label>
                 </ItemUserPass>
