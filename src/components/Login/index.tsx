@@ -237,6 +237,7 @@ function Login() {
         texto_erro.style.color = 'red'
         formElements.senhaCad1.value = ''
         formElements.senhaCad2.value = ''
+        setPasswordOne('')
       }
     } else if (/\d/.test(senhaCadastro1) == false) {
       const texto_erro = document.getElementById('text_error')
@@ -245,6 +246,7 @@ function Login() {
         texto_erro.style.color = 'red'
         formElements.senhaCad1.value = ''
         formElements.senhaCad2.value = ''
+        setPasswordOne('')
       }
     } else if (
       /[A-Z]/.test(senhaCadastro1) &&
@@ -257,6 +259,7 @@ function Login() {
         texto_erro.style.color = 'red'
         formElements.senhaCad1.value = ''
         formElements.senhaCad2.value = ''
+        setPasswordOne('')
       }
     } else if (caracteresEspeciais.test(senhaCadastro1) == false) {
       const texto_erro = document.getElementById('text_error')
@@ -265,12 +268,14 @@ function Login() {
         texto_erro.style.color = 'red'
         formElements.senhaCad1.value = ''
         formElements.senhaCad2.value = ''
+        setPasswordOne('')
       }
     } else {
       const resposta = fetchRespostaCadastro()
       if ((await resposta) == 'sucesso') {
         setPaginaAtual('cadastrado')
       }
+      setPasswordOne('')
       formElements.usuarioCad.value = ''
       formElements.senhaCad1.value = ''
       formElements.senhaCad2.value = ''
