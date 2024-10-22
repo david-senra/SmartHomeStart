@@ -3,9 +3,9 @@ import styled from 'styled-components'
 export const FormularioCompra = styled.form`
   padding-top: 50px;
   width: 755px;
-  height: 72px;
   margin-left: auto;
   margin-right: auto;
+  padding-right: 1.5vw;
   text-align: center;
   background-color: transparent;
   margin-bottom: 50px;
@@ -18,8 +18,9 @@ export const DivEmpresa = styled.div`
   justify-content: center;
   gap: 8px;
   label {
+    font-weight: bold;
     padding-top: 5px;
-    font-size: 20px;
+    font-size: 18px;
   }
   select {
     font-size: 18px;
@@ -27,17 +28,37 @@ export const DivEmpresa = styled.div`
   }
 `
 
+export const DivListaSolicitacao = styled.div``
+
 export const GridListaCabecalho = styled.ul`
+  width: 100%;
   justify-content: center;
   display: grid;
-  grid-template-columns: 90px 90px 400px 90px 400px;
+  grid-template-columns: 7vw 7vw 24vw 8vw 29vw;
   margin-top: 10px;
+  li {
+    padding-left: 2px;
+    padding-right: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  margin-left: 2.5vw;
 `
 
 export const GridLista = styled.ul`
+  width: 100%;
   justify-content: center;
   display: grid;
-  grid-template-columns: 90px 90px 400px 90px 400px;
+  grid-template-columns: 7vw 7vw 24vw 8vw 29vw;
+  li {
+    padding-left: 2px;
+    padding-right: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  margin-left: 2.5vw;
 `
 
 export const DivLineBreak = styled.div`
@@ -81,18 +102,20 @@ export const GridItemUltimo = styled.li`
 `
 
 export const DivItem = styled.div`
-  padding-top: 10px;
-  display: flex;
-  flex-direction: horizontal;
+  padding-top: 0.5vw;
+  display: grid;
+  grid-template-columns: 40px 60px 28vw 52px 34vw 1vw;
   justify-content: center;
-  gap: 16px;
+  margin-left: 10px;
+  height: auto;
+  gap: 0.5vw;
   &.headerItems {
-    height: 35px;
+    font-size: 18px;
+    margin-top: 10px;
   }
   select,
   label {
-    font-size: 18px;
-    padding: 5px;
+    padding: 4px;
   }
 `
 
@@ -100,30 +123,27 @@ export const DivDataObs = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
 `
 
 export const DivItemNome = styled.div`
   display: flex;
   flex-direction: horizontal;
   justify-content: center;
-  gap: 10px;
-  input,
-  label {
+  input {
     text-align: center;
-    width: 26.5vw;
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 18px;
+    font-size: 16px;
+    width: 100%;
   }
   label {
-    padding-left: 3vw;
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
   }
 `
 
 export const DivItemQuant = styled.div`
   display: flex;
-  gap: 10px;
   flex-direction: horizontal;
   justify-content: center;
   input::-webkit-outer-spin-button,
@@ -131,24 +151,24 @@ export const DivItemQuant = styled.div`
     -webkit-appearance: none;
     margin: 0;
   }
-  input,
-  label {
+  input {
+    width: 100%;
     text-align: center;
-    width: 4vw;
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 18px;
+    font-size: 16px;
     -moz-appearance: textfield;
   }
   label {
-    padding-right: 0px;
-    padding-left: 1vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
   }
 `
 
 export const DivItemUnid = styled.div`
   display: flex;
-  gap: 10px;
   flex-direction: horizontal;
   justify-content: center;
   input::-webkit-outer-spin-button,
@@ -157,24 +177,20 @@ export const DivItemUnid = styled.div`
     margin: 0;
   }
   select {
+    display: flex;
+    justify-content: center;
     text-align: center;
-    width: 5.8vw;
-    padding-left: 15px;
-    padding-right: 10px;
-    font-size: 18px;
-    &:hover {
-      text-align: justify;
-      text-align: left;
-      padding-left: 1vw;
-    }
+    width: 100%;
+    font-size: 16px;
   }
   label {
-    text-align: left;
-    width: 5.5vw;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    font-size: 1.2vw;
     font-size: 18px;
-    text-align: left;
-    padding-left: 2.4vw;
-    padding-right: 0px;
+    font-weight: bold;
   }
 `
 
@@ -182,17 +198,19 @@ export const DivItemDesc = styled.div`
   display: flex;
   flex-direction: horizontal;
   justify-content: center;
-  gap: 10px;
-  input,
-  label {
+  input {
     text-align: center;
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 18px;
-    width: 32vw;
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 16px;
   }
   label {
-    padding-right: 3.8vw;
+    text-align: center;
+    font-size: 18px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
   }
 `
 
@@ -200,17 +218,12 @@ export const DivItemCentroCusto = styled.div`
   display: flex;
   flex-direction: horizontal;
   justify-content: center;
-  gap: 10px;
-  height: 50px;
   overflow-y: visible;
   input,
   select {
-    width: 5.5vw;
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 18px;
-    max-width: 6ch;
-    max-height: 100px;
+    width: 100%;
+    font-size: 16px;
+    padding-left: 0.1vw;
     -moz-appearance: textfield;
     option {
       font-size: 15px;
@@ -219,57 +232,70 @@ export const DivItemCentroCusto = styled.div`
       size: 8;
     }
   }
-  select {
-    margin-right: 10px;
-  }
   label {
-    padding-right: 2.2vw;
-    padding-left: 1.5vw;
+    text-align: center;
+    width: 100%;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: left;
+    margin-right: 0.5vw;
   }
 `
 
 export const DivObsGeral = styled.div`
   display: flex;
-  flex-direction: horizontal;
+  padding-top: 5px;
+  flex-direction: row;
   justify-content: center;
-  gap: 10px;
+  height: auto;
   label {
-    padding-top: 5px;
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: bold;
   }
   textarea {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    font-size: 18px;
-    width: 800px;
-    height: 100px;
-    text-align: start;
-    flex-wrap: wrap;
+    font-size: 16px;
+    width: 80vw;
+    height: 5.2vw;
+    min-height: 50px;
     resize: none;
   }
 `
 
 export const DivSugestaoFornecedores = styled.div`
   display: flex;
-  flex-direction: horizontal;
+  padding-top: 5px;
+  flex-direction: row;
   justify-content: center;
-  gap: 10px;
+  height: auto;
   label {
-    padding-top: 5px;
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: bold;
   }
   textarea {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    font-size: 18px;
-    width: 800px;
-    height: 80px;
-    text-align: start;
-    flex-wrap: wrap;
+    font-size: 16px;
+    width: 80vw;
+    height: 5.2vw;
+    min-height: 50px;
     resize: none;
   }
 `
@@ -280,14 +306,16 @@ export const DivDataLimite = styled.div`
   justify-content: center;
   gap: 10px;
   label {
-    font-size: 20px;
-    padding-top: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
   input {
     padding-left: 8px;
     padding-right: 8px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     font-size: 18px;
   }
 `
@@ -323,7 +351,7 @@ export const DivButtonAdicionarItem = styled.div`
   button {
     text-align: center;
     margin-top: 25px;
-    width: 50px;
+    width: 40px;
     height: 35px;
     border: none;
     border-radius: 5px;
@@ -341,8 +369,8 @@ export const DivButtonAdicionarItem = styled.div`
 export const DivButtonRemoverItem = styled.div`
   button {
     position: absolute;
-    right: 5vw auto;
-    margin-top: 5px;
+    right: 1vw auto;
+    margin-top: 2.5px;
     text-align: center;
     width: 25px;
     height: 25px;

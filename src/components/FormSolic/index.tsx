@@ -18,6 +18,7 @@ import {
   DivBotaoNovoPedido,
   DivMensagemErro,
   DivItemUnid,
+  DivListaSolicitacao,
   GridLista,
   GridItem,
   GridItemCabecalho,
@@ -602,7 +603,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
           </div>
         )}
         {SituacaoPedido == 'confirmando' && (
-          <div>
+          <DivListaSolicitacao>
             <h2>Pedido:</h2>
             <br></br>
             <ul>
@@ -714,7 +715,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                 </button>
               </DivBotoesConfirmacao>
             </ul>
-          </div>
+          </DivListaSolicitacao>
         )}
         {SituacaoPedido == 'concluido' && (
           <div>
