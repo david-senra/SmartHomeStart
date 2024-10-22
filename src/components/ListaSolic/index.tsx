@@ -64,6 +64,13 @@ import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
 import WhiteCover from '../../assets/images/whitecover.png'
 import InfoData from '../../info_data.json'
 
+Pusher.logToConsole = true
+const pusher = new Pusher('cbf75472b9e1dfb532eb', {
+  cluster: 'sa1',
+  forceTLS: true
+})
+const channel: Channel = pusher.subscribe('cantaria-websocket')
+
 const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   class Compra {
     id: number
@@ -216,12 +223,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
-  Pusher.logToConsole = true
-  const pusher = new Pusher('cbf75472b9e1dfb532eb', {
-    cluster: 'sa1',
-    forceTLS: true
-  })
-  let channel: Channel
+
   const [refreshNumber, setRefreshNumber] = useState<number>(0)
   const [firstLoad, SetFirstLoad] = useState<boolean>(true)
   const [popUpOpen, SetPopupOpen] = useState<boolean>(false)
@@ -499,7 +501,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     solicitarPedidos()
   }
   if (firstLoad) {
-    channel = pusher.subscribe('cantaria-websocket')
     channel.bind('update_system', receberPusher)
     setDefaultRefreshNumber()
     solicitarPedidos()
