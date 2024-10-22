@@ -720,13 +720,14 @@ export const PopupDiv = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   opacity: 1;
-  left: 33%;
-  top: 30%;
+  left: 50%;
+  top: 50%;
   border-radius: 10px;
   height: auto;
   width: auto;
   z-index: 3;
   border: 2px solid black;
+  transform: translate(-50%, -50%);
 `
 
 export const CabecarioPopup = styled.div`

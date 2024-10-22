@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
+import Pusher, { Channel } from 'pusher-js'
 import {
   DivGeral,
   ListaSolicitacoes,
@@ -82,6 +83,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     novoCentroCusto: string
     novaObservacao: string
     editandoObservacao: boolean
+    requisicao: string
 
     constructor(data: {
       id: number
@@ -101,6 +103,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novoCentroCusto: string
       novaObservacao: string
       editandoObservacao: boolean
+      requisicao: string
     }) {
       this.id = data.id
       this.quantidade = data.quantidade
@@ -120,6 +123,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       this.editandoObservacao = data.editandoObservacao
       this.novaObservacao = data.novaObservacao
       this.status = data.status
+      this.requisicao = data.requisicao
     }
   }
   class Solicitacao {
@@ -212,6 +216,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
+  Pusher.logToConsole = true
+  const pusher = new Pusher('cbf75472b9e1dfb532eb', {
+    cluster: 'sa1',
+    forceTLS: true
+  })
+  let channel: Channel
   const [refreshNumber, setRefreshNumber] = useState<number>(0)
   const [firstLoad, SetFirstLoad] = useState<boolean>(true)
   const [popUpOpen, SetPopupOpen] = useState<boolean>(false)
@@ -302,6 +312,33 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const resposta = (await corpo_resposta).toString()
     if (resposta.includes('atualizacao_realizada')) {
       return 'ok'
+    } else {
+      return 'erro'
+    }
+  }
+  const verificarSeItemFinalizado = async (
+    solicitacao: Solicitacao,
+    id_item: string
+  ) => {
+    solicitacao.requisicao = `verificarItemFinalizado;${id_item}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('item_liberado')) {
+      return 'ok'
+    } else if (resposta.includes('item_ja_finalizado')) {
+      return 'erro_ja_finalizado'
     } else {
       return 'erro'
     }
@@ -457,7 +494,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       }
     }
   }
+  const receberPusher = () => {
+    console.log('recebemos comunicacao')
+    solicitarPedidos()
+  }
   if (firstLoad) {
+    channel = pusher.subscribe('cantaria-websocket')
+    channel.bind('update_system', receberPusher)
     setDefaultRefreshNumber()
     solicitarPedidos()
     SetFirstLoad(false)
@@ -551,6 +594,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('arquivos_distintos')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if ((await respostaTrancamentoServidor) == 'erro_resposta') {
         console.log('erro ao tentar contato com o servidor!')
       }
@@ -570,6 +614,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if (resposta_recebida == 'solicitacao_aberta') {
         console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
@@ -608,6 +653,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     SetPopupOpen(true)
     setPopupType('confirmacao_pedido')
     setPopupConfirmationPedido(id_elemento)
+    document.body.style.overflowY = 'hidden'
   }
   const baixarExcelPedido = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
@@ -640,7 +686,26 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     if (item_encontrado.status == 'aberto') {
       item_encontrado.status = 'entregue'
     } else {
-      item_encontrado.status = 'aberto'
+      console.log('estamosaquihoje')
+      const verificaoItemFinalizado = verificarSeItemFinalizado(
+        elemento,
+        String(item_encontrado.id)
+      )
+      const resposta_requisicao = await verificaoItemFinalizado
+      console.log(resposta_requisicao)
+      if (resposta_requisicao == 'ok') {
+        item_encontrado.status = 'aberto'
+      } else if (resposta_requisicao == 'erro_ja_finalizado') {
+        SetPopupOpen(true)
+        setPopupType('item_finalizado')
+        const solicitaoItem = `${id_elemento};${item_encontrado.descricao}`
+        setPopupConfirmationPedido(solicitaoItem)
+        document.body.style.overflowY = 'hidden'
+        return
+      } else if (resposta_requisicao == 'erro') {
+        console.log('erro')
+        return
+      }
     }
     const novoElemento = elemento
     novoElemento.itens.splice(indice_item, 1)
@@ -671,6 +736,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       SetPopupOpen(true)
       setPopupType('solicitacao_trancada')
       setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
     } else if (resposta_servidor == 'solicitacao_aberta') {
       console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
     } else {
@@ -782,6 +848,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if (resposta_servidor == 'solicitacao_aberta') {
         console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
@@ -843,6 +910,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if (resposta_servidor == 'solicitacao_aberta') {
         console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
@@ -914,6 +982,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if (resposta_servidor == 'solicitacao_aberta') {
         console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
@@ -976,6 +1045,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if (resposta_servidor == 'solicitacao_aberta') {
         console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
@@ -1071,6 +1141,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         SetPopupOpen(true)
         setPopupType('solicitacao_trancada')
         setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
       } else if (resposta_servidor == 'solicitacao_aberta') {
         console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
       } else {
@@ -2208,7 +2279,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     )}
                   </DivGridCabecalho>
                 </CardSolicitacao>
-                {nivelusur > 2 && (
+                {nivelusur > 2 && !popUpOpen && (
                   <IconeExcelDiv>
                     <IconeExcelImg
                       id={pedido.id}
@@ -2232,18 +2303,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
             {popupType == 'confirmacao_pedido' && (
               <TextoPopUp>
                 <p>
-                  Você está confirmando <b>recebimento</b> e <b>conformidade</b>{' '}
-                  de:
+                  Confimando o <b>RECEBIMENTO</b> e <b>CONFORMIDADE</b> de
                 </p>
                 <p>
-                  <br></br>
-                  Pedido: <b>{popUpConfirmationPedido}</b>
+                  <b>TODOS OS ITENS</b> da solicitação:{' '}
+                  <b>{popUpConfirmationPedido}</b>
                 </p>
                 <br></br>
                 <p className="warning">
-                  <b>
-                    Não será possível reverter essa confirmação posteriormente.
-                  </b>
+                  <b>Após a confirmação, esta solicitação será arquivada!</b>
                 </p>
                 <br></br>
                 <p>
@@ -2283,6 +2351,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                 <br></br>
               </TextoPopUp>
             )}
+            {popupType == 'item_finalizado' && (
+              <TextoPopUp>
+                <p>
+                  O item <b>{popUpConfirmationPedido.split(';')[1]}</b> da
+                  solicitação <b>{popUpConfirmationPedido.split(';')[0]}</b> já
+                  foi confirmado como <b>ENTREGUE</b> recentemente!
+                </p>
+                <br></br>
+                <p>
+                  <b>
+                    Se necessário, entre em contato com o Solicitador da Compra!
+                  </b>
+                </p>
+                <br></br>
+              </TextoPopUp>
+            )}
             {popupType == 'confirmacao_pedido' && (
               <BotoesPopUp>
                 <BotaoVoltar onClick={returnFromPopUp}>Voltar</BotaoVoltar>
@@ -2303,6 +2387,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
               </BotoesPopUp>
             )}
             {popupType == 'arquivos_distintos' && (
+              <BotoesPopUp>
+                <BotaoVoltar onClick={returnFromPopUpWithUpdate}>
+                  Voltar
+                </BotaoVoltar>
+              </BotoesPopUp>
+            )}
+            {popupType == 'item_finalizado' && (
               <BotoesPopUp>
                 <BotaoVoltar onClick={returnFromPopUpWithUpdate}>
                   Voltar
