@@ -99,7 +99,7 @@ export const CardSolicitacao = styled.ul<{ tamanho: number }>`
     border-radius: 5px;
     border: 2px solid;
     border-radius: 5px;
-    width: 85.5vw;
+    width: 90vw;
     z-index: 2;
     padding-bottom: 20px;
     &.noBoxes {
@@ -161,10 +161,10 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
   }
   @media only screen and (max-width: 768px) {
     cursor: pointer;
-    width: 85vw;
+    width: 89.1vw;
     border-radius: 5px;
     display: grid;
-    grid-template-columns: 11vw 12vw 17vw 15vw 13vw 16vw;
+    grid-template-columns: 11vw 12vw 17vw 17vw 13vw 16vw;
     margin-right: 0px;
     padding-right: 0px;
     grid-auto-rows: 34px;
@@ -225,7 +225,7 @@ export const GridCabecalhoSolto = styled.ul`
   @media only screen and (max-width: 768px) {
     width: 85vw;
     display: grid;
-    grid-template-columns: 11vw 12vw 17vw 15vw 13vw 16vw;
+    grid-template-columns: 11vw 12vw 17vw 17vw 13vw 16vw;
     padding: 1px;
     font-size: 10px;
     gap: 2px;
@@ -544,6 +544,60 @@ export const IconeConfirmarImg = styled.img`
     z-index: 15;
     position: absolute;
   }
+  @media only screen and (max-width: 768px) {
+    padding-left: 2vw;
+    height: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &.itemButtom {
+      margin-top: 4px;
+      padding-left: 3.2vw;
+      padding-right: 0.3vw;
+      margin-right: 0px;
+    }
+    &.confirmarDescricao {
+      z-index: 7;
+      margin-top: 4px;
+      padding-left: 13vw;
+      padding-right: 0.2vw;
+    }
+    &.confirmarEdicaoObservacao {
+      z-index: 7;
+      margin-top: 4px;
+      padding-left: 21.5vw;
+      padding-right: 0.1vw;
+    }
+    &.SuggestionEdition {
+      position: relative;
+      z-index: 15;
+      bottom: 39.8px;
+      left: 54.4vw;
+      margin-right: 8px;
+    }
+    &.editandoEmpresa {
+      padding-right: 0px;
+      padding-left: 0px;
+    }
+    &.quantidade {
+      z-index: 10;
+      margin-left: 3vw;
+      position: absolute;
+      margin-right: 3.8vw;
+    }
+    &.unidade {
+      z-index: 10;
+      margin-left: 3.3vw;
+      position: absolute;
+      margin-right: 3.5vw;
+    }
+    &.centrocusto {
+      z-index: 15;
+      position: absolute;
+    }
+  }
 `
 
 export const IconeCancelarDiv = styled.div`
@@ -589,6 +643,46 @@ export const IconeCancelarImg = styled.img`
     position: absolute;
     margin-left: 4.5vw;
   }
+  @media only screen and (max-width: 768px) {
+    height: 15px;
+    cursor: pointer;
+    &.itemButtom {
+      margin-top: 4px;
+    }
+    &.cancelarDescricao {
+      padding-left: 12vw;
+      margin-top: 4px;
+    }
+    &.cancelarEdicaoObservacao {
+      padding-left: 22vw;
+      margin-top: 4px;
+    }
+    &.uhu {
+      margin-top: 4px;
+    }
+    &.SuggestionEdition {
+      position: relative;
+      z-index: 15;
+      bottom: 25px;
+      left: 58.1vw;
+      margin-right: 8px;
+    }
+    &.editandoEmpresa {
+      padding-right: 2.5vw;
+      z-index: 120;
+    }
+    &.quantidade {
+      margin-left: 4.2vw;
+    }
+    &.unidade {
+      margin-left: 5vw;
+    }
+    &.centrocusto {
+      z-index: 5;
+      position: absolute;
+      margin-left: 4.5vw;
+    }
+  }
 `
 
 export const SelectEdicaoEmpresa = styled.select<{
@@ -605,6 +699,18 @@ export const SelectEdicaoEmpresa = styled.select<{
   option {
     font-size: 15px;
   }
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    height: 22px;
+    width: 16vw;
+    right: 38vw;
+    font-size: 10px;
+    padding-top: 2px;
+    text-align: center;
+    option {
+      font-size: 10px;
+    }
+  }
 `
 
 export const InputDataLimite = styled.input`
@@ -615,6 +721,16 @@ export const InputDataLimite = styled.input`
   font-size: 15px;
   padding-top: 2px;
   text-align: center;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    margin-right: 14vw;
+    width: 20vw;
+    height: 20px;
+    font-size: 10px;
+    padding-top: 2px;
+    text-align: center;
+    z-index: 20;
+  }
 `
 
 export const InputQuantidade = styled.input`
