@@ -89,6 +89,32 @@ export const CardSolicitacao = styled.ul<{ tamanho: number }>`
     props.tamanho < 3
       ? 'max-height 0.5s'
       : 'max-height ' + ((props.tamanho - 3) * 0.05 + 0.5).toString() + 's'};
+  @media only screen and (max-width: 768px) {
+    max-height: ${(props) => (120 + props.tamanho * 60).toString()}px;
+    overflow-x: visible;
+    position: relative;
+    display: grid;
+    justify-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: 2px solid;
+    border-radius: 5px;
+    width: 85.5vw;
+    z-index: 2;
+    padding-bottom: 20px;
+    &.noBoxes {
+      padding-bottom: 0px;
+    }
+    &.open {
+    }
+    &.closed {
+      max-height: 37px;
+    }
+    transition: ${(props) =>
+      props.tamanho < 3
+        ? 'max-height 0.5s'
+        : 'max-height ' + ((props.tamanho - 3) * 0.05 + 0.5).toString() + 's'};
+  }
 `
 
 export const DivGridCabecalho = styled.div<{ tamanho: number }>`
@@ -138,7 +164,7 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
     width: 85vw;
     border-radius: 5px;
     display: grid;
-    grid-template-columns: 11vw 12vw 15vw 15vw 13vw 12vw;
+    grid-template-columns: 11vw 12vw 17vw 15vw 13vw 16vw;
     margin-right: 0px;
     padding-right: 0px;
     grid-auto-rows: 34px;
@@ -148,21 +174,43 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
     li {
       display: flex;
       font-size: 9.5px;
-      flex-direction: column;
-      justify-content: center;
-    }
-    li.editar {
-      display: flex;
       flex-direction: row;
-      gap: 5px;
+      justify-content: center;
+      justify-items: center;
       text-align: center;
-      align-items: center;
+      padding-top: 12px;
+      padding-bottom: 10px;
       p {
-        height: 34px;
         display: flex;
         align-items: center;
         justify-content: center;
         justify-items: center;
+        max-width: 36px;
+        &.empresa {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          padding-bottom: 0px;
+        }
+      }
+    }
+    li.editar {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5px;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      justify-items: center;
+      p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+        max-width: 36px;
+        &.dataLimite {
+          max-width: 50px;
+        }
       }
     }
   }
@@ -177,12 +225,19 @@ export const GridCabecalhoSolto = styled.ul`
   @media only screen and (max-width: 768px) {
     width: 85vw;
     display: grid;
-    grid-template-columns: 11vw 10vw 13vw 13vw 12vw 10vw;
-    padding: 3px;
-    font-size: 11px;
-    gap: 8px;
+    grid-template-columns: 11vw 12vw 17vw 15vw 13vw 16vw;
+    padding: 1px;
+    font-size: 10px;
+    gap: 2px;
     margin-bottom: 5px;
     margin-left: 0px;
+    margin-right: 0px;
+    padding-right: 0px;
+    li {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 `
 
@@ -319,9 +374,44 @@ export const ItemCabecalhoSituacao = styled.li`
     gap: 10px;
     padding-right: 5px;
     padding-left: 5px;
+    p {
+      &.andamentoAbreviado {
+        display: none;
+      }
+      &.naoAndamentoAbreviado {
+        display: none;
+      }
+    }
   }
   &.noPointer {
     cursor: default;
+  }
+  @media only screen and (max-width: 768px) {
+    text-align: center;
+    display: flex;
+    gap: 0.5px;
+    justify-content: center;
+    justify-items: center;
+    b {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      text-align: center;
+      gap: 2px;
+      padding-right: 5px;
+      padding-left: 5px;
+      p {
+        &.andamentoAbreviado {
+          display: block;
+        }
+        &.andamentoCompleto {
+          display: none;
+        }
+      }
+    }
+    &.noPointer {
+      cursor: default;
+    }
   }
 `
 
@@ -385,6 +475,9 @@ export const IconeEntregueDiv = styled.div`
 export const IconeEntregueImg = styled.img`
   height: 15px;
   cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    height: 10px;
+  }
 `
 
 export const IconeLapisDiv = styled.div`
@@ -619,6 +712,29 @@ export const IconeLapisImg = styled.img`
     width: 21px;
     padding: 4px;
     margin-left: 0.5vw;
+  }
+  @media only screen and (max-width: 768px) {
+    height: 10px;
+    cursor: pointer;
+    &.lapisMenor {
+      height: 8px;
+      padding-top: 0px;
+      margin-bottom: 5px;
+      padding-left: 5px;
+    }
+    &.ObsSugForn {
+      position: relative;
+      z-index: 10;
+      bottom: -2px;
+      left: 57.6vw;
+    }
+    &.descricaoOverflow {
+      background-color: white;
+      height: 21px;
+      width: 21px;
+      padding: 4px;
+      margin-left: 0.5vw;
+    }
   }
 `
 

@@ -1237,7 +1237,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     id={pedido.id}
                     situacaoPedido={pedido.statusSolicitacao}
                   >
-                    <li onClick={(e) => toggleCard(e)}>{pedido.id}</li>
+                    <li onClick={(e) => toggleCard(e)}>
+                      <p>{pedido.id}</p>
+                    </li>
                     <li onClick={(e) => toggleCard(e)}>
                       {pedido.data_solicitacao}
                     </li>
@@ -1290,6 +1292,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               ? 'hidden'
                               : 'visible'
                         }}
+                        className="empresa"
                       >
                         {pedido.empresa}{' '}
                       </p>
@@ -1382,6 +1385,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               ? 'hidden'
                               : 'visible'
                         }}
+                        className="dataLimite"
                       >
                         {pedido.dataLimite}{' '}
                       </p>
@@ -1445,7 +1449,24 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       }
                     >
                       <b>
-                        {textoSituacao(pedido.statusSolicitacao)}{' '}
+                        <p
+                          className={
+                            pedido.statusSolicitacao == 'andamento'
+                              ? 'andamentoCompleto'
+                              : ''
+                          }
+                        >
+                          {textoSituacao(pedido.statusSolicitacao)}{' '}
+                        </p>
+                        <p
+                          className={
+                            pedido.statusSolicitacao == 'andamento'
+                              ? 'andamentoAbreviado'
+                              : 'naoAndamentoAbreviado'
+                          }
+                        >
+                          AND
+                        </p>
                         {nivelusur > 2 &&
                           pedido.statusSolicitacao != 'entregue' &&
                           pedido.podeDestrancar == true && (
