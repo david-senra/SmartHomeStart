@@ -1744,7 +1744,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             item.editandoDescricao != true && (
-                              <IconeLapisDiv>
+                              <IconeLapisDiv
+                                className={`lapisMenor ${
+                                  item.descricao.length > 25
+                                    ? 'descricaoOverflow'
+                                    : ''
+                                }`}
+                              >
                                 <IconeLapisImg
                                   id={
                                     pedido.id +
@@ -2090,9 +2096,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         >
                           {nivelusur == 2 &&
                           pedido.statusSolicitacao == 'aberto' &&
-                          pedido.editandoSugFor == true
-                            ? ''
-                            : pedido.sugestfornecedor}
+                          pedido.editandoSugFor == true ? (
+                            ''
+                          ) : (
+                            <p>{pedido.sugestfornecedor}</p>
+                          )}
                           <InputSugest
                             id={pedido.id}
                             className={
