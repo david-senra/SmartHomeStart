@@ -136,6 +136,25 @@ export const ListaCondicoesSenha = styled.ul`
     padding: 5px;
     border: 1px solid;
     border-radius: 10px;
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+      height: 45px;
+      font-size: 8px;
+      li {
+        width: 100%;
+        height: 10px;
+        padding-right: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        p {
+          text-align: center;
+          margin-right: 2px;
+          padding-left: 0px;
+          margin-left: 0px;
+        }
+      }
+    }
   }
 `
 
@@ -150,12 +169,12 @@ export const TextSuccess = styled.p`
 export const DivBotaoInvisivelHome = styled.div`
   background-color: transparent;
   position: absolute;
-  width: 340px;
+  width: 300px;
   height: 90px;
   padding: 0px;
   margin: 0px;
-  top: 10px;
-  left: 39vw;
+  top: 50px;
+  left: 50%;
   button {
     width: 100%;
     height: 100%;
@@ -163,4 +182,5 @@ export const DivBotaoInvisivelHome = styled.div`
     border: none;
     cursor: pointer;
   }
+  transform: translate(-50%, -50%);
 `

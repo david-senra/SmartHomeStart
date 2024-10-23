@@ -19,6 +19,19 @@ export const DivGeral = styled.div`
   text-align: center;
   background-color: transparent;
   margin-bottom: 50px;
+  @media only screen and (max-width: 768px) {
+    h1 {
+      font-size: 22px;
+    }
+    padding-top: 50px;
+    width: 80vw;
+    height: 72px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: transparent;
+    margin-bottom: 50px;
+  }
 `
 
 export const ListaSolicitacoes = styled.ul`
@@ -33,6 +46,21 @@ export const ListaSolicitacoes = styled.ul`
   label {
     padding-top: 5px;
     font-size: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    padding-top: 20px;
+    padding-bottom: 100px;
+    margin-right: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    gap: 5px;
+    label {
+      padding-top: 5px;
+      font-size: 20px;
+    }
   }
 `
 
@@ -105,6 +133,39 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
       justify-items: center;
     }
   }
+  @media only screen and (max-width: 768px) {
+    cursor: pointer;
+    width: 85vw;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 11vw 12vw 15vw 15vw 13vw 12vw;
+    margin-right: 0px;
+    padding-right: 0px;
+    grid-auto-rows: 34px;
+    gap: 3px;
+    border-bottom: solid 2px black;
+    background-color: ${(props) => pegarCorCard(props.situacaoPedido)};
+    li {
+      display: flex;
+      font-size: 9.5px;
+      flex-direction: column;
+      justify-content: center;
+    }
+    li.editar {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      text-align: center;
+      align-items: center;
+      p {
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+      }
+    }
+  }
 `
 
 export const GridCabecalhoSolto = styled.ul`
@@ -113,6 +174,16 @@ export const GridCabecalhoSolto = styled.ul`
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   gap: 3px;
   margin-bottom: 5px;
+  @media only screen and (max-width: 768px) {
+    width: 85vw;
+    display: grid;
+    grid-template-columns: 11vw 10vw 13vw 13vw 12vw 10vw;
+    padding: 3px;
+    font-size: 11px;
+    gap: 8px;
+    margin-bottom: 5px;
+    margin-left: 0px;
+  }
 `
 
 export const GridCabecalhoItemsPedido = styled.ul`

@@ -9,6 +9,14 @@ export const FormularioCompra = styled.form`
   text-align: center;
   background-color: transparent;
   margin-bottom: 50px;
+  @media only screen and (max-width: 768px) {
+    width: 80vw;
+    padding-left: 0px;
+    padding-right: 2.4vw;
+    h1 {
+      font-size: 24px;
+    }
+  }
 `
 
 export const DivEmpresa = styled.div`
@@ -44,21 +52,56 @@ export const GridListaCabecalho = styled.ul`
     justify-content: center;
   }
   margin-left: 2.5vw;
+  @media only screen and (max-width: 768px) {
+    width: 80vw;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 9vw 9vw 24vw 14vw 25vw;
+    margin-right: 10vw;
+    margin-left: 0px;
+    margin-top: 10px;
+    li {
+      padding-left: 2px;
+      padding-right: 2px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
 `
 
 export const GridLista = styled.ul`
   width: 100%;
   justify-content: center;
   display: grid;
-  grid-template-columns: 7vw 7vw 24vw 8vw 29vw;
+  grid-template-columns: 7vw 7vw 24vw 8vw 25vw;
   li {
     padding-left: 2px;
     padding-right: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
   margin-left: 2.5vw;
+  @media only screen and (max-width: 768px) {
+    width: 80vw;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 9vw 9vw 24vw 14vw 25vw;
+    margin-right: 15vw;
+    margin-left: 0px;
+    li {
+      padding-left: 2px;
+      padding-right: 2px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
 `
 
 export const DivLineBreak = styled.div`
@@ -117,6 +160,22 @@ export const DivItem = styled.div`
   label {
     padding: 4px;
   }
+  @media only screen and (max-width: 768px) {
+    padding-top: 0.5vw;
+    display: grid;
+    box-shadow: none;
+    grid-template-columns: 35px 55px 20vw 44px 25vw 1vw;
+    justify-content: center;
+    margin-right: 1.5vw;
+    height: auto;
+    gap: 1vw;
+    font-weight: normal;
+    font-size: 5px;
+    &.headerItems {
+      font-size: 10px;
+      margin-top: 0px;
+    }
+  }
 `
 
 export const DivDataObs = styled.div`
@@ -140,6 +199,24 @@ export const DivItemNome = styled.div`
     font-size: 18px;
     font-weight: bold;
   }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+    height: 28px;
+    input {
+      text-align: center;
+      font-size: 12px;
+      width: 100%;
+      box-shadow: none;
+    }
+    label {
+      text-align: center;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
 `
 
 export const DivItemQuant = styled.div`
@@ -162,8 +239,35 @@ export const DivItemQuant = styled.div`
     flex-direction: row;
     justify-content: center;
     width: 100%;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
+    text-align: center;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+    height: 28px;
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input {
+      width: 100%;
+      text-align: center;
+      box-shadow: none;
+      font-size: 12px;
+      -moz-appearance: textfield;
+    }
+    label {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 `
 
@@ -171,6 +275,7 @@ export const DivItemUnid = styled.div`
   display: flex;
   flex-direction: horizontal;
   justify-content: center;
+  height: 28px;
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -192,6 +297,32 @@ export const DivItemUnid = styled.div`
     font-size: 18px;
     font-weight: bold;
   }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    select {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      font-size: 12px;
+      box-shadow: none;
+    }
+    label {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
 `
 
 export const DivItemDesc = styled.div`
@@ -211,6 +342,24 @@ export const DivItemDesc = styled.div`
     width: 100%;
     font-size: 18px;
     font-weight: bold;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+    height: 28px;
+    input {
+      text-align: center;
+      font-size: 12px;
+      width: 100%;
+      box-shadow: none;
+    }
+    label {
+      text-align: center;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 `
 
@@ -239,6 +388,35 @@ export const DivItemCentroCusto = styled.div`
     font-size: 18px;
     text-align: left;
     margin-right: 0.5vw;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+    overflow-y: visible;
+    height: 28px;
+    input,
+    select {
+      width: 100%;
+      font-size: 12px;
+      padding-left: 0.1vw;
+      box-shadow: none;
+      -moz-appearance: textfield;
+      option {
+        font-size: 12px;
+      }
+      &:focus {
+        size: 8;
+      }
+    }
+    label {
+      text-align: center;
+      width: 100%;
+      font-weight: bold;
+      font-size: 15px;
+      text-align: left;
+      margin-right: 0.5vw;
+    }
   }
 `
 

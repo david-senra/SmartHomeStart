@@ -54,6 +54,11 @@ const GlobalStyle = createGlobalStyle`
     .remove-scrolling {
       overflow-y: hidden;
     }
+    @media only screen and (max-width: 768px) {
+      padding-bottom: 40px;
+      width: 100vw;
+      margin-right: calc(100vw - 100%);
+    }
   }
 `
 

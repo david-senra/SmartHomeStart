@@ -720,7 +720,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
         {SituacaoPedido == 'concluido' && (
           <div>
             <br></br>
-            <h2>Solicitação realizada com sucesso!</h2>
+            <h3>Solicitação realizada com sucesso!</h3>
             <ul>
               <br></br>
               <DivBotaoNovoPedido>
