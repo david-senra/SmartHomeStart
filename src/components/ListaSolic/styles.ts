@@ -675,7 +675,7 @@ export const IconeConfirmarImg = styled.img`
       position: relative;
       z-index: 15;
       bottom: 39.8px;
-      left: 54.4vw;
+      left: 53vw;
       margin-right: 8px;
     }
     &.editandoEmpresa {
@@ -687,12 +687,13 @@ export const IconeConfirmarImg = styled.img`
       margin-left: 3vw;
       position: absolute;
       margin-right: 3.8vw;
+      height: 13px;
     }
     &.unidade {
       z-index: 10;
-      margin-left: 3.3vw;
+      margin-left: 0.1vw;
       position: absolute;
-      margin-right: 3.5vw;
+      margin-right: 4.5vw;
     }
     &.centrocusto {
       z-index: 15;
@@ -769,7 +770,7 @@ export const IconeCancelarImg = styled.img`
       position: relative;
       z-index: 15;
       bottom: 25px;
-      left: 58.1vw;
+      left: 50vw;
       margin-right: 8px;
     }
     &.editandoEmpresa {
@@ -777,10 +778,12 @@ export const IconeCancelarImg = styled.img`
       z-index: 2;
     }
     &.quantidade {
-      margin-left: 4.2vw;
+      margin-left: 8.2vw;
+      height: 13px;
+      width: 13px;
     }
     &.unidade {
-      margin-left: 5vw;
+      margin-left: 5.5vw;
     }
     &.centrocusto {
       z-index: 5;
@@ -840,9 +843,9 @@ export const InputDataLimite = styled.input`
 
 export const InputQuantidade = styled.input`
   position: absolute;
-  margin-right: 1.5vw;
+  margin-right: 3vw;
   margin-top: 1px;
-  width: 2.1vw;
+  width: 3vw;
   height: 22px;
   font-size: 15px;
   padding-top: 5px;
@@ -854,13 +857,31 @@ export const InputQuantidade = styled.input`
     -webkit-appearance: none;
     margin: 0;
   }
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    margin-right: 1.5vw;
+    margin-top: 1px;
+    width: 7vw;
+    margin-right: 7vw;
+    height: 20px;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    -moz-appearance: textfield;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
 `
 
 export const InputUnidade = styled.select`
   position: absolute;
-  margin-right: 1.7vw;
+  margin-right: 2.4vw;
   margin-top: 1px;
-  width: 45px;
+  width: 40px;
   height: 22px;
   font-size: 15px;
   padding-top: 0px;
@@ -868,6 +889,21 @@ export const InputUnidade = styled.select`
   text-align: center;
   option {
     font-size: 15px;
+  }
+  @media only screen and (max-width: 768px) {
+    z-index: 54;
+    position: absolute;
+    margin-right: 16vw;
+    margin-top: 1px;
+    width: 40px;
+    height: 18px;
+    font-size: 11px;
+    padding-top: 0px;
+    padding-bottom: 2px;
+    text-align: center;
+    option {
+      font-size: 11px;
+    }
   }
 `
 
@@ -899,6 +935,17 @@ export const InputDescricao = styled.input`
   padding-top: 5px;
   padding-bottom: 5px;
   text-align: center;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    margin-right: 8vw;
+    margin-top: 1px;
+    width: 13vw;
+    height: 18px;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+  }
 `
 
 export const InputObservacaoItem = styled.input`
@@ -947,7 +994,7 @@ export const IconeLapisImg = styled.img`
       position: relative;
       z-index: 10;
       bottom: -2px;
-      left: 57.6vw;
+      left: 54vw;
     }
     &.descricaoOverflow {
       background-color: white;
@@ -1111,6 +1158,29 @@ export const InputSugest = styled.textarea`
     height: 0px;
     width: 0px;
     display: none;
+  }
+  @media only screen and (max-width: 768px) {
+    &.open {
+      white-space: pre-wrap;
+      border: solid 1px black;
+      height: auto;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 5px;
+      padding-right: 5px;
+      width: 100%;
+      font-size: 12px;
+      text-align: center;
+      flex-wrap: wrap;
+      resize: none;
+    }
+    &.closed {
+      height: 0px;
+      width: 0px;
+      display: none;
+    }
   }
 `
 
