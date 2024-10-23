@@ -329,7 +329,7 @@ function Login() {
       {paginaAtual == 'cadastroSenha' && (
         <LoginDiv>
           <main>
-            <h1>Criação de Senha - Novo Usuário</h1>
+            <h1>Criação de Senha - Usuário Pré-Registrado</h1>
             <form onSubmit={handleSubmitCriacaoSenha}>
               <UserPassDiv>
                 <ItemUserPass>
