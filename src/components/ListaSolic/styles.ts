@@ -631,6 +631,10 @@ export const IconeCancelarImg = styled.img`
   }
   &.editandoEmpresa {
     padding-left: 1vw;
+    z-index: 25;
+  }
+  &.cancelarEdicaoDataLimite {
+    z-index: 25;
   }
   &.quantidade {
     margin-left: 4.2vw;
@@ -668,8 +672,8 @@ export const IconeCancelarImg = styled.img`
       margin-right: 8px;
     }
     &.editandoEmpresa {
-      padding-right: 2.5vw;
-      z-index: 120;
+      margin-right: 2.5vw;
+      z-index: 2;
     }
     &.quantidade {
       margin-left: 4.2vw;

@@ -1426,6 +1426,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             onClick={(e) =>
                               handleDataLimiteSolicitacao(e, 'cancelarEdicao')
                             }
+                            className="cancelarEdicaoDataLimite"
                           ></IconeCancelarImg>
                         )}
                     </li>
