@@ -670,6 +670,7 @@ export const IconeConfirmarImg = styled.img`
       margin-top: 4px;
       padding-left: 21.5vw;
       padding-right: 0.1vw;
+      height: 13px;
     }
     &.SuggestionEdition {
       position: relative;
@@ -745,9 +746,9 @@ export const IconeCancelarImg = styled.img`
     margin-left: 5vw;
   }
   &.centrocusto {
-    z-index: 5;
+    z-index: 32;
     position: absolute;
-    margin-left: 4.5vw;
+    margin-left: 5.5vw;
   }
   @media only screen and (max-width: 768px) {
     height: 15px;
@@ -762,9 +763,11 @@ export const IconeCancelarImg = styled.img`
     &.cancelarEdicaoObservacao {
       padding-left: 22vw;
       margin-top: 4px;
+      height: 12px;
     }
     &.uhu {
-      margin-top: 4px;
+      padding-right: 8px;
+      height: 12px;
     }
     &.SuggestionEdition {
       position: relative;
@@ -786,9 +789,9 @@ export const IconeCancelarImg = styled.img`
       margin-left: 5.5vw;
     }
     &.centrocusto {
-      z-index: 5;
+      z-index: 55;
       position: absolute;
-      margin-left: 4.5vw;
+      margin-left: 11vw;
     }
   }
 `
@@ -909,15 +912,29 @@ export const InputUnidade = styled.select`
 
 export const InputCentroCusto = styled.select`
   position: absolute;
-  margin-right: 1.2vw;
+  margin-right: 3vw;
   margin-top: 1px;
-  width: 2.75vw;
+  width: 40px;
   height: 22px;
   font-size: 15px;
   padding-top: 2px;
   text-align: center;
   option {
     font-size: 15px;
+  }
+  @media only screen and (max-width: 768px) {
+    z-index: 54;
+    position: absolute;
+    margin-right: 15vw;
+    margin-top: 1px;
+    width: 38px;
+    height: 18px;
+    font-size: 12px;
+    padding-top: 2px;
+    text-align: center;
+    option {
+      font-size: 12px;
+    }
   }
 `
 
@@ -957,6 +974,17 @@ export const InputObservacaoItem = styled.input`
   font-size: 15px;
   padding-top: 2px;
   text-align: center;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    margin-right: 6vw;
+    margin-top: 1px;
+    width: 19vw;
+    height: 20px;
+    font-size: 12px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: center;
+  }
 `
 
 export const IconeLapisImg = styled.img`
