@@ -74,6 +74,18 @@ export const ItemUserPass = styled.div`
   &.senha {
     margin-top: 30px;
   }
+  &.lessTopMargin {
+    padding-top: 0px;
+    margin-top: 0px;
+    button {
+      margin-top: 0px;
+
+      &.botaoCadastro {
+        width: 90px;
+        margin-top: 20px;
+      }
+    }
+  }
 `
 
 export const DivBotaoCadastrarSenha = styled.div`

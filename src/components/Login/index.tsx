@@ -343,7 +343,30 @@ function Login() {
                   ></input>
                   <label>Usuário</label>
                 </ItemUserPass>
-                <TextSenha>CONDIÇÕES DA SENHA:</TextSenha>
+
+                <ItemUserPass className="senha">
+                  <input
+                    id="senhaCad1"
+                    name="senhaCad1"
+                    type="password"
+                    required
+                    autoComplete="off"
+                    onChange={(e) => checkPasswordOne(e)}
+                  ></input>
+                  <label>Senha</label>
+                </ItemUserPass>
+                <ItemUserPass className="confirmarSenha">
+                  <input
+                    id="senhaCad2"
+                    name="senhaCad2"
+                    type="password"
+                    required
+                    autoComplete="off"
+                    className="confirmarSenha"
+                    onChange={resetErrorMessage}
+                  ></input>
+                  <label className={'confirmarSenha'}>Confirmar Senha</label>
+                </ItemUserPass>
                 <ListaCondicoesSenha>
                   <li
                     style={{
@@ -382,29 +405,8 @@ function Login() {
                     <p>CARACTERES ESPECIAIS</p>
                   </li>
                 </ListaCondicoesSenha>
-                <ItemUserPass className="senha">
-                  <input
-                    id="senhaCad1"
-                    name="senhaCad1"
-                    type="password"
-                    required
-                    autoComplete="off"
-                    onChange={(e) => checkPasswordOne(e)}
-                  ></input>
-                  <label>Senha</label>
-                </ItemUserPass>
-                <ItemUserPass className="confirmarSenha">
-                  <input
-                    id="senhaCad2"
-                    name="senhaCad2"
-                    type="password"
-                    required
-                    autoComplete="off"
-                    className="confirmarSenha"
-                    onChange={resetErrorMessage}
-                  ></input>
-                  <label className={'confirmarSenha'}>Confirmar Senha</label>
-                  <button className={'cadastroSenha'}>Cadastrar</button>
+                <ItemUserPass className={'lessTopMargin'}>
+                  <button className={'botaoCadastro'}>Cadastrar</button>
                 </ItemUserPass>
               </UserPassDiv>
               <TextError id="text_error"></TextError>
