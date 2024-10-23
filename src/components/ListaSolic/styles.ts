@@ -178,6 +178,7 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
       justify-content: center;
       justify-items: center;
       text-align: center;
+      vertical-align: middle;
       padding-top: 12px;
       padding-bottom: 10px;
       p {
@@ -541,6 +542,10 @@ export const IconeDiv = styled.div`
 export const IconeTranca = styled.img`
   height: 15px;
   cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    height: 10px;
+    padding-right: 10px;
+  }
 `
 
 export const IconeExcelDiv = styled.div`
@@ -548,6 +553,9 @@ export const IconeExcelDiv = styled.div`
   top: 7px;
   padding-left: 5px;
   z-index: 10;
+  @media only screen and (max-width: 768px) {
+    visibility: hidden;
+  }
 `
 
 export const LinhaDiv = styled.div<{ usuario: string }>`

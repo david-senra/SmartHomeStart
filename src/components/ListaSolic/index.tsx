@@ -1241,9 +1241,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       <p>{pedido.id}</p>
                     </li>
                     <li onClick={(e) => toggleCard(e)}>
-                      {pedido.data_solicitacao}
+                      <p>{pedido.data_solicitacao}</p>
                     </li>
-                    <li onClick={(e) => toggleCard(e)}>{pedido.usuario}</li>
+                    <li onClick={(e) => toggleCard(e)}>
+                      <p>{pedido.usuario}</p>
+                    </li>
                     <li
                       onClick={(e) =>
                         (nivelusur >= 3 ||
