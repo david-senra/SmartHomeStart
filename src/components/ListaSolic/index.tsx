@@ -2260,7 +2260,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     )}
                   </DivGridCabecalho>
                 </CardSolicitacao>
-                {nivelusur > 2 && !popUpOpen && (
+                {!popUpOpen && (
                   <IconeExcelDiv>
                     <IconeExcelImg
                       id={pedido.id}
