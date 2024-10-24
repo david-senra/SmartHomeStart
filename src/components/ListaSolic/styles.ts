@@ -416,6 +416,31 @@ export const TextoDescricaoItem = styled.p<{
   }
   @media only screen and (max-width: 768px) {
     max-width: 100%;
+    &.descricaoOverflowCelular {
+      max-width: 14.5vw;
+      &:hover {
+        &::after {
+          content: '${(props) => props.textoDescricao}';
+          display: inline-block;
+          overflow-wrap: inherit;
+          height: auto;
+          width: 50vw;
+          max-width: 50vw;
+          white-space: break-spaces;
+          position: absolute;
+          font-size: 10px;
+          word-wrap: break-word;
+          background-color: yellow;
+          z-index: 2;
+          margin-top: 30px;
+          left: 28%;
+          border: solid 1px;
+          border-bottom: solid 1px !important;
+          padding: 3px;
+          transform: translate(-28%, -28%);
+        }
+      }
+    }
     &.descricaoOverflow {
       max-width: 14.5vw;
       &:hover {
@@ -475,6 +500,32 @@ export const TextoObservacaoItem = styled.p<{
     }
   }
   @media only screen and (max-width: 768px) {
+    &.textoObsOverflowCelular#textoObservacaoOverflow {
+      max-width: 12vw;
+      &:hover {
+        &::after {
+          content: '${(props) => props.textoObservacao}';
+          display: inline-block;
+          overflow-wrap: inherit;
+          height: auto;
+          max-width: 400px;
+          position: absolute;
+          background-color: yellow;
+          z-index: 30;
+          margin-top: 28px;
+          white-space: break-spaces;
+          right: 2%;
+          border: solid 1px;
+          border-bottom: solid 1px !important;
+          padding: 2px;
+          overflow-y: visible;
+          &:last-of-type {
+            border-bottom: solid 1px !important;
+          }
+          transform: translate(-2%, -2%);
+        }
+      }
+    }
     &.textoObsOverflow#textoObservacaoOverflow {
       max-width: 12vw;
       &:hover {
@@ -655,6 +706,9 @@ export const IconeLapisDiv = styled.div`
   align-items: center;
   @media only screen and (max-width: 768px) {
     &.descricaoOverflow {
+      padding-left: 2vw;
+    }
+    &.descricaoOverflowCelular {
       padding-left: 2vw;
     }
   }
@@ -1102,6 +1156,14 @@ export const IconeLapisImg = styled.img`
       width: 16px;
       padding: 4px;
       margin-left: 1.85vw;
+      overflow: visible;
+    }
+    &.descricaoOverflowCelular {
+      background-color: white;
+      height: 16px;
+      width: 16px;
+      padding: 4px;
+      margin-left: 1.7vw;
       overflow: visible;
     }
   }

@@ -20,9 +20,9 @@ export const FormularioCompra = styled.form`
 `
 
 export const DivEmpresa = styled.div`
-  padding-top: 20px;
   display: flex;
-  flex-direction: horizontal;
+  padding-top: 20px;
+  flex-direction: row;
   justify-content: center;
   gap: 8px;
   label {
@@ -33,6 +33,22 @@ export const DivEmpresa = styled.div`
   select {
     font-size: 18px;
     padding: 5px;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    padding-top: 20px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    label {
+      font-weight: bold;
+      padding-top: 5px;
+      font-size: 18px;
+    }
+    select {
+      font-size: 18px;
+      padding: 5px;
+    }
   }
 `
 

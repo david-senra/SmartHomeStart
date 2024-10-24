@@ -1760,7 +1760,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               className={
                                 item.descricao.length >= 19
                                   ? 'descricaoOverflow'
-                                  : ''
+                                  : item.descricao.length >= 13
+                                    ? 'descricaoOverflowCelular'
+                                    : ''
                               }
                               id={'textoDescricaoOverflow'}
                             >
@@ -1772,9 +1774,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             item.editandoDescricao != true && (
                               <IconeLapisDiv
                                 className={`lapisMenor ${
-                                  item.descricao.length > 25
+                                  item.descricao.length > 19
                                     ? 'descricaoOverflow'
-                                    : ''
+                                    : item.descricao.length >= 13
+                                      ? 'descricaoOverflowCelular'
+                                      : ''
                                 }`}
                               >
                                 <IconeLapisImg
@@ -1790,9 +1794,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     handleAlteracaoItem(e, 'editarDescricao')
                                   }
                                   className={`lapisMenor ${
-                                    item.descricao.length > 25
+                                    item.descricao.length > 19
                                       ? 'descricaoOverflow'
-                                      : ''
+                                      : item.descricao.length >= 13
+                                        ? 'descricaoOverflowCelular'
+                                        : ''
                                   }`}
                                 ></IconeLapisImg>
                               </IconeLapisDiv>
@@ -1974,9 +1980,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                 textoObservacao={item.observacao}
                                 larguraTexto={item.observacao.length}
                                 className={
-                                  item.observacao.length > 41
+                                  item.observacao.length > 31
                                     ? 'textoObsOverflow'
-                                    : ''
+                                    : item.observacao.length > 12
+                                      ? 'textoObsOverflowCelular'
+                                      : ''
                                 }
                                 id={'textoObservacaoOverflow'}
                               >
