@@ -403,11 +403,14 @@ export const TextoDescricaoItem = styled.p<{
         position: absolute;
         background-color: yellow;
         z-index: 2;
-        margin-top: 25px;
-        left: ${(props) => props.larguraTexto / 2.6 + 'vw'};
+        margin-top: 36px;
+        white-space: break-spaces;
+        left: 28%;
+        padding-left: ${(props) => props.larguraTexto};
         border: solid 1px;
         border-bottom: solid 1px !important;
         padding: 3px;
+        transform: translate(-28%, -28%);
       }
     }
   }
@@ -418,15 +421,23 @@ export const TextoDescricaoItem = styled.p<{
       &:hover {
         &::after {
           content: '${(props) => props.textoDescricao}';
+          display: inline-block;
+          overflow-wrap: inherit;
+          height: auto;
+          width: 50vw;
+          max-width: 50vw;
+          white-space: break-spaces;
           position: absolute;
           font-size: 10px;
+          word-wrap: break-word;
           background-color: yellow;
           z-index: 2;
-          margin-top: 25px;
-          left: ${(props) => props.larguraTexto / 3.5 + 'vw'};
+          margin-top: 30px;
+          left: 28%;
           border: solid 1px;
           border-bottom: solid 1px !important;
           padding: 3px;
+          transform: translate(-28%, -28%);
         }
       }
     }
@@ -438,21 +449,55 @@ export const TextoObservacaoItem = styled.p<{
   larguraTexto: number
 }>`
   &.textoObsOverflow#textoObservacaoOverflow {
-    max-width: 24vw;
+    max-width: 14.5vw;
     &:hover {
       &::after {
         content: '${(props) => props.textoObservacao}';
+        display: inline-block;
+        overflow-wrap: inherit;
+        height: auto;
+        max-width: 500px;
         position: absolute;
         background-color: yellow;
         z-index: 30;
-        margin-top: 25px;
-        right: ${(props) => 3.3 * props.larguraTexto + 'px'};
+        margin-top: 28px;
+        white-space: break-spaces;
+        right: 5%;
         border: solid 1px;
         border-bottom: solid 1px !important;
         padding: 2px;
         overflow-y: visible;
         &:last-of-type {
           border-bottom: solid 1px !important;
+        }
+        transform: translate(-5%, -5%);
+      }
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    &.textoObsOverflow#textoObservacaoOverflow {
+      max-width: 12vw;
+      &:hover {
+        &::after {
+          content: '${(props) => props.textoObservacao}';
+          display: inline-block;
+          overflow-wrap: inherit;
+          height: auto;
+          max-width: 400px;
+          position: absolute;
+          background-color: yellow;
+          z-index: 30;
+          margin-top: 28px;
+          white-space: break-spaces;
+          right: 2%;
+          border: solid 1px;
+          border-bottom: solid 1px !important;
+          padding: 2px;
+          overflow-y: visible;
+          &:last-of-type {
+            border-bottom: solid 1px !important;
+          }
+          transform: translate(-2%, -2%);
         }
       }
     }

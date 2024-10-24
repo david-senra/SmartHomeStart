@@ -1758,7 +1758,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               textoDescricao={item.descricao}
                               larguraTexto={item.descricao.length}
                               className={
-                                item.descricao.length > 25
+                                item.descricao.length >= 19
                                   ? 'descricaoOverflow'
                                   : ''
                               }
