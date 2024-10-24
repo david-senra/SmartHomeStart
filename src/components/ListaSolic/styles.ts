@@ -424,7 +424,6 @@ export const TextoDescricaoItem = styled.p<{
           display: inline-block;
           overflow-wrap: inherit;
           height: auto;
-          width: 50vw;
           max-width: 50vw;
           white-space: break-spaces;
           position: absolute;
