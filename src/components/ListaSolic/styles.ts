@@ -522,6 +522,15 @@ export const DivTraco = styled.div<{
   border-bottom: solid 2px;
   border-top: hidden 2px;
   z-index: -1;
+  @media only screen and (max-width: 768px) {
+    position: relative;
+    right: ${(props) => (props.tipoUsuario == 'solicitante' ? '0.1' : '85')}vw;
+    width: 84vw;
+    bottom: 13.5px;
+    border-bottom: solid 2px;
+    border-top: hidden 2px;
+    z-index: -1;
+  }
 `
 
 export const DivEntregue = styled.div`
@@ -533,6 +542,16 @@ export const DivEntregue = styled.div`
   border-top: hidden 2px;
   background-color: #d2f8d2;
   z-index: -1;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    height: 24px;
+    width: 84vw;
+    left: 2vw;
+    border-bottom: hidden 2px;
+    border-top: hidden 2px;
+    background-color: #d2f8d2;
+    z-index: -1;
+  }
 `
 
 export const IconeDiv = styled.div`
@@ -1065,6 +1084,19 @@ export const ItemCheckImg = styled.img`
     height: 22px;
     width: 20px;
   }
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    z-index: 20;
+    height: 19px;
+    width: 12.5px;
+    right: 0px;
+    padding-top: 7px;
+    &.finalizado {
+      z-index: 20;
+      height: 19px;
+      width: 12.5px;
+    }
+  }
 `
 
 export const ItemCaminhaokImg = styled.img`
@@ -1078,6 +1110,19 @@ export const ItemCaminhaokImg = styled.img`
   &.andamento {
     height: 22px;
     width: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    z-index: 20;
+    height: 23px;
+    width: 15px;
+    right: 0px;
+    padding-top: 7px;
+    &.andamento {
+      z-index: 20;
+      height: 18.5px;
+      width: 12px;
+    }
   }
 `
 
@@ -1292,6 +1337,22 @@ export const PopupDiv = styled.div`
   z-index: 3;
   border: 2px solid black;
   transform: translate(-50%, -50%);
+  @media only screen and (max-width: 768px) {
+    background-color: #ffff;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    opacity: 1;
+    left: 50%;
+    top: 40%;
+    border-radius: 10px;
+    height: auto;
+    width: 70vw;
+    z-index: 3;
+    border: 2px solid black;
+    transform: translate(-50%, -40%);
+  }
 `
 
 export const CabecarioPopup = styled.div`
@@ -1369,6 +1430,9 @@ export const BotaoVoltar = styled.div`
 `
 
 export const TextoItemEntregue = styled.p`
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
   font-size: 10px;
   font-weight: bold;
   position: absolute;
@@ -1376,6 +1440,66 @@ export const TextoItemEntregue = styled.p`
   margin-top: 6px;
   &.comprador {
     padding-left: 20px;
+  }
+  p {
+    &.textoE {
+      display: none;
+    }
+    &.textoR {
+      display: none;
+    }
+  }
+  @media only screen and (max-width: 1000px) {
+    p {
+      &.textoEnv {
+        display: none;
+      }
+      &.textoE {
+        display: block;
+      }
+      &.textoRec {
+        display: none;
+      }
+      &.textoR {
+        display: block;
+      }
+    }
+  }
+  @media only screen and (max-width: 900px) {
+    p {
+      &.textoEnv {
+        display: none;
+      }
+      &.textoE {
+        display: none;
+      }
+      &.textoRec {
+        display: none;
+      }
+      &.textoR {
+        display: none;
+      }
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`
+
+export const TextoEmEntrega = styled.p`
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  margin-top: 7px;
+  left: 5vw;
+  @media only screen and (max-width: 1400px) {
+    left: 4vw;
+  }
+  @media only screen and (max-width: 1050px) {
+    left: 2.8vw;
+  }
+  @media only screen and (max-width: 800px) {
+    left: 1vw;
   }
   @media only screen and (max-width: 768px) {
     display: none;

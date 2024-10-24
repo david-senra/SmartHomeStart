@@ -52,7 +52,8 @@ import {
   BotoesPopUp,
   BotaoConfirmar,
   BotaoVoltar,
-  TextoItemEntregue
+  TextoItemEntregue,
+  TextoEmEntrega
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -2086,7 +2087,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                   : ''
                               }
                             >
-                              ENV: {item.dataEntregue}
+                              <p className="textoEnv">ENV:</p>{' '}
+                              <p className="textoE">E:</p>{' '}
+                              <p>{item.dataEntregue}</p>
                             </TextoItemEntregue>
                           )}
                         {item.status == 'finalizado' &&
@@ -2094,9 +2097,18 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             <TextoItemEntregue
                               className={nivelusur == 2 ? 'comprador' : ''}
                             >
-                              REC: {item.dataFinalizado}
+                              <p className="textoRec">REC:</p>{' '}
+                              <p className="textoR">R:</p>{' '}
+                              <p>{item.dataFinalizado}</p>
                             </TextoItemEntregue>
                           )}
+                        {item.status == 'entregue' && (
+                          <TextoEmEntrega
+                            className={nivelusur == 2 ? 'comprador' : ''}
+                          >
+                            EM ENTREGA
+                          </TextoEmEntrega>
+                        )}
                         {pedido.statusSolicitacao != 'aberto' &&
                           pedido.statusSolicitacao != 'entregue' &&
                           (item.status == 'entregue' ||
