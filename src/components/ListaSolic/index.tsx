@@ -737,8 +737,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const item_encontrado = array_itens.filter(isItem)[0]
     if (item_encontrado.status == 'entregue') {
       item_encontrado.status = 'finalizado'
+      const dataAgora = new Date()
+      const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
+      item_encontrado.dataFinalizado = dataAgoraBrasil
     } else {
       item_encontrado.status = 'entregue'
+      item_encontrado.dataFinalizado = ''
     }
     const novoElemento = elemento
     novoElemento.itens.splice(indice_item, 1)
@@ -771,6 +775,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     } else {
       document.body.style.overflowY = 'hidden'
       item_encontrado.status = 'entregue'
+      item_encontrado.dataFinalizado = ''
       elemento.itens.splice(indice_item, 1)
       elemento.itens.splice(indice_item, 0, item_encontrado)
       nova_lista.splice(indice_elemento, 1)
@@ -2082,6 +2087,14 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               }
                             >
                               ENV: {item.dataEntregue}
+                            </TextoItemEntregue>
+                          )}
+                        {item.status == 'finalizado' &&
+                          item.dataFinalizado != '' && (
+                            <TextoItemEntregue
+                              className={nivelusur == 2 ? 'comprador' : ''}
+                            >
+                              REC: {item.dataFinalizado}
                             </TextoItemEntregue>
                           )}
                         {pedido.statusSolicitacao != 'aberto' &&
