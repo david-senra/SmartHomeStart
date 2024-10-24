@@ -606,6 +606,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
     elemento.statusSolicitacao = 'entregue'
+    const dataAgora = new Date()
+    const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
+    elemento.itens.forEach(
+      (item) =>
+        item.dataFinalizado == '' && (item.dataFinalizado = dataAgoraBrasil)
+    )
     const resposta_atualizacao_servidor = fecharSolicitacaoNoServidor(elemento)
     const resposta_recebida = await resposta_atualizacao_servidor
     if (resposta_recebida == 'ok') {
