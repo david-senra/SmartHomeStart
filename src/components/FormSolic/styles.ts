@@ -74,7 +74,7 @@ export const GridLista = styled.ul`
   width: 100%;
   justify-content: center;
   display: grid;
-  grid-template-columns: 7vw 7vw 24vw 8vw 25vw;
+  grid-template-columns: 7vw 7vw 24vw 8vw 29vw;
   li {
     padding-left: 2px;
     padding-right: 2px;
@@ -119,6 +119,15 @@ export const GridItemCabecalho = styled.li`
   border-left: solid black 1px;
   border-top: solid black 1px;
   border-bottom: solid black 1px;
+  @media only screen and (max-width: 768px) {
+    font-weight: bold;
+    background-color: lightgreen;
+    text-align: center;
+    font-size: 11px;
+    border-left: solid black 1px;
+    border-top: solid black 1px;
+    border-bottom: solid black 1px;
+  }
 `
 
 export const GridItemCabecalhoUltimo = styled.li`
@@ -129,12 +138,25 @@ export const GridItemCabecalhoUltimo = styled.li`
   border-top: solid black 1px;
   border-bottom: solid black 1px;
   border-right: solid black 1px;
+  @media only screen and (max-width: 768px) {
+    font-weight: bold;
+    background-color: lightgreen;
+    text-align: center;
+    font-size: 11px;
+    border-left: solid black 1px;
+    border-top: solid black 1px;
+    border-bottom: solid black 1px;
+    border-right: solid black 1px;
+  }
 `
 
 export const GridItem = styled.li`
   text-align: center;
   border-left: solid black 1px;
   border-bottom: solid black 1px;
+  @media only screen and (max-width: 768px) {
+    font-size: 13px;
+  }
 `
 
 export const GridItemUltimo = styled.li`
@@ -142,6 +164,9 @@ export const GridItemUltimo = styled.li`
   border-left: solid black 1px;
   border-bottom: solid black 1px;
   border-right: solid black 1px;
+  @media only screen and (max-width: 768px) {
+    font-size: 13px;
+  }
 `
 
 export const DivItem = styled.div`

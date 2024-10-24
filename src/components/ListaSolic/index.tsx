@@ -1436,7 +1436,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       className={
                         (pedido.statusSolicitacao == 'andamento' &&
                           nivelusur == 2) ||
-                        (nivelusur > 2 &&
+                        (nivelusur == 3 &&
                           pedido.podeDestrancar == true &&
                           (pedido.statusSolicitacao == 'aberto' ||
                             pedido.statusSolicitacao == 'andamento'))
@@ -1444,10 +1444,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           : ''
                       }
                       onClick={(e) =>
-                        (pedido.statusSolicitacao == 'entregue' ||
+                        (nivelusur > 3 ||
+                          pedido.statusSolicitacao == 'entregue' ||
                           (pedido.statusSolicitacao == 'aberto' &&
                             nivelusur == 2) ||
-                          (nivelusur > 2 && pedido.podeDestrancar == false)) &&
+                          (nivelusur == 3 && pedido.podeDestrancar == false)) &&
                         toggleCard(e)
                       }
                     >
@@ -1470,7 +1471,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         >
                           AND
                         </p>
-                        {nivelusur > 2 &&
+                        {nivelusur == 3 &&
                           pedido.statusSolicitacao != 'entregue' &&
                           pedido.podeDestrancar == true && (
                             <IconeDiv>
@@ -2020,7 +2021,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               ></IconeCancelarImg>
                             )}
                         </li>
-                        {nivelusur > 2 &&
+                        {nivelusur == 3 &&
                           pedido.statusSolicitacao != 'aberto' &&
                           pedido.statusSolicitacao != 'entregue' &&
                           item.status != 'finalizado' && (
