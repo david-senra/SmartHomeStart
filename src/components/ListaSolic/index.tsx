@@ -51,7 +51,8 @@ import {
   TextoPopUp,
   BotoesPopUp,
   BotaoConfirmar,
-  BotaoVoltar
+  BotaoVoltar,
+  TextoItemEntregue
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -90,6 +91,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     novaObservacao: string
     editandoObservacao: boolean
     requisicao: string
+    dataEntregue: string
+    dataFinalizado: string
 
     constructor(data: {
       id: number
@@ -110,6 +113,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novaObservacao: string
       editandoObservacao: boolean
       requisicao: string
+      dataEntregue: string
+      dataFinalizado: string
     }) {
       this.id = data.id
       this.quantidade = data.quantidade
@@ -130,6 +135,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       this.novaObservacao = data.novaObservacao
       this.status = data.status
       this.requisicao = data.requisicao
+      this.dataEntregue = data.dataEntregue
+      this.dataFinalizado = data.dataFinalizado
     }
   }
   class Solicitacao {
@@ -650,6 +657,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const item_encontrado = array_itens.filter(isItem)[0]
     if (item_encontrado.status == 'aberto') {
       item_encontrado.status = 'entregue'
+      const dataAgora = new Date()
+      const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
+      item_encontrado.dataEntregue = dataAgoraBrasil
     } else {
       const verificaoItemFinalizado = verificarSeItemFinalizado(
         elemento,
@@ -658,6 +668,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       const resposta_requisicao = await verificaoItemFinalizado
       if (resposta_requisicao == 'ok') {
         item_encontrado.status = 'aberto'
+        item_encontrado.dataEntregue = ''
       } else if (resposta_requisicao == 'erro_ja_finalizado') {
         SetPopupOpen(true)
         setPopupType('item_finalizado')
@@ -2060,6 +2071,18 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                 }
                               ></ItemCheckImg>
                             </ItemCheckDiv>
+                          )}
+                        {item.status == 'entregue' &&
+                          item.dataEntregue != '' && (
+                            <TextoItemEntregue
+                              className={
+                                nivelusur == 3 || nivelusur == 2
+                                  ? 'comprador'
+                                  : ''
+                              }
+                            >
+                              ENV: {item.dataEntregue}
+                            </TextoItemEntregue>
                           )}
                         {pedido.statusSolicitacao != 'aberto' &&
                           pedido.statusSolicitacao != 'entregue' &&

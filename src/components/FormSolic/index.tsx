@@ -48,6 +48,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     novoCentroCusto: string
     novaObservacao: string
     editandoObservacao: boolean
+    requisicao: string
+    dataEntregue: string
+    dataFinalizado: string
 
     constructor(data: {
       id: number
@@ -67,6 +70,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       novoCentroCusto: string
       novaObservacao: string
       editandoObservacao: boolean
+      requisicao: string
+      dataEntregue: string
+      dataFinalizado: string
     }) {
       this.id = data.id
       this.quantidade = data.quantidade
@@ -86,6 +92,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       this.editandoObservacao = data.editandoObservacao
       this.novaObservacao = data.novaObservacao
       this.status = data.status
+      this.requisicao = data.requisicao
+      this.dataEntregue = data.dataEntregue
+      this.dataFinalizado = data.dataFinalizado
     }
   }
   const compraInicial = {
@@ -105,7 +114,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     editandoCentroDeCusto: false,
     novoCentroCusto: '',
     editandoObservacao: false,
-    novaObservacao: ''
+    novaObservacao: '',
+    requisicao: '',
+    dataEntregue: '',
+    dataFinalizado: ''
   }
   const listaCentrosCusto = [
     '03 - ADMINISTRATIVO',
@@ -170,7 +182,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
         editandoCentroDeCusto: false,
         novoCentroCusto: '',
         editandoObservacao: false,
-        novaObservacao: ''
+        novaObservacao: '',
+        requisicao: '',
+        dataEntregue: '',
+        dataFinalizado: ''
       }
       const nova_lista_compras = [...listaCompras]
       nova_lista_compras.push(novaCompra)
@@ -420,7 +435,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       editandoCentroDeCusto: false,
       novoCentroCusto: '',
       editandoObservacao: false,
-      novaObservacao: ''
+      novaObservacao: '',
+      requisicao: '',
+      dataEntregue: '',
+      dataFinalizado: ''
     }
     setListaCompras([compraInicial])
     SetSituacaoPedido('solicitando')

@@ -155,6 +155,9 @@ export const GridItem = styled.li`
   border-left: solid black 1px;
   border-bottom: solid black 1px;
   @media only screen and (max-width: 768px) {
+    text-align: center;
+    border-left: solid black 1px;
+    border-bottom: solid black 1px;
     font-size: 13px;
   }
 `
@@ -165,6 +168,10 @@ export const GridItemUltimo = styled.li`
   border-bottom: solid black 1px;
   border-right: solid black 1px;
   @media only screen and (max-width: 768px) {
+    text-align: center;
+    border-left: solid black 1px;
+    border-bottom: solid black 1px;
+    border-right: solid black 1px;
     font-size: 13px;
   }
 `

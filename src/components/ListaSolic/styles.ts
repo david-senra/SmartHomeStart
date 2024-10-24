@@ -559,7 +559,7 @@ export const IconeExcelDiv = styled.div`
 `
 
 export const LinhaDiv = styled.div<{ usuario: string }>`
-  margin-left: ${(props) => (props.usuario == 'restrito' ? '0' : '28')}px;
+  margin-left: ${(props) => (props.usuario == 'restrito' ? '28' : '28')}px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -1365,5 +1365,19 @@ export const BotaoVoltar = styled.div`
   border-radius: 10px;
   &:hover {
     background-color: gray;
+  }
+`
+
+export const TextoItemEntregue = styled.p`
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  left: 70vw;
+  margin-top: 6px;
+  &.comprador {
+    padding-left: 20px;
+  }
+  @media only screen and (max-width: 768px) {
+    display: none;
   }
 `

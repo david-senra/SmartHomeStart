@@ -24,6 +24,14 @@ export const MenuPrincipal = styled.ul`
   flex-direction: horizontal;
   justify-content: space-around;
   gap: 20px;
+  @media only screen and (max-width: 768px) {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: horizontal;
+    justify-content: space-around;
+    gap: 20px;
+  }
 `
 
 export const ItemMenuPrincipal = styled.button`
