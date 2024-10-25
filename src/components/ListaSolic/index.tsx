@@ -19,6 +19,8 @@ import {
   IconeTranca,
   IconeDiv,
   IconeExcelDiv,
+  IconePDFImg,
+  IconePDFDiv,
   IconeExcelImg,
   IconeEntregueDiv,
   IconeEntregueImg,
@@ -63,6 +65,7 @@ import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
 import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
+import IconePDF from '../../assets/images/pdf.png'
 import WhiteCover from '../../assets/images/whitecover.png'
 import InfoData from '../../info_data.json'
 Pusher.logToConsole = true
@@ -242,6 +245,28 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   async function gerarArquivoExcel(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestSpreadsheet&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.split(';')[0] == 'link_criado') {
+      const link_download = resposta.split(';')[1]
+
+      const linkElement = document.createElement('a')
+      linkElement.href = link_download
+      document.body.appendChild(linkElement)
+      linkElement.click()
+      document.body.removeChild(linkElement)
+    }
+    // OR you can save/write file locally.
+    // fs.writeFileSync(outputFilename, response.data)
+    // const blob = new Blob(respostaEnvio, {
+    //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+    // })
+    // const buffer = await blob.arrayBuffer()
+  }
+  async function gerarArquivoPDF(solicitacaoId: string) {
+    const respostaEnvio = await fetch(
+      `https://davidsenra.pythonanywhere.com/?type=requestPDF&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
     )
     const corpo_resposta = respostaEnvio.text()
     const resposta = (await corpo_resposta).toString()
@@ -641,6 +666,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   ) => {
     const id_elemento = e.currentTarget.id
     gerarArquivoExcel(id_elemento)
+  }
+  const baixarPDFPedido = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    gerarArquivoPDF(id_elemento)
   }
   const marcarItemPedido = async (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
@@ -2330,6 +2361,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       onClick={(e) => baixarExcelPedido(e)}
                     ></IconeExcelImg>
                   </IconeExcelDiv>
+                )}
+                {!popUpOpen && (
+                  <IconePDFDiv>
+                    <IconePDFImg
+                      id={pedido.id}
+                      src={IconePDF}
+                      onClick={(e) => baixarExcelPedido(e)}
+                    ></IconePDFImg>
+                  </IconePDFDiv>
                 )}
               </LinhaDiv>
             ))}

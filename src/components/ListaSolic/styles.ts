@@ -671,6 +671,26 @@ export const IconeExcelDiv = styled.div`
   }
 `
 
+export const IconePDFDiv = styled.div`
+  position: relative;
+  top: 7px;
+  padding-left: 2px;
+  z-index: 10;
+  @media only screen and (max-width: 768px) {
+    visibility: hidden;
+  }
+`
+
+export const IconePDFImg = styled.img`
+  height: 22px;
+  width: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    height: 10px;
+  }
+`
+
 export const LinhaDiv = styled.div<{ usuario: string }>`
   margin-left: ${(props) => (props.usuario == 'restrito' ? '28' : '28')}px;
   display: flex;

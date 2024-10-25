@@ -46,16 +46,25 @@ const Sistema = () => {
                 Exibir Solicitações
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso >= 4 && nivel_acesso != 3 && (
-              <ItemMenuPrincipal onClick={() => setOpcao('movimentar_pessoal')}>
-                Movimentar Pessoal
+            {nivel_acesso >= 4 && (
+              <ItemMenuPrincipal
+                onClick={() => setOpcao('movimentacao_pessoal')}
+              >
+                Movimentação de Pessoal
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso >= 4 && nivel_acesso != 3 && (
+            {nivel_acesso >= 4 && (
               <ItemMenuPrincipal
-                onClick={() => setOpcao('exibir_movimentacao_pessoal')}
+                onClick={() => setOpcao('gerenciamento_usuarios')}
               >
-                Exibir Movimentação
+                Gerenciar Usuários
+              </ItemMenuPrincipal>
+            )}
+            {nivel_acesso >= 4 && (
+              <ItemMenuPrincipal
+                onClick={() => setOpcao('gerenciamento_usuarios')}
+              >
+                Editar Parâmetros
               </ItemMenuPrincipal>
             )}
             {nivel_acesso >= 5 && (
