@@ -223,6 +223,7 @@ export const GridCabecalhoSolto = styled.ul`
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   gap: 3px;
   margin-bottom: 5px;
+  margin-right: 24px;
   @media only screen and (max-width: 768px) {
     width: 89vw;
     display: grid;
@@ -678,6 +679,7 @@ export const IconePDFDiv = styled.div`
   z-index: 10;
   @media only screen and (max-width: 768px) {
     visibility: hidden;
+    width: 0px;
   }
 `
 
