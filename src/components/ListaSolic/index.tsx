@@ -2367,7 +2367,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     <IconePDFImg
                       id={pedido.id}
                       src={IconePDF}
-                      onClick={(e) => baixarExcelPedido(e)}
+                      onClick={(e) => baixarPDFPedido(e)}
                     ></IconePDFImg>
                   </IconePDFDiv>
                 )}
