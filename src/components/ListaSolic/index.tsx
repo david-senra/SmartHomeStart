@@ -273,11 +273,30 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     if (resposta.split(';')[0] == 'link_criado') {
       const link_download = resposta.split(';')[1]
 
-      const linkElement = document.createElement('a')
-      linkElement.href = link_download
-      document.body.appendChild(linkElement)
-      linkElement.click()
-      document.body.removeChild(linkElement)
+      // const linkElement = document.createElement('a')
+      // linkElement.href = link_download
+      // document.body.appendChild(linkElement)
+      // linkElement.click()
+      // document.body.removeChild(linkElement)
+      fetch(link_download, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf'
+        }
+      })
+        .then((response) => response.blob())
+        .then((blob) => {
+          // Create blob link to download
+          const url = window.URL.createObjectURL(new Blob([blob]))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', `FileName.pdf`)
+          document.body.appendChild(link)
+          link.click()
+          if (link.parentNode != null) {
+            link.parentNode.removeChild(link)
+          }
+        })
     }
     // OR you can save/write file locally.
     // fs.writeFileSync(outputFilename, response.data)
