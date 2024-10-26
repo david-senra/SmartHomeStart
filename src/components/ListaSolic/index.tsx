@@ -264,6 +264,52 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     // })
     // const buffer = await blob.arrayBuffer()
   }
+  const downloadFile = async (url: any, fileName: any) => {
+    await fetch(url, {
+      method: 'GET',
+      headers: {
+        Origin: '*',
+        Authorization: `${localStorage.getItem('idToken')}`
+      }
+    })
+      .then((res) => {
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              let reader: any = null
+              if (res.body != null) {
+                reader = res.body.getReader()
+              }
+              read()
+              function read() {
+                reader.read().then((progressEvent: any) => {
+                  if (progressEvent.done === true) {
+                    controller.close()
+                    return
+                  }
+                  // const downloadedPercent =
+                  //  Math.round((loaded / contentLength) * 100) + '%'
+                  // console.log(downloadedPercent);
+                  controller.enqueue(progressEvent.value)
+                  read()
+                })
+              }
+            }
+          })
+        )
+      })
+      .then(async (response) => {
+        const blob = await response.blob()
+        const url1 = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url1
+        link.download = fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url1)
+      })
+  }
   async function gerarArquivoPDF(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestPDF&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
@@ -272,31 +318,13 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const resposta = (await corpo_resposta).toString()
     if (resposta.split(';')[0] == 'link_criado') {
       const link_download = resposta.split(';')[1]
+      // downloadFile(link_download, 'arquivo')
 
-      // const linkElement = document.createElement('a')
-      // linkElement.href = link_download
-      // document.body.appendChild(linkElement)
-      // linkElement.click()
-      // document.body.removeChild(linkElement)
-      fetch(link_download, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf'
-        }
-      })
-        .then((response) => response.blob())
-        .then((blob) => {
-          // Create blob link to download
-          const url = window.URL.createObjectURL(new Blob([blob]))
-          const link = document.createElement('a')
-          link.href = url
-          link.setAttribute('download', `FileName.pdf`)
-          document.body.appendChild(link)
-          link.click()
-          if (link.parentNode != null) {
-            link.parentNode.removeChild(link)
-          }
-        })
+      const linkElement = document.createElement('a')
+      linkElement.href = link_download
+      document.body.appendChild(linkElement)
+      linkElement.click()
+      document.body.removeChild(linkElement)
     }
     // OR you can save/write file locally.
     // fs.writeFileSync(outputFilename, response.data)
