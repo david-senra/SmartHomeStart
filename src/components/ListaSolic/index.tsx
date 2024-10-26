@@ -1303,6 +1303,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     <li
                       onClick={(e) =>
                         (nivelusur >= 3 ||
+                          pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')) &&
                         toggleCard(e)
@@ -1315,6 +1316,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       style={{
                         cursor:
                           nivelusur >= 3 ||
+                          pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')
                             ? 'pointer'
@@ -1354,6 +1356,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       </p>
                       {nivelusur == 2 &&
                         pedido.statusSolicitacao == 'aberto' &&
+                        pedido.usuario == nomeusur &&
                         pedido.editandoEmpresa != true && (
                           <IconeLapisDiv>
                             <IconeLapisImg
@@ -1398,6 +1401,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     <li
                       onClick={(e) =>
                         (nivelusur >= 3 ||
+                          pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')) &&
                         toggleCard(e)
@@ -1410,6 +1414,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       style={{
                         cursor:
                           nivelusur >= 3 ||
+                          pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')
                             ? 'pointer'
@@ -1447,6 +1452,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       </p>
                       {nivelusur == 2 &&
                         pedido.statusSolicitacao == 'aberto' &&
+                        pedido.usuario == nomeusur &&
                         pedido.editandoDataLimite != true && (
                           <IconeLapisDiv>
                             <IconeLapisImg
@@ -1618,6 +1624,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             item.editandoQuantidade != true && (
                               <IconeLapisDiv>
                                 <IconeLapisImg
@@ -1712,6 +1719,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             item.editandoUnidade != true && (
                               <IconeLapisDiv>
                                 <IconeLapisImg
@@ -1802,6 +1810,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             item.editandoDescricao != true && (
                               <IconeLapisDiv
                                 className={`lapisMenor ${
@@ -1916,6 +1925,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             item.editandoCentroDeCusto != true && (
                               <IconeLapisDiv>
                                 <IconeLapisImg
@@ -2025,6 +2035,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             item.editandoObservacao != true && (
                               <IconeLapisDiv>
                                 <IconeLapisImg
@@ -2212,6 +2223,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           ></InputSugest>
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             pedido.editandoSugFor != true &&
                             pedido.sugestfornecedor != '' && (
                               <IconeLapisDiv>
@@ -2244,6 +2256,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             )}
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             pedido.editandoSugFor == true &&
                             pedido.sugestfornecedor != pedido.novaSugFor && (
                               <IconeLapisDiv>
@@ -2297,6 +2310,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           ></InputSugest>
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            pedido.usuario == nomeusur &&
                             pedido.editandoObsFinal != true &&
                             pedido.obsFinal != '' && (
                               <IconeLapisDiv>
@@ -2333,6 +2347,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           {nivelusur == 2 &&
                             pedido.statusSolicitacao == 'aberto' &&
                             pedido.editandoObsFinal == true &&
+                            pedido.usuario == nomeusur &&
                             pedido.obsFinal != pedido.novaObsFinal && (
                               <IconeLapisDiv>
                                 <IconeConfirmarImg
