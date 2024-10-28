@@ -1349,20 +1349,19 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     </li>
                     <li
                       onClick={(e) =>
-                        (nivelusur >= 3 ||
-                          pedido.usuario != nomeusur ||
+                        (pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')) &&
                         toggleCard(e)
                       }
                       className={
-                        nivelusur == 2 && pedido.statusSolicitacao == 'aberto'
+                        pedido.usuario == nomeusur &&
+                        pedido.statusSolicitacao == 'aberto'
                           ? 'editar'
                           : ''
                       }
                       style={{
                         cursor:
-                          nivelusur >= 3 ||
                           pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')
@@ -1374,7 +1373,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         id={pedido.id + 'input' + 'empresa'}
                         style={{
                           visibility:
-                            nivelusur == 2 &&
+                            pedido.usuario == nomeusur &&
                             pedido.statusSolicitacao == 'aberto' &&
                             pedido.editandoEmpresa == true
                               ? 'visible'
@@ -1391,7 +1390,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       <p
                         style={{
                           visibility:
-                            nivelusur == 2 &&
+                            pedido.usuario == nomeusur &&
                             pedido.statusSolicitacao == 'aberto' &&
                             pedido.editandoEmpresa == true
                               ? 'hidden'
@@ -1401,8 +1400,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       >
                         {pedido.empresa}{' '}
                       </p>
-                      {nivelusur == 2 &&
-                        pedido.statusSolicitacao == 'aberto' &&
+                      {pedido.statusSolicitacao == 'aberto' &&
                         pedido.usuario == nomeusur &&
                         pedido.editandoEmpresa != true && (
                           <IconeLapisDiv>
@@ -1415,8 +1413,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             ></IconeLapisImg>
                           </IconeLapisDiv>
                         )}
-                      {nivelusur == 2 &&
-                        pedido.statusSolicitacao == 'aberto' &&
+                      {pedido.statusSolicitacao == 'aberto' &&
                         pedido.editandoEmpresa == true &&
                         pedido.empresa != pedido.novaEmpresa && (
                           <IconeConfirmarImg
@@ -1428,8 +1425,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             className="editandoEmpresa"
                           ></IconeConfirmarImg>
                         )}
-                      {nivelusur == 2 &&
-                        pedido.statusSolicitacao == 'aberto' &&
+                      {pedido.statusSolicitacao == 'aberto' &&
                         pedido.editandoEmpresa == true && (
                           <IconeCancelarImg
                             id={pedido.id}
@@ -1447,20 +1443,19 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     </li>
                     <li
                       onClick={(e) =>
-                        (nivelusur >= 3 ||
-                          pedido.usuario != nomeusur ||
+                        (pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')) &&
                         toggleCard(e)
                       }
                       className={
-                        nivelusur == 2 && pedido.statusSolicitacao == 'aberto'
+                        pedido.usuario == nomeusur &&
+                        pedido.statusSolicitacao == 'aberto'
                           ? 'editar'
                           : ''
                       }
                       style={{
                         cursor:
-                          nivelusur >= 3 ||
                           pedido.usuario != nomeusur ||
                           (nivelusur == 2 &&
                             pedido.statusSolicitacao != 'aberto')
@@ -1472,7 +1467,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         id={pedido.id + 'input' + 'dataLimite'}
                         style={{
                           visibility:
-                            nivelusur == 2 &&
+                            pedido.usuario == nomeusur &&
                             pedido.statusSolicitacao == 'aberto' &&
                             pedido.editandoDataLimite == true
                               ? 'visible'
@@ -1487,7 +1482,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       <p
                         style={{
                           visibility:
-                            nivelusur == 2 &&
+                            pedido.usuario == nomeusur &&
                             pedido.statusSolicitacao == 'aberto' &&
                             pedido.editandoDataLimite == true
                               ? 'hidden'
@@ -1497,8 +1492,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                       >
                         {pedido.dataLimite}{' '}
                       </p>
-                      {nivelusur == 2 &&
-                        pedido.statusSolicitacao == 'aberto' &&
+                      {pedido.statusSolicitacao == 'aberto' &&
                         pedido.usuario == nomeusur &&
                         pedido.editandoDataLimite != true && (
                           <IconeLapisDiv>
@@ -1514,8 +1508,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             ></IconeLapisImg>
                           </IconeLapisDiv>
                         )}
-                      {nivelusur == 2 &&
-                        pedido.statusSolicitacao == 'aberto' &&
+                      {pedido.statusSolicitacao == 'aberto' &&
                         pedido.editandoDataLimite == true &&
                         pedido.dataLimite != pedido.novaDataLimite && (
                           <IconeConfirmarImg
@@ -1526,8 +1519,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             }
                           ></IconeConfirmarImg>
                         )}
-                      {nivelusur == 2 &&
-                        pedido.statusSolicitacao == 'aberto' &&
+                      {pedido.statusSolicitacao == 'aberto' &&
                         pedido.editandoDataLimite == true && (
                           <IconeCancelarImg
                             id={pedido.id}
