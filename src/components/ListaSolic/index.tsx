@@ -1534,7 +1534,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     <ItemCabecalhoSituacao
                       className={
                         (pedido.statusSolicitacao == 'andamento' &&
-                          nivelusur == 2) ||
+                          nomeusur == pedido.usuario) ||
                         (nivelusur == 3 &&
                           pedido.podeDestrancar == true &&
                           (pedido.statusSolicitacao == 'aberto' ||
@@ -1547,6 +1547,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           pedido.statusSolicitacao == 'entregue' ||
                           (pedido.statusSolicitacao == 'aberto' &&
                             nivelusur == 2) ||
+                          nomeusur != pedido.usuario ||
                           (nivelusur == 3 && pedido.podeDestrancar == false)) &&
                         toggleCard(e)
                       }
@@ -1585,7 +1586,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               ></IconeTranca>
                             </IconeDiv>
                           )}
-                        {nivelusur == 2 &&
+                        {nomeusur == pedido.usuario &&
                           pedido.statusSolicitacao == 'andamento' && (
                             <IconeEntregueDiv>
                               <IconeEntregueImg
@@ -2152,7 +2153,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               ></ItemCaminhaokImg>
                             </ItemCheckDivCaminhao>
                           )}
-                        {nivelusur == 2 &&
+                        {nomeusur == pedido.usuario &&
                           pedido.statusSolicitacao != 'aberto' &&
                           pedido.statusSolicitacao != 'entregue' &&
                           item.status != 'aberto' && (
