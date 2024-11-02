@@ -169,7 +169,7 @@ export const TextSuccess = styled.p`
 export const DivBotaoInvisivelHome = styled.div`
   background-color: transparent;
   position: absolute;
-  width: 300px;
+  width: 420px;
   height: 90px;
   padding: 0px;
   margin: 0px;
@@ -183,4 +183,7 @@ export const DivBotaoInvisivelHome = styled.div`
     cursor: pointer;
   }
   transform: translate(-50%, -50%);
+  @media only screen and (max-width: 768px) {
+    width: 300px;
+  }
 `

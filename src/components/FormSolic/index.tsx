@@ -409,6 +409,23 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       console.log('Sucesso!')
       SetSituacaoPedido('concluido')
       SetResetPedido('on')
+      mandarEmail('criacaoSolicitacao', nomeusur)
+    }
+  }
+  const mandarEmail = async (
+    tipo_email: string,
+    id_solicitacao: string,
+    id_item = ''
+  ) => {
+    const respostaEnvio = await fetch(
+      `https://davidsenra.pythonanywhere.com/?type=requestEnvioEmail&tipoEmail=${tipo_email}&idSolicitacao=${id_solicitacao}&idItem=${id_item}`
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('emails_enviados')) {
+      return 'ok'
+    } else {
+      return 'erro'
     }
   }
   const NovoPedido = () => {

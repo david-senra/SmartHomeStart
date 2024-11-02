@@ -8,6 +8,10 @@ export const NomeUsuario = styled.h4`
   padding-top: 70px;
   font-size: 15px;
   font-weight: normal;
+  @media only screen and (max-width: 768px) {
+    padding-top: 67px;
+    font-size: 13px;
+  }
 `
 
 export const Header = styled.header`

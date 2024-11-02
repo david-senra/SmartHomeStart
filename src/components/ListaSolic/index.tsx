@@ -359,6 +359,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro'
     }
   }
+  const mandarEmail = async (
+    tipo_email: string,
+    id_solicitacao: string,
+    id_item = ''
+  ) => {
+    const respostaEnvio = await fetch(
+      `https://davidsenra.pythonanywhere.com/?type=requestEnvioEmail&tipoEmail=${tipo_email}&idSolicitacao=${id_solicitacao}&idItem=${id_item}`
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('emails_enviados')) {
+      return 'ok'
+    } else {
+      return 'erro'
+    }
+  }
   const fecharItemNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `fecharItemSolicitacao`
     const respostaEnvio = await fetch(
@@ -695,6 +711,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       setPopupType('')
       document.body.style.overflowY = 'visible'
       atualizarAposFecharSolicitacao()
+      mandarEmail('finalizarSolicitacao', elemento.id)
     } else {
       console.log('Erro!')
     }
@@ -789,6 +806,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
+      if (item_encontrado.status == 'entregue') {
+        mandarEmail('marcarItem', elemento.id, item_encontrado.id.toString())
+      }
     } else if (resposta_servidor == 'solicitacao_trancada') {
       SetPopupOpen(true)
       setPopupType('solicitacao_trancada')
