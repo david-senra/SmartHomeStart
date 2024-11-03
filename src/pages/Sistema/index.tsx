@@ -4,6 +4,7 @@ import Header from '../../containers/Header'
 import { ErroSistema } from '../../components/ErroSistema'
 import FormularioSolicitacao from '../../components/FormSolic'
 import ListaSolicitacao from '../../components/ListaSolic'
+import EditarParam from '../../components/EditarParam'
 import { Container, MenuPrincipal, ItemMenuPrincipal } from '../../styles'
 
 const Sistema = () => {
@@ -61,9 +62,7 @@ const Sistema = () => {
               </ItemMenuPrincipal>
             )}
             {nivel_acesso >= 4 && (
-              <ItemMenuPrincipal
-                onClick={() => setOpcao('gerenciamento_usuarios')}
-              >
+              <ItemMenuPrincipal onClick={() => setOpcao('editar_parametros')}>
                 Editar Parâmetros
               </ItemMenuPrincipal>
             )}
@@ -82,6 +81,7 @@ const Sistema = () => {
               nivelusur={nivel_acesso}
             />
           )}
+          {opcao == 'editar_parametros' && <EditarParam />}
         </Container>
       </>
     )

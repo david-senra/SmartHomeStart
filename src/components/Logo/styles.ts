@@ -10,7 +10,7 @@ export const LogoDiv = styled.div`
   margin-left: 49%;
   transform: translate(-49%, -49%);
   @media only screen and (max-width: 768px) {
-    width: 320px;
+    width: 300px;
     min-width: 320px;
     height: 62px;
     margin-left: 45%;
@@ -36,7 +36,7 @@ export const LogoStyle = styled.img`
   background-color: transparent;
   padding-top: 7px;
   @media only screen and (max-width: 768px) {
-    height: 80%;
+    height: 70%;
   }
 `
 
@@ -46,7 +46,7 @@ export const LogoStyleStaBarbara = styled.img`
   height: 100%;
   background-color: transparent;
   @media only screen and (max-width: 768px) {
-    height: 85%;
+    height: 75%;
   }
 `
 

@@ -234,13 +234,14 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
   }
   const changeItemQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
     const id_elemento = parseInt(e.currentTarget.id)
-    const valor_elemento = parseInt(e.currentTarget.value)
+    const valor_elemento = parseFloat(e.currentTarget.value)
     const nova_lista = [...listaCompras]
     function isElement(compra: Compra) {
       return compra.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
+    console.log(valor_elemento)
     elemento.quantidade = valor_elemento
     elemento.novaQuantidade = valor_elemento
     nova_lista.splice(indice_elemento, 1)
@@ -506,6 +507,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                     id={item.toString()}
                     name="item"
                     type="number"
+                    step="any"
                     required
                     autoComplete="off"
                     onChange={(e) => changeItemQuantity(e)}
@@ -664,7 +666,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
               <li>
                 {listaCompras.map((item) => (
                   <GridLista key={item.id}>
-                    <GridItem>{item.quantidade}</GridItem>
+                    <GridItem>
+                      {item.quantidade.toLocaleString('pt-BR')}
+                    </GridItem>
                     <GridItem>{item.unidade}</GridItem>
                     <GridItem>{item.descricao}</GridItem>
                     <GridItem>{item.centrocusto}</GridItem>

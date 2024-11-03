@@ -50,7 +50,7 @@ export const ListaSolicitacoes = styled.ul`
   @media only screen and (max-width: 768px) {
     padding-top: 20px;
     padding-bottom: 100px;
-    margin-right: 2vw;
+    margin-right: 5vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -227,12 +227,12 @@ export const GridCabecalhoSolto = styled.ul`
   @media only screen and (max-width: 768px) {
     width: 89vw;
     display: grid;
-    grid-template-columns: 11vw 13vw 17vw 17vw 13vw 16vw;
+    grid-template-columns: 9vw 17vw 13vw 22vw 9.5vw 20vw;
     padding: 1px;
     font-size: 10px;
     gap: 2px;
     margin-bottom: 5px;
-    margin-left: 0px;
+    margin-left: 5%;
     margin-right: 0px;
     padding-right: 0px;
     li {
@@ -573,6 +573,12 @@ export const ItemCabecalhoSituacao = styled.li`
       &.naoAndamentoAbreviado {
         display: none;
       }
+      &.entregueAbreviado {
+        display: none;
+      }
+      &.naoEntregueAbreviado {
+        display: none;
+      }
     }
   }
   &.noPointer {
@@ -597,6 +603,12 @@ export const ItemCabecalhoSituacao = styled.li`
           display: block;
         }
         &.andamentoCompleto {
+          display: none;
+        }
+        &.entregueAbreviado {
+          display: block;
+        }
+        &.entregueCompleto {
           display: none;
         }
       }
@@ -690,6 +702,7 @@ export const IconePDFImg = styled.img`
   cursor: pointer;
   @media only screen and (max-width: 768px) {
     height: 10px;
+    width: 0px;
   }
 `
 
@@ -705,6 +718,10 @@ export const LinhaDiv = styled.div<{ usuario: string }>`
 export const IconeExcelImg = styled.img`
   height: 25px;
   cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    height: 10px;
+    width: 0px;
+  }
 `
 
 export const IconeEntregueDiv = styled.div`

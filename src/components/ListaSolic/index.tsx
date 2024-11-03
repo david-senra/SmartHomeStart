@@ -264,52 +264,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     // })
     // const buffer = await blob.arrayBuffer()
   }
-  const downloadFile = async (url: any, fileName: any) => {
-    await fetch(url, {
-      method: 'GET',
-      headers: {
-        Origin: '*',
-        Authorization: `${localStorage.getItem('idToken')}`
-      }
-    })
-      .then((res) => {
-        return new Response(
-          new ReadableStream({
-            start(controller) {
-              let reader: any = null
-              if (res.body != null) {
-                reader = res.body.getReader()
-              }
-              read()
-              function read() {
-                reader.read().then((progressEvent: any) => {
-                  if (progressEvent.done === true) {
-                    controller.close()
-                    return
-                  }
-                  // const downloadedPercent =
-                  //  Math.round((loaded / contentLength) * 100) + '%'
-                  // console.log(downloadedPercent);
-                  controller.enqueue(progressEvent.value)
-                  read()
-                })
-              }
-            }
-          })
-        )
-      })
-      .then(async (response) => {
-        const blob = await response.blob()
-        const url1 = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url1
-        link.download = fileName
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(url1)
-      })
-  }
   async function gerarArquivoPDF(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestPDF&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
@@ -630,7 +584,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     } else if (situacao == 'andamento') {
       return 'ANDAMENTO'
     } else if (situacao == 'entregue') {
-      return 'ENTREGUE'
+      return 'CONCLUÍDO'
     }
   }
   const clickFechadura = async (
@@ -1222,19 +1176,19 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     } else {
       if (acao == 'editarQuantidade') {
         item_encontrado.editandoQuantidade = true
-        novoValorInput = String(item_encontrado.quantidade)
+        novoValorInput = item_encontrado.quantidade
         inputMudanca =
           e.currentTarget.parentElement?.previousElementSibling
             .previousElementSibling
         inputMudanca.value = novoValorInput
       } else if (acao == 'quantidadeAlterada') {
-        const novaQuantidadeRecebida = e.currentTarget.value
+        const novaQuantidadeRecebida = parseFloat(e.currentTarget.value)
         item_encontrado.novaQuantidade = novaQuantidadeRecebida
         e.currentTarget.value = novaQuantidadeRecebida
       } else if (acao == 'cancelarEdicaoQuantidade') {
         item_encontrado.editandoQuantidade = false
         item_encontrado.novaQuantidade = item_encontrado.quantidade
-        novoValorInput = String(item_encontrado.quantidade)
+        novoValorInput = item_encontrado.quantidade
         inputMudanca = e.currentTarget.parentElement?.previousElementSibling
       } else if (acao == 'editarUnidade') {
         item_encontrado.editandoUnidade = true
@@ -1577,7 +1531,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           className={
                             pedido.statusSolicitacao == 'andamento'
                               ? 'andamentoCompleto'
-                              : ''
+                              : pedido.statusSolicitacao == 'entregue'
+                                ? 'entregueCompleto'
+                                : ''
                           }
                         >
                           {textoSituacao(pedido.statusSolicitacao)}{' '}
@@ -1590,6 +1546,15 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           }
                         >
                           AND
+                        </p>
+                        <p
+                          className={
+                            pedido.statusSolicitacao == 'entregue'
+                              ? 'entregueAbreviado'
+                              : 'naoEntregueAbreviado'
+                          }
+                        >
+                          CONCL
                         </p>
                         {nivelusur == 3 &&
                           pedido.statusSolicitacao != 'entregue' &&
@@ -1680,7 +1645,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           item.editandoQuantidade == true ? (
                             ''
                           ) : (
-                            <p>{item.quantidade}</p>
+                            <p>{item.quantidade.toLocaleString('pt-BR')}</p>
                           )}
                           {pedido.statusSolicitacao == 'aberto' &&
                             pedido.usuario == nomeusur &&
