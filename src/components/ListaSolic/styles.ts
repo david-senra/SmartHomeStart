@@ -1649,3 +1649,39 @@ export const TextoEmEntrega = styled.p`
     display: none;
   }
 `
+
+export const DivRelatorioCompleto = styled.div`
+  margin-bottom: 40px;
+  button {
+    cursor: pointer;
+    border: 1px solid black;
+    text-align: center;
+    padding: 5px;
+    width: 15vw;
+    color: white;
+    background-color: #4cbb17;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    &:hover {
+      background-color: green;
+    }
+    &.desativado {
+      background-color: gray;
+      cursor: default;
+      &:hover {
+        background-color: gray;
+        cursor: default;
+      }
+    }
+  }
+  h3 {
+    padding: 0;
+    margin: 0;
+    margin-top: 5px;
+    color: blue;
+  }
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
+`

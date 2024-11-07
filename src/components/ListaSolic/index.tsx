@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Pusher, { Channel } from 'pusher-js'
 import {
   DivGeral,
@@ -55,6 +55,7 @@ import {
   BotaoConfirmar,
   BotaoVoltar,
   TextoItemEntregue,
+  DivRelatorioCompleto,
   TextoEmEntrega
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
@@ -66,8 +67,6 @@ import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
 import IconeCaminhaoEntrega from '../../assets/images/truckgreen.png'
 import IconePDF from '../../assets/images/pdf.png'
-import WhiteCover from '../../assets/images/whitecover.png'
-import InfoData from '../../info_data.json'
 Pusher.logToConsole = true
 const pusher = new Pusher('cbf75472b9e1dfb532eb', {
   cluster: 'sa1',
@@ -240,6 +239,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   const [popupType, setPopupType] = useState<string>('')
   const [popUpConfirmationPedido, setPopupConfirmationPedido] =
     useState<string>('')
+  const [situacaoDownloadPlanilhaGeral, setSituacaoDownloadPlanilhaGeral] =
+    useState<string>('ocioso')
   const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
   async function gerarArquivoExcel(solicitacaoId: string) {
@@ -257,6 +258,28 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       linkElement.click()
       document.body.removeChild(linkElement)
     }
+    // OR you can save/write file locally.
+    // fs.writeFileSync(outputFilename, response.data)
+    // const blob = new Blob(respostaEnvio, {
+    //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+    // })
+    // const buffer = await blob.arrayBuffer()
+  }
+  async function gerarArquivoExcelCompleto() {
+    const respostaEnvio = await fetch(
+      `https://davidsenra.pythonanywhere.com/?type=requestPlanilhaSolComprasCompleta`
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.split(';')[0] == 'link_criado') {
+      const link_download = resposta.split(';')[1]
+      const linkElement = document.createElement('a')
+      linkElement.href = link_download
+      document.body.appendChild(linkElement)
+      linkElement.click()
+      document.body.removeChild(linkElement)
+    }
+    setSituacaoDownloadPlanilhaGeral('ocioso')
     // OR you can save/write file locally.
     // fs.writeFileSync(outputFilename, response.data)
     // const blob = new Blob(respostaEnvio, {
@@ -684,6 +707,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   ) => {
     const id_elemento = e.currentTarget.id
     gerarArquivoExcel(id_elemento)
+  }
+  const baixarExcelTodosPedidos = () => {
+    setSituacaoDownloadPlanilhaGeral('baixando')
+    gerarArquivoExcelCompleto()
   }
   const baixarPDFPedido = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
@@ -1277,6 +1304,28 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         )}
         {SituacaoExibicao == 'listaCarregada' && (
           <ListaSolicitacoes>
+            {nomeusur == 'David Senra' && (
+              <>
+                <DivRelatorioCompleto>
+                  <button
+                    onClick={() =>
+                      situacaoDownloadPlanilhaGeral == 'ocioso' &&
+                      baixarExcelTodosPedidos()
+                    }
+                    className={
+                      situacaoDownloadPlanilhaGeral == 'baixando'
+                        ? 'desativado'
+                        : ''
+                    }
+                  >
+                    Baixar Relatório Completo
+                  </button>
+                  {situacaoDownloadPlanilhaGeral == 'baixando' && (
+                    <h3>Processando... Aguarde...</h3>
+                  )}
+                </DivRelatorioCompleto>
+              </>
+            )}
             <GridCabecalhoSolto>
               <li>
                 <b>Nº Solic:</b>

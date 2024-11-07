@@ -5,6 +5,7 @@ import { ErroSistema } from '../../components/ErroSistema'
 import FormularioSolicitacao from '../../components/FormSolic'
 import ListaSolicitacao from '../../components/ListaSolic'
 import EditarParam from '../../components/EditarParam'
+import FormMovimentacaoPessoal from '../../components/FormMovPessoal'
 import { Container, MenuPrincipal, ItemMenuPrincipal } from '../../styles'
 
 const Sistema = () => {
@@ -49,9 +50,16 @@ const Sistema = () => {
             )}
             {nivel_acesso >= 4 && (
               <ItemMenuPrincipal
-                onClick={() => setOpcao('movimentacao_pessoal')}
+                onClick={() => setOpcao('solicitar_movimentacao_pessoal')}
               >
-                Movimentação de Pessoal
+                Solicitar Mov. de Pessoal
+              </ItemMenuPrincipal>
+            )}
+            {nivel_acesso >= 4 && (
+              <ItemMenuPrincipal
+                onClick={() => setOpcao('exibir_movimentacao_pessoal')}
+              >
+                Exibir Mov. de Pessoal
               </ItemMenuPrincipal>
             )}
             {nivel_acesso >= 4 && (
@@ -80,6 +88,9 @@ const Sistema = () => {
               nomeusur={nome_usuario}
               nivelusur={nivel_acesso}
             />
+          )}
+          {opcao == 'solicitar_movimentacao_pessoal' && (
+            <FormMovimentacaoPessoal nomeusur={nome_usuario} />
           )}
           {opcao == 'editar_parametros' && <EditarParam />}
         </Container>

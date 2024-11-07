@@ -52,9 +52,75 @@ export const DivEmpresa = styled.div`
   }
 `
 
-export const DivListaSolicitacao = styled.div`
-  padding-bottom: 100px;
+export const DivQuantidadeVaga = styled.div`
+  display: flex;
+  padding-top: 20px;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  label {
+    font-weight: bold;
+    padding-top: 5px;
+    font-size: 18px;
+  }
+  input {
+    font-size: 18px;
+    padding: 5px;
+    width: 50px;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    padding-top: 20px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    label {
+      font-weight: bold;
+      padding-top: 5px;
+      font-size: 18px;
+    }
+    input {
+      font-size: 18px;
+      padding: 5px;
+    }
+  }
 `
+
+export const DivNomeVaga = styled.div`
+  display: flex;
+  padding-top: 20px;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  label {
+    font-weight: bold;
+    padding-top: 5px;
+    font-size: 18px;
+  }
+  input {
+    font-size: 18px;
+    padding: 5px;
+    width: 350px;
+  }
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    padding-top: 20px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    label {
+      font-weight: bold;
+      padding-top: 5px;
+      font-size: 18px;
+    }
+    input {
+      font-size: 18px;
+      padding: 5px;
+    }
+  }
+`
+
+export const DivListaSolicitacao = styled.div``
 
 export const GridListaCabecalho = styled.ul`
   width: 100%;
@@ -556,7 +622,9 @@ export const DivButtonSolicitar = styled.div`
   button {
     text-align: center;
     margin-top: 30px;
-    width: 80px;
+    width: auto;
+    padding-left: 5px;
+    padding-right: 5px;
     height: 35px;
     border: none;
     border-radius: 5px;
@@ -620,6 +688,7 @@ export const DivBotoesConfirmacao = styled.li`
   flex-direction: horizontal;
   justify-content: center;
   gap: 10px;
+  padding-bottom: 100px;
   #botaoconfirmar {
     text-align: center;
     margin-top: 30px;
@@ -634,13 +703,6 @@ export const DivBotoesConfirmacao = styled.li`
     cursor: pointer;
     &:hover {
       background-color: #9acd32;
-    }
-    &.desativado {
-      cursor: default;
-      background-color: gray;
-      &:hover {
-        background-color: gray;
-      }
     }
   }
   #botaocancelar {
@@ -666,6 +728,7 @@ export const DivBotaoNovoPedido = styled.li`
   flex-direction: horizontal;
   justify-content: center;
   gap: 10px;
+  padding-bottom: 100px;
   button {
     text-align: center;
     margin-top: 30px;
@@ -690,12 +753,4 @@ export const DivMensagemErro = styled.div`
     text-align: center;
     color: #8f1106;
   }
-`
-
-export const TextoCarregando = styled.h3`
-  font-size: 20px;
-  color: blue;
-  padding: 0px;
-  margin: 0px;
-  margin-top: 20px;
 `

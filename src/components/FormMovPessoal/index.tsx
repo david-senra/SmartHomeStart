@@ -2,6 +2,8 @@ import React from 'react'
 import {
   FormularioCompra,
   DivEmpresa,
+  DivQuantidadeVaga,
+  DivNomeVaga,
   DivItem,
   DivItemNome,
   DivItemQuant,
@@ -26,11 +28,10 @@ import {
   GridItemCabecalhoUltimo,
   GridItemUltimo,
   TextoComLineBreak,
-  DivLineBreak,
-  TextoCarregando
+  DivLineBreak
 } from './styles'
 
-const FormularioSolicitacao = ({ nomeusur = '' }) => {
+const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   class Compra {
     id: number
     quantidade: number
@@ -146,10 +147,13 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     React.useState<string>('solicitando')
   const [empresaSelecionada, setEmpresaSelecionada] =
     React.useState<string>('Cantaria')
+  const [naturezaMovimentacao, setNaturezaMovimentacao] =
+    React.useState<string>('')
+  const [codigoVaga, setCodigoVaga] = React.useState<string>('')
+  const [quantidadeVaga, setQuantidadeVaga] = React.useState<string>('')
+  const [obra, setObra] = React.useState<string>('')
   const [DataLimite, SetDataLimite] = React.useState<string>('')
   const [MensagemErro, SetMensagemErro] = React.useState<string>('')
-  const [estadoEnvioSolicitacao, setEstadoEnvioSolicitacao] =
-    React.useState<string>('ocioso')
   const [ObservacaoGeral, setObservacaoGeral] = React.useState<string>('')
   const [sugestaoFornecedores, setSugestaoFornecedores] =
     React.useState<string>('')
@@ -318,6 +322,31 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     const valor_elemento = e.currentTarget.value
     setEmpresaSelecionada(valor_elemento)
   }
+  const changeNaturezaMov = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valor_elemento = e.currentTarget.value
+    setNaturezaMovimentacao(valor_elemento)
+  }
+  const changeCodigoVaga = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valor_elemento = e.currentTarget.value
+    setCodigoVaga(valor_elemento)
+  }
+  const changeObra = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valor_elemento = e.currentTarget.value
+    setObra(valor_elemento)
+  }
+  const changeVagaSelecionada = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valor_elemento = e.currentTarget.value
+    setObra(valor_elemento)
+  }
+  const changeQuantidadeVaga = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valor_elemento = e.currentTarget.value
+    setCodigoVaga(valor_elemento)
+    e.currentTarget.value = valor_elemento
+  }
+  const changeNomeVaga = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valor_elemento = e.currentTarget.value
+    setObra(valor_elemento)
+  }
   const solicitarCompra = () => {
     const texto_erro = document.getElementById('mensagemErro')
     texto_erro?.scrollIntoView()
@@ -362,7 +391,6 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     SetSituacaoPedido('solicitando')
   }
   const enviarSolicitacao = async () => {
-    setEstadoEnvioSolicitacao('enviando')
     const anoData = DataLimite.split('-')[0]
     const mesData = DataLimite.split('-')[1]
     const diaData = DataLimite.split('-')[2]
@@ -416,7 +444,6 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       SetResetPedido('on')
       mandarEmail('criacaoSolicitacao', nomeusur)
     }
-    setEstadoEnvioSolicitacao('ocioso')
   }
   const mandarEmail = async (
     tipo_email: string,
@@ -470,7 +497,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
   return (
     <>
       <FormularioCompra>
-        <h1>Solicitar Compra de Materiais e/ou Serviços</h1>
+        <h1>Solicitar Movimentação de Pessoal</h1>
         <br></br>
         {ResetPedido == 'off' && (
           <div
@@ -487,8 +514,202 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                 <option value="Santa Bárbara">Santa Bárbara</option>
               </select>
             </DivEmpresa>
-            <br></br>
-            <DivItem className="headerItems">
+            <DivEmpresa>
+              <label>Tipo de Solicitação:</label>
+              <select onChange={(e) => changeNaturezaMov(e)}>
+                <option
+                  disabled
+                  selected
+                  value=""
+                  style={{ display: 'none' }}
+                ></option>
+                <option value="AberturaVaga">Abertura de Vagas</option>
+                <option value="Admissao">Admissão</option>
+                <option value="Ferias">Solicitar Férias</option>
+                <option value="Faltas">Assinalar Faltas</option>
+                <option value="Transferencia">Transferência de Obra</option>
+                <option value="Adicional">Dia(s) Adicional(is)</option>
+                <option value="Demissao">Demissão</option>
+              </select>
+            </DivEmpresa>
+            {naturezaMovimentacao != '' &&
+              naturezaMovimentacao != 'Transferencia' && (
+                <>
+                  <DivEmpresa>
+                    <label>Obra:</label>
+                    <select onChange={(e) => changeCodigoVaga(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="RE">Reserva Técnica - Renova</option>
+                      <option value="PI">Igreja da Matriz - Serro</option>
+                      <option value="AJ">
+                        BH - Residencial Arthur Bernardes
+                      </option>
+                    </select>
+                  </DivEmpresa>
+                </>
+              )}
+            {naturezaMovimentacao != '' &&
+              naturezaMovimentacao == 'AberturaVaga' && (
+                <>
+                  <DivEmpresa>
+                    <label>Código da Vaga:</label>
+                    <select onChange={(e) => changeCodigoVaga(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="RE">RE - Restaurador</option>
+                      <option value="PI">PI - Pintor</option>
+                      <option value="AJ">AJ - Ajudante</option>
+                    </select>
+                  </DivEmpresa>
+                  <DivQuantidadeVaga>
+                    <label>Quantidade de vagas:</label>
+                    <input
+                      name="item"
+                      type="number"
+                      defaultValue="1"
+                      step="any"
+                      required
+                      autoComplete="off"
+                      onChange={(e) => changeQuantidadeVaga(e)}
+                    ></input>
+                  </DivQuantidadeVaga>
+                </>
+              )}
+            {naturezaMovimentacao != '' &&
+              naturezaMovimentacao == 'Admissao' && (
+                <>
+                  <DivEmpresa>
+                    <label>Tipo de Admissão:</label>
+                    <select onChange={(e) => changeCodigoVaga(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="CLT">CLT</option>
+                      <option value="MEI">PJ-MEI</option>
+                    </select>
+                  </DivEmpresa>
+                  <DivEmpresa>
+                    <label>Vaga Disponível:</label>
+                    <select onChange={(e) => changeVagaSelecionada(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="RE">RE01 - Restaurador</option>
+                      <option value="RE">RE02 - Restaurador</option>
+                      <option value="PI">PI01 - Pintor</option>
+                      <option value="AJ">AJ01 - Ajudante</option>
+                    </select>
+                  </DivEmpresa>
+                  <br></br>
+                  <br></br>
+                  <h3>Dados Pessoais:</h3>
+                  <DivNomeVaga>
+                    <label>Nome:</label>
+                    <input
+                      name="item"
+                      type="text"
+                      required
+                      autoComplete="off"
+                      onChange={(e) => changeNomeVaga(e)}
+                    ></input>
+                  </DivNomeVaga>
+                  <DivNomeVaga>
+                    <label>RG:</label>
+                    <input
+                      name="item"
+                      type="text"
+                      required
+                      autoComplete="off"
+                      onChange={(e) => changeNomeVaga(e)}
+                    ></input>
+                  </DivNomeVaga>
+                  <DivNomeVaga>
+                    <label>CPF:</label>
+                    <input
+                      name="item"
+                      type="text"
+                      required
+                      autoComplete="off"
+                      onChange={(e) => changeNomeVaga(e)}
+                    ></input>
+                  </DivNomeVaga>
+                </>
+              )}
+            {naturezaMovimentacao != '' &&
+              naturezaMovimentacao == 'Transferencia' && (
+                <>
+                  <DivEmpresa>
+                    <label>Obra de Origem:</label>
+                    <select onChange={(e) => changeCodigoVaga(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="RE">Reserva Técnica - Renova</option>
+                      <option value="PI">Igreja da Matriz - Serro</option>
+                      <option value="AJ">
+                        BH - Residencial Arthur Bernardes
+                      </option>
+                    </select>
+                  </DivEmpresa>
+                  <DivEmpresa>
+                    <label>Obra de Destino:</label>
+                    <select onChange={(e) => changeCodigoVaga(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="RE">Reserva Técnica - Renova</option>
+                      <option value="PI">Igreja da Matriz - Serro</option>
+                      <option value="AJ">
+                        BH - Residencial Arthur Bernardes
+                      </option>
+                    </select>
+                  </DivEmpresa>
+                </>
+              )}
+
+            {naturezaMovimentacao != '' &&
+              naturezaMovimentacao != 'Admissao' &&
+              naturezaMovimentacao != 'AberturaVaga' && (
+                <>
+                  <DivEmpresa>
+                    <label>Colaborador(a):</label>
+                    <select onChange={(e) => changeCodigoVaga(e)}>
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="RE">RE0001 - Fulano</option>
+                      <option value="PI">RE0002 - Beltrano</option>
+                      <option value="AJ">RE0003 - Ciclano</option>
+                    </select>
+                  </DivEmpresa>
+                </>
+              )}
+            {/* <br></br> */}
+            {/* <DivItem className="headerItems">
               <DivItemQuant>
                 <label>Qtd:</label>
               </DivItemQuant>
@@ -504,8 +725,8 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
               <DivItemDesc>
                 <label>Obs:</label>
               </DivItemDesc>
-            </DivItem>
-            {listaItems.map((item) => (
+            </DivItem> */}
+            {/* {listaItems.map((item) => (
               <DivItem key={item}>
                 <DivItemQuant>
                   <input
@@ -590,14 +811,14 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                   </DivButtonRemoverItem>
                 )}
               </DivItem>
-            ))}
-            <DivButtonAdicionarItem>
+            ))} */}
+            {/* <DivButtonAdicionarItem>
               <button type="button" onClick={adicionarItem}>
                 +
               </button>
-            </DivButtonAdicionarItem>
-            <DivDataObs>
-              <br></br>
+            </DivButtonAdicionarItem> */}
+            {/* <DivDataObs> */}
+            {/* <br></br>
               <DivSugestaoFornecedores>
                 <label>Sugerir Fornecedores (opcional):</label>
               </DivSugestaoFornecedores>
@@ -619,8 +840,8 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                   onChange={(e) => changeObservacao(e)}
                 ></textarea>
               </DivObsGeral>
-              <br></br>
-              <DivDataLimite>
+              <br></br> */}
+            {/* <DivDataLimite>
                 <label>Data Limite na Obra:</label>
                 <input
                   name="item"
@@ -630,13 +851,15 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                   autoComplete="off"
                   onChange={(e) => changeDataLimite(e)}
                 ></input>
-              </DivDataLimite>
-            </DivDataObs>
-            <DivButtonSolicitar>
-              <button type={'button'} onClick={solicitarCompra}>
-                Solicitar
-              </button>
-            </DivButtonSolicitar>
+              </DivDataLimite> */}
+            {/* </DivDataObs> */}
+            {naturezaMovimentacao != '' && (
+              <DivButtonSolicitar>
+                <button type={'button'} onClick={solicitarCompra}>
+                  Solicitar
+                </button>
+              </DivButtonSolicitar>
+            )}
             {MensagemErro != '' && (
               <DivMensagemErro id="mensagemErro">
                 <p>{MensagemErro}</p>
@@ -753,19 +976,11 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                 <button
                   id="botaoconfirmar"
                   type="button"
-                  onClick={() =>
-                    estadoEnvioSolicitacao == 'ocioso' && enviarSolicitacao()
-                  }
-                  className={
-                    estadoEnvioSolicitacao == 'enviando' ? 'desativado' : ''
-                  }
+                  onClick={enviarSolicitacao}
                 >
                   Confirmar
                 </button>
               </DivBotoesConfirmacao>
-              {estadoEnvioSolicitacao == 'enviando' && (
-                <TextoCarregando>Enviando... Aguarde...</TextoCarregando>
-              )}
             </ul>
           </DivListaSolicitacao>
         )}
@@ -788,4 +1003,4 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
   )
 }
 
-export default FormularioSolicitacao
+export default FormMovimentacaoPessoal

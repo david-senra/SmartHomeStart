@@ -14,8 +14,11 @@ const EditarParam = () => {
     }
   }
   const [listaCentrosCusto, setListaCentrosCusto] = useState<CentroCusto[]>([])
+  const [listaUnidades, setListaUnidades] = useState<string[]>([])
   const [firstLoad, setFirstLoad] = useState<boolean>(true)
   const [situacaoExibicaoCentrosCusto, setSituacaoExibicaoCentrosCusto] =
+    useState<string>('carregando')
+  const [situacaoExibicaoUnidades, setSituacaoExibicaoUnidades] =
     useState<string>('carregando')
   const solicitarParametros = async () => {
     const respostaEnvio = await fetch(
@@ -25,6 +28,7 @@ const EditarParam = () => {
     const resposta = (await corpo_resposta).toString()
     const json_resposta = JSON.parse(resposta)
     const centros_custo_lista = json_resposta.centros_custo
+    const unidades_lista = json_resposta.unidades_medida
     if (centros_custo_lista.length === 0) {
       setSituacaoExibicaoCentrosCusto('semCentrosCusto')
     } else {
@@ -40,10 +44,42 @@ const EditarParam = () => {
       setListaCentrosCusto(dados_centros_custo)
       setSituacaoExibicaoCentrosCusto('listaCarregada')
     }
+    if (unidades_lista.length === 0) {
+      setSituacaoExibicaoCentrosCusto('semUnidadesMedida')
+    } else {
+      const dados_unidades: string[] = []
+      for (const unidade of unidades_lista) {
+        dados_unidades.push(unidade)
+      }
+      setListaUnidades(dados_unidades)
+      setSituacaoExibicaoUnidades('listaCarregada')
+    }
+  }
+  if (firstLoad) {
+    setFirstLoad(false)
+    solicitarParametros()
   }
   return (
     <>
-      <h1>Centros de Custo</h1>
+      <br></br>
+      <h1>Unidades:</h1>
+      <br></br>
+      {listaUnidades.map((pedido) => (
+        <>
+          <p>{pedido}</p>
+        </>
+      ))}
+      <br></br>
+      <h1>Centros de Custo:</h1>
+      <br></br>
+      {listaCentrosCusto.map((centro_custo) => (
+        <>
+          <p>
+            {centro_custo.numero} - {centro_custo.nome} ###{' '}
+            {centro_custo.completo}
+          </p>
+        </>
+      ))}
     </>
   )
 }
