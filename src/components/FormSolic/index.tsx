@@ -394,7 +394,8 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       editandoObsFinal: false,
       novaObsFinal: ObservacaoGeral,
       podeDestrancar: true,
-      requisicao: 'criacaoSolicitacao'
+      requisicao: 'criacaoSolicitacao',
+      todosEntregues: 'nao'
     }
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',

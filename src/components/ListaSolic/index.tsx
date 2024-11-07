@@ -164,6 +164,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     novaObsFinal: string
     podeDestrancar: boolean
     requisicao: string
+    todosEntregues: string
 
     constructor(data: {
       id: string
@@ -187,6 +188,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       novaObsFinal: string
       podeDestrancar: boolean
       requisicao: string
+      todosEntregues: string
     }) {
       this.id = data.id
       this.usuario = data.usuario
@@ -209,6 +211,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       this.novaObsFinal = data.novaObsFinal
       this.podeDestrancar = data.podeDestrancar
       this.requisicao = data.requisicao
+      this.todosEntregues = data.todosEntregues
     }
   }
   const listaCentrosCusto = [
@@ -485,7 +488,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           editandoObsFinal: false,
           novaObsFinal: value.obsFinal,
           podeDestrancar: value.podeDestrancar,
-          requisicao: value.requisicao
+          requisicao: value.requisicao,
+          todosEntregues: value.todosEntregues
         }
         const numeroItens = solicitacao.itens.length
         let linhasSugForn = 0
