@@ -64,6 +64,7 @@ import FechaduraFechada from '../../assets/images/trancado.png'
 import IconeExcel from '../../assets/images/excelicon.png'
 import IconeEntregue from '../../assets/images/iconeEntregue.png'
 import IconeCancelar from '../../assets/images/cancel.png'
+import IconeReciclar from '../../assets/images/recycle.png'
 import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
@@ -374,6 +375,28 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const corpo_resposta = respostaEnvio.text()
     const resposta = (await corpo_resposta).toString()
     if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else {
+      return 'erro'
+    }
+  }
+  const cancelarItemNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `cancelarItemSolicitacao`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('cancelamento_realizado')) {
       return 'ok'
     } else {
       return 'erro'
@@ -846,7 +869,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const itensNaoAbertos: Compra[] = []
     const itensAbertos: Compra[] = []
     novoElemento.itens.filter(
-      (item) => item.status != 'aberto' && itensNaoAbertos.push(item)
+      (item) =>
+        item.status != 'aberto' &&
+        item.status != 'cancelado' &&
+        itensNaoAbertos.push(item)
     )
     novoElemento.itens.filter(
       (item) => item.status == 'aberto' && itensAbertos.push(item)
@@ -888,6 +914,86 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       console.log('Erro!')
     }
   }
+  const cancelarItemPedido = async (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    let id_elemento = ''
+    if (e.currentTarget.parentElement != null) {
+      id_elemento = e.currentTarget.parentElement.id
+    }
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const id_item = e.currentTarget.id
+    function isItem(compra: Compra) {
+      return compra.id == parseInt(id_item)
+    }
+    const array_itens = elemento.itens
+    const indice_item = array_itens.findIndex(isItem)
+    const item_encontrado = array_itens.filter(isItem)[0]
+    if (item_encontrado.status == 'aberto') {
+      item_encontrado.status = 'cancelado'
+      const dataAgora = new Date()
+      const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
+      item_encontrado.dataFinalizado = dataAgoraBrasil
+    } else {
+      item_encontrado.status = 'aberto'
+      item_encontrado.dataFinalizado = ''
+    }
+    const novoElemento = elemento
+    novoElemento.itens.splice(indice_item, 1)
+    novoElemento.itens.splice(indice_item, 0, item_encontrado)
+    let haItensNaoCancelados = true
+    const itensNaoCancelados: Compra[] = []
+    novoElemento.itens.filter(
+      (item) =>
+        item.status != 'finalizado' &&
+        item.status != 'cancelado' &&
+        itensNaoCancelados.push(item)
+    )
+    haItensNaoCancelados = itensNaoCancelados.length > 0
+    if (haItensNaoCancelados) {
+      const resposta_atualizacao_servidor = cancelarItemNoServidor(novoElemento)
+      const resposta_recebida = await resposta_atualizacao_servidor
+      if (resposta_recebida == 'ok') {
+        elemento.itens.splice(indice_item, 1)
+        elemento.itens.splice(indice_item, 0, item_encontrado)
+        nova_lista.splice(indice_elemento, 1)
+        nova_lista.splice(indice_elemento, 0, elemento)
+        SetListaPedidos(nova_lista)
+        atualizarAposFecharSolicitacao()
+      } else {
+        console.log('Erro!')
+      }
+    } else {
+      document.body.style.overflowY = 'hidden'
+      item_encontrado.status = 'aberto'
+      item_encontrado.dataFinalizado = ''
+      elemento.itens.splice(indice_item, 1)
+      elemento.itens.splice(indice_item, 0, item_encontrado)
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+      SetPopupOpen(true)
+      setPopupType('cancelamento_pedido')
+      setPopupConfirmationPedido(id_elemento)
+    }
+    // const resposta_atualizacao_servidor = cancelarItemNoServidor(novoElemento)
+    // const resposta_recebida = await resposta_atualizacao_servidor
+    // if (resposta_recebida == 'ok') {
+    //   elemento.itens.splice(indice_item, 1)
+    //   elemento.itens.splice(indice_item, 0, item_encontrado)
+    //   nova_lista.splice(indice_elemento, 1)
+    //   nova_lista.splice(indice_elemento, 0, elemento)
+    //   SetListaPedidos(nova_lista)
+    //   atualizarAposFecharSolicitacao()
+    // } else {
+    //   console.log('Erro!')
+    // }
+  }
   const finalizarItemPedido = async (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
@@ -924,7 +1030,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     let haItensNaoFinalizados = true
     const itensNaoFinalizados: Compra[] = []
     novoElemento.itens.filter(
-      (item) => item.status != 'finalizado' && itensNaoFinalizados.push(item)
+      (item) =>
+        item.status != 'finalizado' &&
+        item.status != 'cancelado' &&
+        itensNaoFinalizados.push(item)
     )
     haItensNaoFinalizados = itensNaoFinalizados.length > 0
     if (haItensNaoFinalizados) {
@@ -1800,6 +1909,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             <p>{item.quantidade.toLocaleString('pt-BR')}</p>
                           )}
                           {pedido.statusSolicitacao == 'aberto' &&
+                            item.status != 'cancelado' &&
                             pedido.usuario == nomeusur &&
                             item.editandoQuantidade != true && (
                               <IconeLapisDiv>
@@ -1895,6 +2005,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                           {nomeusur == pedido.usuario &&
                             pedido.statusSolicitacao == 'aberto' &&
+                            item.status != 'cancelado' &&
                             pedido.usuario == nomeusur &&
                             item.editandoUnidade != true && (
                               <IconeLapisDiv>
@@ -1985,6 +2096,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             </TextoDescricaoItem>
                           )}
                           {pedido.statusSolicitacao == 'aberto' &&
+                            item.status != 'cancelado' &&
                             pedido.usuario == nomeusur &&
                             item.editandoDescricao != true && (
                               <IconeLapisDiv
@@ -2099,6 +2211,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             <p>{item.centrocusto}</p>
                           )}
                           {pedido.statusSolicitacao == 'aberto' &&
+                            item.status != 'cancelado' &&
                             pedido.usuario == nomeusur &&
                             item.editandoCentroDeCusto != true && (
                               <IconeLapisDiv>
@@ -2209,6 +2322,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             </p>
                           )}
                           {pedido.statusSolicitacao == 'aberto' &&
+                            item.status != 'cancelado' &&
                             pedido.usuario == nomeusur &&
                             item.editandoObservacao != true && (
                               <IconeLapisDiv>
@@ -2271,6 +2385,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                         {nivelusur == 3 &&
                           pedido.statusSolicitacao != 'aberto' &&
                           pedido.statusSolicitacao != 'entregue' &&
+                          item.status != 'cancelado' &&
                           item.status != 'finalizado' && (
                             <ItemCheckDivCaminhao id={pedido.id}>
                               <ItemCaminhaokImg
@@ -2288,8 +2403,29 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             </ItemCheckDivCaminhao>
                           )}
                         {nomeusur == pedido.usuario &&
+                          pedido.statusSolicitacao == 'aberto' &&
+                          (item.status == 'aberto' ||
+                            item.status == 'cancelado') && (
+                            <ItemCheckDiv id={pedido.id}>
+                              <ItemCheckImg
+                                id={String(item.id)}
+                                src={
+                                  item.status == 'aberto'
+                                    ? IconeCancelar
+                                    : IconeReciclar
+                                }
+                                onClick={cancelarItemPedido}
+                                className={
+                                  item.status == 'cancelado' ? 'cancelado' : ''
+                                }
+                              ></ItemCheckImg>
+                            </ItemCheckDiv>
+                          )}
+                        {nomeusur == pedido.usuario &&
                           pedido.statusSolicitacao != 'aberto' &&
                           pedido.statusSolicitacao != 'entregue' &&
+                          pedido.statusSolicitacao != 'cancelado' &&
+                          item.status != 'cancelado' &&
                           item.status != 'aberto' && (
                             <ItemCheckDiv id={pedido.id}>
                               <ItemCheckImg
@@ -2334,26 +2470,39 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               <p>{item.dataFinalizado}</p>
                             </TextoItemEntregue>
                           )}
-                        {item.status == 'entregue' && (
+                        {(item.status == 'entregue' ||
+                          item.status == 'cancelado') && (
                           <TextoEmEntrega
                             className={nivelusur == 2 ? 'comprador' : ''}
                           >
-                            EM ENTREGA
+                            {item.status == 'entregue'
+                              ? 'EM ENTREGA'
+                              : 'CANCELADO'}
                           </TextoEmEntrega>
                         )}
-                        {pedido.statusSolicitacao != 'aberto' &&
+                        {(pedido.statusSolicitacao != 'aberto' ||
+                          item.status == 'cancelado') &&
                           pedido.statusSolicitacao != 'entregue' &&
                           (item.status == 'entregue' ||
-                            item.status == 'finalizado') && (
-                            <DivEntregue id={pedido.id}></DivEntregue>
+                            item.status == 'finalizado' ||
+                            item.status == 'cancelado') && (
+                            <DivEntregue
+                              id={pedido.id}
+                              tipo={item.status}
+                            ></DivEntregue>
                           )}
-                        {pedido.statusSolicitacao != 'aberto' &&
-                          pedido.statusSolicitacao != 'entregue' &&
-                          item.status == 'finalizado' && (
+                        {(pedido.statusSolicitacao != 'aberto' ||
+                          item.status == 'cancelado') &&
+                          (pedido.statusSolicitacao != 'entregue' ||
+                            item.status == 'cancelado') &&
+                          (item.status == 'finalizado' ||
+                            item.status == 'cancelado') && (
                             <DivTraco
                               id={pedido.id}
                               tipoUsuario={
-                                nomeusur == pedido.usuario
+                                nomeusur == pedido.usuario &&
+                                (item.status != 'cancelado' ||
+                                  pedido.statusSolicitacao == 'aberto')
                                   ? 'solicitante'
                                   : 'comprador'
                               }

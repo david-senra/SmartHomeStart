@@ -634,7 +634,7 @@ export const DivTraco = styled.div<{
   tipoUsuario: string
 }>`
   position: relative;
-  right: ${(props) => (props.tipoUsuario == 'solicitante' ? '0.1' : '60')}vw;
+  right: ${(props) => (props.tipoUsuario == 'solicitante' ? '0.1' : '60.1')}vw;
   width: 60vw;
   bottom: 13.5px;
   border-bottom: solid 2px;
@@ -651,14 +651,15 @@ export const DivTraco = styled.div<{
   }
 `
 
-export const DivEntregue = styled.div`
+export const DivEntregue = styled.div<{ tipo: string }>`
   position: absolute;
   height: 24px;
   width: 60vw;
   left: 9.5vw;
   border-bottom: hidden 2px;
   border-top: hidden 2px;
-  background-color: #d2f8d2;
+  background-color: ${(props) =>
+    props.tipo == 'entregue' ? '#d2f8d2' : '#FFCCCB'};
   z-index: -1;
   @media only screen and (max-width: 768px) {
     position: absolute;
@@ -667,7 +668,8 @@ export const DivEntregue = styled.div`
     left: 2vw;
     border-bottom: hidden 2px;
     border-top: hidden 2px;
-    background-color: #d2f8d2;
+    background-color: ${(props) =>
+      props.tipo == 'entregue' ? '#d2f8d2' : '#FFCCCB'};
     z-index: -1;
   }
 `
