@@ -58,6 +58,18 @@ export const ItemUserPass = styled.div`
     &.cadastroSenha {
       width: 90px;
     }
+    &.desativado {
+      background-color: grey;
+      cursor: default;
+      &:hover {
+        background-color: grey;
+        cursor: default;
+      }
+    }
+  }
+  h3 {
+    margin-top: 10px;
+    color: blue;
   }
   :is(input:focus, input:valid) ~ label {
     transform: translateY(-80%) scale(0.9);

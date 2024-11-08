@@ -99,6 +99,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     requisicao: string
     dataEntregue: string
     dataFinalizado: string
+    fornecedor: string
+    precoUnitario: number
+    precoTotal: number
 
     constructor(data: {
       id: number
@@ -121,6 +124,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       requisicao: string
       dataEntregue: string
       dataFinalizado: string
+      fornecedor: string
+      precoUnitario: number
+      precoTotal: number
     }) {
       this.id = data.id
       this.quantidade = data.quantidade
@@ -143,6 +149,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       this.requisicao = data.requisicao
       this.dataEntregue = data.dataEntregue
       this.dataFinalizado = data.dataFinalizado
+      this.fornecedor = data.fornecedor
+      this.precoUnitario = data.precoUnitario
+      this.precoTotal = data.precoTotal
     }
   }
   class Solicitacao {
@@ -249,6 +258,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     useState<string>('ocioso')
   const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
+  const [novoFornecedor, SetNovoFornecedor] = useState<string>('')
+  const [novoPrecoUnitario, SetNovoPrecoUnitario] = useState<number>(0)
+  const [novoPrecoTotal, SetNovoPrecoTotal] = useState<number>(0)
   async function gerarArquivoExcel(solicitacaoId: string) {
     const respostaEnvio = await fetch(
       `https://davidsenra.pythonanywhere.com/?type=requestSpreadsheet&access=${nivelusur}&solicitacaoId=${solicitacaoId}`
@@ -816,7 +828,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const id_elemento = e.currentTarget.id
     gerarArquivoPDF(id_elemento)
   }
-  const marcarItemPedido = async (
+  const preMarcarItemPedido = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
     let id_elemento = ''
@@ -827,9 +839,75 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     function isElement(solicitacao: Solicitacao) {
       return solicitacao.id == id_elemento
     }
-    const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
     const id_item = e.currentTarget.id
+    function isItem(compra: Compra) {
+      return compra.id == parseInt(id_item)
+    }
+    const array_itens = elemento.itens
+    const item_encontrado = array_itens.filter(isItem)[0]
+    SetPopupOpen(true)
+    setPopupType('entrega_item')
+    const solicitaoItem = `${id_elemento};${item_encontrado.descricao};${item_encontrado.quantidade};${item_encontrado.unidade};${item_encontrado.id}`
+    setPopupConfirmationPedido(solicitaoItem)
+    document.body.style.overflowY = 'hidden'
+  }
+  const handleNovoFornecedor = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputMudanca: any = e.currentTarget
+    const novoValor: string = inputMudanca.value
+    SetNovoFornecedor(novoValor)
+  }
+  const handleNovoValorUnitario = (
+    e: ChangeEvent<HTMLInputElement>,
+    quantidade: number
+  ) => {
+    const inputMudanca: any = e.currentTarget
+    const novoValor: number = parseFloat(inputMudanca.value)
+    SetNovoPrecoUnitario(novoValor)
+    SetNovoPrecoTotal(quantidade * novoValor)
+    const inputValorTotal: any =
+      e.currentTarget.parentElement?.nextSibling?.lastChild
+    inputValorTotal.value = (quantidade * novoValor).toFixed(2)
+  }
+  const handleNovoValorTotal = (
+    e: ChangeEvent<HTMLInputElement>,
+    quantidade: number
+  ) => {
+    const inputMudanca: any = e.currentTarget
+    const novoValor: number = parseFloat(inputMudanca.value)
+    SetNovoPrecoTotal(novoValor)
+    SetNovoPrecoUnitario(novoValor / quantidade)
+    const inputValorUnitario: any =
+      e.currentTarget.parentElement?.previousSibling?.lastChild
+    inputValorUnitario.value = (novoValor / quantidade).toFixed(2)
+  }
+  const marcarItemPedido = async (
+    e:
+      | React.MouseEvent<HTMLImageElement, MouseEvent>
+      | React.MouseEvent<HTMLDivElement, MouseEvent>,
+    id_texto = '',
+    id_item_texto = ''
+  ) => {
+    console.log(id_texto)
+    console.log(id_item_texto)
+    let id_elemento = ''
+    if (id_texto != '') {
+      id_elemento = id_texto
+    } else if (e.currentTarget.parentElement != null) {
+      id_elemento = e.currentTarget.parentElement.id
+    }
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    let id_item = ''
+    if (id_item_texto != '') {
+      id_item = id_item_texto
+    } else if (e.currentTarget.parentElement != null) {
+      id_item = e.currentTarget.id
+    }
     function isItem(compra: Compra) {
       return compra.id == parseInt(id_item)
     }
@@ -838,17 +916,37 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     const item_encontrado = array_itens.filter(isItem)[0]
     if (item_encontrado.status == 'aberto') {
       item_encontrado.status = 'entregue'
+      item_encontrado.fornecedor = novoFornecedor
+      item_encontrado.precoUnitario = novoPrecoUnitario
+      item_encontrado.precoTotal = novoPrecoTotal
       const dataAgora = new Date()
       const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
       item_encontrado.dataEntregue = dataAgoraBrasil
+      setPopupConfirmationPedido('')
+      SetPopupOpen(false)
+      setPopupType('')
+      SetNovoFornecedor('')
+      SetNovoPrecoTotal(0)
+      SetNovoPrecoUnitario(0)
+      document.body.style.overflowY = 'visible'
     } else {
       const verificaoItemFinalizado = verificarSeItemFinalizado(
         elemento,
         String(item_encontrado.id)
       )
       const resposta_requisicao = await verificaoItemFinalizado
+      setPopupConfirmationPedido('')
+      SetPopupOpen(false)
+      setPopupType('')
+      SetNovoFornecedor('')
+      SetNovoPrecoTotal(0)
+      SetNovoPrecoUnitario(0)
+      document.body.style.overflowY = 'visible'
       if (resposta_requisicao == 'ok') {
         item_encontrado.status = 'aberto'
+        item_encontrado.fornecedor = ''
+        item_encontrado.precoUnitario = 0
+        item_encontrado.precoTotal = 0
         item_encontrado.dataEntregue = ''
       } else if (resposta_requisicao == 'erro_ja_finalizado') {
         SetPopupOpen(true)
@@ -903,6 +1001,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       if (item_encontrado.status == 'entregue') {
         mandarEmail('marcarItem', elemento.id, item_encontrado.id.toString())
       }
+      atualizarAposFecharSolicitacao()
     } else if (resposta_servidor == 'solicitacao_trancada') {
       SetPopupOpen(true)
       setPopupType('solicitacao_trancada')
@@ -1500,7 +1599,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
         )}
         {SituacaoExibicao == 'listaCarregada' && (
           <ListaSolicitacoes>
-            {nomeusur == 'David Senra' && (
+            {(nomeusur == 'David Senra' ||
+              nomeusur == 'Targino Azeredo' ||
+              nomeusur == 'Dolores Belico') && (
               <>
                 <DivRelatorioCompleto>
                   <button
@@ -2395,7 +2496,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                     ? IconeCaminhaoEntrega
                                     : IconeUncheckItem
                                 }
-                                onClick={marcarItemPedido}
+                                onClick={(e) =>
+                                  item.status == 'aberto'
+                                    ? preMarcarItemPedido(e)
+                                    : marcarItemPedido(e)
+                                }
                                 className={
                                   item.status == 'entregue' ? 'andamento' : ''
                                 }
@@ -2719,7 +2824,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
           <CoverPopupDiv></CoverPopupDiv>
           <PopupDiv>
             <CabecarioPopup>
-              <p>ATENÇÃO:</p>
+              {popupType == 'entrega_item' ? (
+                <p className="envio">ENVIO DE ITEM:</p>
+              ) : (
+                <p>ATENÇÃO</p>
+              )}
             </CabecarioPopup>
             {popupType == 'confirmacao_pedido' && (
               <TextoPopUp>
@@ -2804,6 +2913,74 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                 <br></br>
               </TextoPopUp>
             )}
+            {popupType == 'entrega_item' && (
+              <TextoPopUp className="entrega_item">
+                <p>Confirme o envio do item:</p>
+                <br></br>
+                <p>
+                  Solicitação: <b>{popUpConfirmationPedido.split(';')[0]}</b>
+                </p>
+                <p>
+                  Item: <b>{popUpConfirmationPedido.split(';')[1]}</b>
+                </p>
+                <br></br>
+                <p>
+                  <b className="adicional">
+                    Informações adicionais (opcional):
+                  </b>
+                </p>
+                <p>
+                  Fornecedor:{' '}
+                  <input
+                    type="text"
+                    className="fornecedor"
+                    defaultValue={''}
+                    onChange={handleNovoFornecedor}
+                  ></input>
+                </p>
+                <p>
+                  Preço Unitário: R${' '}
+                  <input
+                    type="number"
+                    className="precoUnitario"
+                    defaultValue={0.0}
+                    onChange={(e) =>
+                      handleNovoValorUnitario(
+                        e,
+                        parseFloat(popUpConfirmationPedido.split(';')[2])
+                      )
+                    }
+                  ></input>
+                </p>
+                <p>
+                  Preço Total:{' '}
+                  <b>
+                    {popUpConfirmationPedido.split(';')[2]}{' '}
+                    {popUpConfirmationPedido.split(';')[3]}
+                  </b>{' '}
+                  x{' '}
+                  <b>
+                    {novoPrecoUnitario
+                      .toFixed(2)
+                      .toLocaleString()
+                      .replace('.', ',')}
+                  </b>{' '}
+                  = R${' '}
+                  <input
+                    type="number"
+                    className="precoUnitario"
+                    defaultValue={0.0}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleNovoValorTotal(
+                        e,
+                        parseFloat(popUpConfirmationPedido.split(';')[2])
+                      )
+                    }
+                  ></input>
+                </p>
+                <br></br>
+              </TextoPopUp>
+            )}
             {popupType == 'confirmacao_pedido' && (
               <BotoesPopUp>
                 <BotaoVoltar onClick={returnFromPopUp}>Voltar</BotaoVoltar>
@@ -2822,6 +2999,23 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                 <BotaoConfirmar
                   onClick={() =>
                     definirCancelamentoPedidoSistema(popUpConfirmationPedido)
+                  }
+                >
+                  Confirmar
+                </BotaoConfirmar>
+              </BotoesPopUp>
+            )}
+            {popupType == 'entrega_item' && (
+              <BotoesPopUp>
+                <BotaoVoltar onClick={returnFromPopUp}>Cancelar</BotaoVoltar>
+                <BotaoConfirmar
+                  id={popUpConfirmationPedido.split(';')[0]}
+                  onClick={(e) =>
+                    marcarItemPedido(
+                      e,
+                      popUpConfirmationPedido.split(';')[0],
+                      popUpConfirmationPedido.split(';')[4]
+                    )
                   }
                 >
                   Confirmar

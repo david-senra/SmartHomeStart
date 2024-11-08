@@ -52,6 +52,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     requisicao: string
     dataEntregue: string
     dataFinalizado: string
+    fornecedor: string
+    precoUnitario: number
+    precoTotal: number
 
     constructor(data: {
       id: number
@@ -74,6 +77,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       requisicao: string
       dataEntregue: string
       dataFinalizado: string
+      fornecedor: string
+      precoUnitario: number
+      precoTotal: number
     }) {
       this.id = data.id
       this.quantidade = data.quantidade
@@ -96,6 +102,9 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       this.requisicao = data.requisicao
       this.dataEntregue = data.dataEntregue
       this.dataFinalizado = data.dataFinalizado
+      this.fornecedor = data.fornecedor
+      this.precoUnitario = data.precoUnitario
+      this.precoTotal = data.precoTotal
     }
   }
   const compraInicial = {
@@ -118,7 +127,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     novaObservacao: '',
     requisicao: '',
     dataEntregue: '',
-    dataFinalizado: ''
+    dataFinalizado: '',
+    fornecedor: '',
+    precoUnitario: 0,
+    precoTotal: 0
   }
   const listaCentrosCusto = [
     '03 - ADMINISTRATIVO',
@@ -188,7 +200,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
         novaObservacao: '',
         requisicao: '',
         dataEntregue: '',
-        dataFinalizado: ''
+        dataFinalizado: '',
+        fornecedor: '',
+        precoUnitario: 0,
+        precoTotal: 0
       }
       const nova_lista_compras = [...listaCompras]
       nova_lista_compras.push(novaCompra)
@@ -462,7 +477,10 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       novaObservacao: '',
       requisicao: '',
       dataEntregue: '',
-      dataFinalizado: ''
+      dataFinalizado: '',
+      fornecedor: '',
+      precoUnitario: 0,
+      precoTotal: 0
     }
     setListaCompras([compraInicial])
     SetSituacaoPedido('solicitando')

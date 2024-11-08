@@ -27,6 +27,7 @@ function Login() {
   const [paginaAtual, setPaginaAtual] = useState('login')
   const [passwordOne, setPasswordOne] = useState('')
   const [caracteresEspeciais] = useState(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/)
+  const [situacaoLogin, setSituacaoLogin] = useState('ocioso')
   useEffect(() => {
     if (acesso == true) {
       navigate('/sistema', {
@@ -141,8 +142,6 @@ function Login() {
   }
   const fetchRespostaCadastro = async () => {
     const senhaEncriptada = await encriptarSenha(senhaCadastro1)
-    console.log(senhaCadastro1)
-    console.log(senhaEncriptada)
     const jsonCadastroSenha = {
       requisicao: 'criacaoSenhaUsuario',
       usuario: usuarioCadastro,
@@ -191,20 +190,26 @@ function Login() {
   }
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault()
-    const form = event.currentTarget
-    const formElements = form.elements as typeof form.elements & {
-      usuario: { value: string }
-    } & {
-      senha: { value: string }
+    if (situacaoLogin == 'logando') {
+      return
+    } else {
+      setSituacaoLogin('logando')
+      const form = event.currentTarget
+      const formElements = form.elements as typeof form.elements & {
+        usuario: { value: string }
+      } & {
+        senha: { value: string }
+      }
+      usuario = formElements.usuario.value
+      senha = formElements.senha.value
+      const resposta = fetchResposta()
+      if ((await resposta) == 'acesso') {
+        setAcesso(true)
+      }
+      setSituacaoLogin('ocioso')
+      formElements.usuario.value = ''
+      formElements.senha.value = ''
     }
-    usuario = formElements.usuario.value
-    senha = formElements.senha.value
-    const resposta = fetchResposta()
-    if ((await resposta) == 'acesso') {
-      setAcesso(true)
-    }
-    formElements.usuario.value = ''
-    formElements.senha.value = ''
   }
   async function handleSubmitCriacaoSenha(
     event: React.SyntheticEvent<HTMLFormElement>
@@ -313,7 +318,12 @@ function Login() {
                     onChange={resetErrorMessage}
                   ></input>
                   <label>Senha</label>
-                  <button>Login</button>
+                  <button
+                    className={situacaoLogin == 'logando' ? 'desativado' : ''}
+                  >
+                    Login
+                  </button>
+                  {situacaoLogin == 'logando' && <h3>Carregando...</h3>}
                 </ItemUserPass>
               </UserPassDiv>
               <TextError id="text_error"></TextError>

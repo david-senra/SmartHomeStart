@@ -1552,6 +1552,32 @@ export const TextoPopUp = styled.div`
       color: red;
     }
   }
+  &.entrega_item {
+    p {
+      margin-top: 7px;
+      input {
+        height: 23px;
+        padding: 4px;
+        &.fornecedor {
+          width: 20vw;
+        }
+        &.precoUnitario {
+          width: 65px;
+          -moz-appearance: textfield;
+        }
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+    b {
+      &.adicional {
+        color: purple;
+      }
+    }
+  }
 `
 
 export const BotoesPopUp = styled.div`
