@@ -1,12 +1,18 @@
 import styled from 'styled-components'
 
-function pegarCorCard(situacao: string) {
+function pegarCorCard(situacao: string, todosEntregues: string) {
   if (situacao == 'aberto') {
     return '#ededed'
   } else if (situacao == 'andamento') {
-    return 'lightyellow'
+    if (todosEntregues == 'nao') {
+      return 'lightyellow'
+    } else if (todosEntregues == 'sim') {
+      return '#D4F5DF'
+    }
   } else if (situacao == 'entregue') {
     return 'lightgreen'
+  } else if (situacao == 'cancelado') {
+    return '#FFCCCB'
   }
 }
 
@@ -130,7 +136,10 @@ export const DivGridCabecalho = styled.div<{ tamanho: number }>`
   transition: 1s linear;
 `
 
-export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
+export const GridCabecalho = styled.ul<{
+  situacaoPedido: string
+  todosEntregues: string
+}>`
   cursor: pointer;
   width: 79.7vw;
   border-radius: 5px;
@@ -139,7 +148,8 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
   grid-auto-rows: 34px;
   gap: 3px;
   border-bottom: solid 2px black;
-  background-color: ${(props) => pegarCorCard(props.situacaoPedido)};
+  background-color: ${(props) =>
+    pegarCorCard(props.situacaoPedido, props.todosEntregues)};
   li {
     display: flex;
     flex-direction: column;
@@ -170,7 +180,8 @@ export const GridCabecalho = styled.ul<{ situacaoPedido: string }>`
     grid-auto-rows: 34px;
     gap: 3px;
     border-bottom: solid 2px black;
-    background-color: ${(props) => pegarCorCard(props.situacaoPedido)};
+    background-color: ${(props) =>
+      pegarCorCard(props.situacaoPedido, props.todosEntregues)};
     li {
       display: flex;
       font-size: 9.5px;
@@ -729,6 +740,14 @@ export const IconeEntregueDiv = styled.div`
 `
 
 export const IconeEntregueImg = styled.img`
+  height: 15px;
+  cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    height: 10px;
+  }
+`
+
+export const IconeCancelarPedImg = styled.img`
   height: 15px;
   cursor: pointer;
   @media only screen and (max-width: 768px) {

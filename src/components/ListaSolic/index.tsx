@@ -24,6 +24,7 @@ import {
   IconeExcelImg,
   IconeEntregueDiv,
   IconeEntregueImg,
+  IconeCancelarPedImg,
   LinhaDiv,
   ItemCheckDiv,
   ItemCheckDivCaminhao,
@@ -62,6 +63,7 @@ import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
 import IconeExcel from '../../assets/images/excelicon.png'
 import IconeEntregue from '../../assets/images/iconeEntregue.png'
+import IconeCancelar from '../../assets/images/cancel.png'
 import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
 import IconeLapisEditar from '../../assets/images/pencilEditIcon.png'
@@ -426,6 +428,28 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro'
     }
   }
+  const cancelarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `cancelarSolicitacao`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('cancelamento_realizado')) {
+      return 'ok'
+    } else {
+      return 'erro'
+    }
+  }
   const trancarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = 'trancarSolicitacao'
     const respostaEnvio = await fetch(
@@ -605,13 +629,19 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     nova_lista.splice(indice_elemento, 0, elemento)
     SetListaPedidos(nova_lista)
   }
-  const textoSituacao = (situacao: string) => {
+  const textoSituacao = (situacao: string, todosEntregues: string) => {
     if (situacao == 'aberto') {
       return 'ABERTO'
     } else if (situacao == 'andamento') {
-      return 'ANDAMENTO'
+      if (todosEntregues == 'sim') {
+        return 'EM ENTREGA'
+      } else if (todosEntregues == 'nao') {
+        return 'ANDAMENTO'
+      }
     } else if (situacao == 'entregue') {
       return 'CONCLUÍDO'
+    } else if (situacao == 'cancelado') {
+      return 'CANCELADO'
     }
   }
   const clickFechadura = async (
@@ -697,12 +727,53 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       console.log('Erro!')
     }
   }
+  const definirCancelamentoPedidoSistema = async (id_pedido: string) => {
+    const id_elemento = id_pedido
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.statusSolicitacao = 'cancelado'
+    const dataAgora = new Date()
+    const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
+    elemento.itens.forEach((item) => {
+      item.dataFinalizado == '' && (item.dataFinalizado = dataAgoraBrasil)
+      item.status = 'cancelado'
+    })
+    const resposta_atualizacao_servidor =
+      cancelarSolicitacaoNoServidor(elemento)
+    const resposta_recebida = await resposta_atualizacao_servidor
+    if (resposta_recebida == 'ok') {
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+      setPopupConfirmationPedido('')
+      SetPopupOpen(false)
+      setPopupType('')
+      document.body.style.overflowY = 'visible'
+      atualizarAposFecharSolicitacao()
+      mandarEmail('cancelarSolicitacao', elemento.id)
+    } else {
+      console.log('Erro!')
+    }
+  }
   const definirPedidoEntregue = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
     const id_elemento = e.currentTarget.id
     SetPopupOpen(true)
     setPopupType('confirmacao_pedido')
+    setPopupConfirmationPedido(id_elemento)
+    document.body.style.overflowY = 'hidden'
+  }
+  const cancelarPedido = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    SetPopupOpen(true)
+    setPopupType('cancelamento_pedido')
     setPopupConfirmationPedido(id_elemento)
     document.body.style.overflowY = 'hidden'
   }
@@ -771,14 +842,23 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     novoElemento.itens.splice(indice_item, 1)
     novoElemento.itens.splice(indice_item, 0, item_encontrado)
     let haItensNaoAbertos = true
+    let haItensAbertos = true
     const itensNaoAbertos: Compra[] = []
+    const itensAbertos: Compra[] = []
     novoElemento.itens.filter(
       (item) => item.status != 'aberto' && itensNaoAbertos.push(item)
     )
+    novoElemento.itens.filter(
+      (item) => item.status == 'aberto' && itensAbertos.push(item)
+    )
     haItensNaoAbertos = itensNaoAbertos.length > 0
+    haItensAbertos = itensAbertos.length > 0
     haItensNaoAbertos
       ? (novoElemento.podeDestrancar = false)
       : (novoElemento.podeDestrancar = true)
+    haItensAbertos
+      ? (novoElemento.todosEntregues = 'nao')
+      : (novoElemento.todosEntregues = 'sim')
     const resposta_atualizacao_servidor =
       atualizarSolicitacaoNoServidor(novoElemento)
     const resposta_servidor = await resposta_atualizacao_servidor
@@ -786,6 +866,9 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       haItensNaoAbertos
         ? (elemento.podeDestrancar = false)
         : (elemento.podeDestrancar = true)
+      haItensAbertos
+        ? (elemento.todosEntregues = 'nao')
+        : (elemento.todosEntregues = 'sim')
       elemento.itens.splice(indice_item, 1)
       elemento.itens.splice(indice_item, 0, item_encontrado)
       nova_lista.splice(indice_elemento, 1)
@@ -1364,6 +1447,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                   <GridCabecalho
                     id={pedido.id}
                     situacaoPedido={pedido.statusSolicitacao}
+                    todosEntregues={pedido.todosEntregues}
                   >
                     <li onClick={(e) => toggleCard(e)}>
                       <p>{pedido.id}</p>
@@ -1560,6 +1644,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                     </li>
                     <ItemCabecalhoSituacao
                       className={
+                        (pedido.statusSolicitacao == 'aberto' &&
+                          nomeusur == pedido.usuario) ||
                         (pedido.statusSolicitacao == 'andamento' &&
                           nomeusur == pedido.usuario) ||
                         (nivelusur == 3 &&
@@ -1570,11 +1656,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           : ''
                       }
                       onClick={(e) =>
-                        (nivelusur > 3 ||
-                          pedido.statusSolicitacao == 'entregue' ||
+                        (pedido.statusSolicitacao == 'entregue' ||
                           (pedido.statusSolicitacao == 'aberto' &&
-                            nivelusur == 2) ||
-                          nomeusur != pedido.usuario ||
+                            nivelusur == 2 &&
+                            pedido.podeDestrancar == false) ||
+                          (nivelusur != 3 && nomeusur != pedido.usuario) ||
                           (nivelusur == 3 && pedido.podeDestrancar == false)) &&
                         toggleCard(e)
                       }
@@ -1589,7 +1675,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                 : ''
                           }
                         >
-                          {textoSituacao(pedido.statusSolicitacao)}{' '}
+                          {textoSituacao(
+                            pedido.statusSolicitacao,
+                            pedido.todosEntregues
+                          )}{' '}
                         </p>
                         <p
                           className={
@@ -1598,7 +1687,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                               : 'naoAndamentoAbreviado'
                           }
                         >
-                          AND
+                          {pedido.todosEntregues == 'sim' ? 'ENT' : 'AND'}
                         </p>
                         <p
                           className={
@@ -1632,6 +1721,16 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                 src={IconeEntregue}
                                 onClick={definirPedidoEntregue}
                               ></IconeEntregueImg>
+                            </IconeEntregueDiv>
+                          )}
+                        {nomeusur == pedido.usuario &&
+                          pedido.statusSolicitacao == 'aberto' && (
+                            <IconeEntregueDiv>
+                              <IconeCancelarPedImg
+                                id={pedido.id}
+                                src={IconeCancelar}
+                                onClick={cancelarPedido}
+                              ></IconeCancelarPedImg>
                             </IconeEntregueDiv>
                           )}
                       </b>
@@ -2492,6 +2591,22 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                 </p>
               </TextoPopUp>
             )}
+            {popupType == 'cancelamento_pedido' && (
+              <TextoPopUp>
+                <p>
+                  Você deseja <b>CANCELAR TODOS OS ITENS</b> da solicitação{' '}
+                  <b>{popUpConfirmationPedido}</b>?
+                </p>
+                <br></br>
+                <p className="warning">
+                  <b>Após o cancelamento, a solicitação será arquivada!</b>
+                </p>
+                <br></br>
+                <p>
+                  <b>Confirmar?</b>
+                </p>
+              </TextoPopUp>
+            )}
             {popupType == 'solicitacao_trancada' && (
               <TextoPopUp>
                 <p>
@@ -2546,6 +2661,18 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                 <BotaoConfirmar
                   onClick={() =>
                     definirPedidoEntregueSistema(popUpConfirmationPedido)
+                  }
+                >
+                  Confirmar
+                </BotaoConfirmar>
+              </BotoesPopUp>
+            )}
+            {popupType == 'cancelamento_pedido' && (
+              <BotoesPopUp>
+                <BotaoVoltar onClick={returnFromPopUp}>Voltar</BotaoVoltar>
+                <BotaoConfirmar
+                  onClick={() =>
+                    definirCancelamentoPedidoSistema(popUpConfirmationPedido)
                   }
                 >
                   Confirmar
