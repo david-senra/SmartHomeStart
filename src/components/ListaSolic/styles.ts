@@ -1228,7 +1228,55 @@ export const IconeLapisImg = styled.img`
 `
 
 export const ItemCheckDiv = styled.div`
-  position: relative;
+  position: absolute;
+  z-index: 7;
+  &.contrato {
+    left: 4.75%;
+    transform: translate(-4.75%, -4.75%);
+    margin-top: 2px;
+    div {
+      display: none;
+    }
+    &:hover {
+      div {
+        background-color: #fffd92;
+        position: absolute;
+        font-size: 16px;
+        display: block;
+        left: 1.5vw;
+        top: 23px;
+        padding: 5px;
+        z-index: 50;
+        width: max-content;
+        border: solid 1px;
+        border-radius: 5px;
+      }
+    }
+  }
+  @media only screen and (max-width: 1400px) {
+    &.contrato {
+      left: 3.5%;
+    }
+  }
+  @media only screen and (max-width: 1050px) {
+    &.contrato {
+      left: 3%;
+    }
+  }
+  @media only screen and (max-width: 800px) {
+    &.contrato {
+      left: 2%;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    &.contrato {
+      left: 5%;
+      margin-top: 0px;
+    }
+  }
+`
+
+export const DivPrecoFornecedor = styled.div`
   z-index: 7;
 `
 
@@ -1245,6 +1293,9 @@ export const ItemCheckImg = styled.img`
   margin-bottom: 10px;
   overflow-clip-margin: 40px;
   overflow: visible;
+  &.contrato {
+    cursor: default;
+  }
   &.finalizado {
     height: 22px;
     width: 20px;

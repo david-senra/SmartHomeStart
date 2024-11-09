@@ -27,6 +27,7 @@ import {
   IconeCancelarPedImg,
   LinhaDiv,
   ItemCheckDiv,
+  DivPrecoFornecedor,
   ItemCheckDivCaminhao,
   ItemCheckImg,
   DivTraco,
@@ -64,6 +65,7 @@ import FechaduraFechada from '../../assets/images/trancado.png'
 import IconeExcel from '../../assets/images/excelicon.png'
 import IconeEntregue from '../../assets/images/iconeEntregue.png'
 import IconeCancelar from '../../assets/images/cancel.png'
+import IconeContrato from '../../assets/images/contract.png'
 import IconeReciclar from '../../assets/images/recycle.png'
 import IconeCheckItem from '../../assets/images/checkItemIcon.png'
 import IconeUncheckItem from '../../assets/images/uncheckItemIcon.png'
@@ -2524,6 +2526,40 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                                   item.status == 'cancelado' ? 'cancelado' : ''
                                 }
                               ></ItemCheckImg>
+                            </ItemCheckDiv>
+                          )}
+                        {nivelusur >= 3 &&
+                          (item.status == 'entregue' || 'finalizado') &&
+                          (item.precoUnitario != 0 ||
+                            item.fornecedor != '') && (
+                            <ItemCheckDiv id={pedido.id} className={'contrato'}>
+                              <ItemCheckImg
+                                src={IconeContrato}
+                                className={'contrato'}
+                              ></ItemCheckImg>
+                              <div>
+                                {item.fornecedor != '' && (
+                                  <p>
+                                    <b>Fornecedor:</b> {item.fornecedor}
+                                  </p>
+                                )}
+                                {item.precoUnitario != 0 && (
+                                  <p>
+                                    <b>Preço Unit: </b>R${' '}
+                                    {item.precoUnitario
+                                      .toFixed(2)
+                                      .replace('.', ',')}
+                                  </p>
+                                )}
+                                {item.precoTotal != 0 && (
+                                  <p>
+                                    <b>Preço Total: </b>R${' '}
+                                    {item.precoTotal
+                                      .toFixed(2)
+                                      .replace('.', ',')}
+                                  </p>
+                                )}
+                              </div>
                             </ItemCheckDiv>
                           )}
                         {nomeusur == pedido.usuario &&

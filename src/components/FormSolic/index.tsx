@@ -37,6 +37,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     unidade: string
     descricao: string
     centrocusto: string
+    centrocustoCompleto: string
     observacao: string
     status: string
     editandoQuantidade: boolean
@@ -62,6 +63,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       unidade: string
       descricao: string
       centrocusto: string
+      centrocustoCompleto: string
       observacao: string
       status: string
       editandoQuantidade: boolean
@@ -105,6 +107,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       this.fornecedor = data.fornecedor
       this.precoUnitario = data.precoUnitario
       this.precoTotal = data.precoTotal
+      this.centrocustoCompleto = data.centrocustoCompleto
     }
   }
   const compraInicial = {
@@ -113,6 +116,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     unidade: 'und',
     descricao: '',
     centrocusto: '',
+    centrocustoCompleto: '',
     observacao: '',
     status: 'aberto',
     editandoQuantidade: false,
@@ -186,6 +190,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
         unidade: 'und',
         descricao: '',
         centrocusto: '',
+        centrocustoCompleto: '',
         observacao: '',
         status: 'aberto',
         editandoQuantidade: false,
@@ -292,12 +297,12 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
-    elemento.centrocusto = valor_elemento
-    elemento.novoCentroCusto = valor_elemento
+    elemento.centrocusto = valor_elemento.split(' - ')[0]
+    elemento.novoCentroCusto = valor_elemento.split(' - ')[0]
+    elemento.centrocustoCompleto = valor_elemento
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setListaCompras(nova_lista)
-    console.log(listaCompras)
   }
   const changeItemObservacao = (e: React.ChangeEvent<HTMLInputElement>) => {
     const id_elemento = parseInt(e.currentTarget.id)
@@ -463,6 +468,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       unidade: 'und',
       descricao: '',
       centrocusto: '',
+      centrocustoCompleto: '',
       observacao: '',
       status: 'aberto',
       editandoQuantidade: false,
@@ -579,10 +585,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
                       style={{ display: 'none' }}
                     ></option>
                     {listaCentrosCusto.map((centroCusto) => (
-                      <option
-                        key={centroCusto}
-                        value={centroCusto.split(' - ')[0]}
-                      >
+                      <option key={centroCusto} value={centroCusto}>
                         {centroCusto}
                       </option>
                     ))}
