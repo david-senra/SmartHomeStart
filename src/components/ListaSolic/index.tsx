@@ -2654,7 +2654,6 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                       </GridItemsPedido>
                     ))}
-
                     <GridItemsPedido
                       className={`gridFake ${(pedido.obsFinal != '' || pedido.sugestfornecedor != '') && 'obsOrSugest'}`}
                     ></GridItemsPedido>
