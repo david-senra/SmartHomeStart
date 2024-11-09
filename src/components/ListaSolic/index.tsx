@@ -2532,7 +2532,10 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           (item.status == 'entregue' || 'finalizado') &&
                           (item.precoUnitario != 0 ||
                             item.fornecedor != '') && (
-                            <ItemCheckDiv id={pedido.id} className={'contrato'}>
+                            <ItemCheckDiv
+                              id={pedido.id}
+                              className={`contrato ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' ? 'encurtado' : ''} ${item.id == pedido.itens.length - 1 ? 'penultimo' : ''} ${item.id == pedido.itens.length ? 'ultimo' : ''}`}
+                            >
                               <ItemCheckImg
                                 src={IconeContrato}
                                 className={'contrato'}

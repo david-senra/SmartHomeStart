@@ -1252,6 +1252,22 @@ export const ItemCheckDiv = styled.div`
         border-radius: 5px;
       }
     }
+    &.encurtado {
+      &.penultimo {
+        &:hover {
+          div {
+            top: 5px;
+          }
+        }
+      }
+      &.ultimo {
+        &:hover {
+          div {
+            top: -15px;
+          }
+        }
+      }
+    }
   }
   @media only screen and (max-width: 1400px) {
     &.contrato {
