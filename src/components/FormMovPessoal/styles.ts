@@ -754,3 +754,17 @@ export const DivMensagemErro = styled.div`
     color: #8f1106;
   }
 `
+
+export const TextoNaoHaVagas = styled.h2`
+  margin-top: 0px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #8f1106;
+  &.first {
+    margin-top: 30px;
+    margin-bottom: 0px;
+  }
+  &.second {
+    margin-top: 20px;
+  }
+`

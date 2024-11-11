@@ -4,22 +4,10 @@ import {
   DivEmpresa,
   DivQuantidadeVaga,
   DivNomeVaga,
-  DivItem,
-  DivItemNome,
-  DivItemQuant,
-  DivItemDesc,
-  DivDataObs,
-  DivObsGeral,
-  DivDataLimite,
   DivButtonSolicitar,
-  DivButtonAdicionarItem,
-  DivButtonRemoverItem,
-  DivItemCentroCusto,
-  DivSugestaoFornecedores,
   DivBotoesConfirmacao,
   DivBotaoNovoPedido,
   DivMensagemErro,
-  DivItemUnid,
   DivListaSolicitacao,
   GridLista,
   GridItem,
@@ -28,10 +16,58 @@ import {
   GridItemCabecalhoUltimo,
   GridItemUltimo,
   TextoComLineBreak,
-  DivLineBreak
+  DivLineBreak,
+  TextoNaoHaVagas
 } from './styles'
 
 const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
+  class Vaga {
+    id: string
+    situacao: string
+    nome: string
+
+    constructor(data: { id: string; situacao: string; nome: string }) {
+      this.id = data.id
+      this.situacao = data.situacao
+      this.nome = data.nome
+    }
+  }
+  class Cargo {
+    sigla: string
+    nome: string
+    completo: string
+    numero: number
+
+    constructor(data: {
+      sigla: string
+      nome: string
+      completo: string
+      numero: number
+    }) {
+      this.sigla = data.sigla
+      this.nome = data.nome
+      this.completo = data.completo
+      this.numero = data.numero
+    }
+  }
+  class Obra {
+    municipio: string
+    nome: string
+    descricao_completa: string
+    equipe: Vaga[]
+
+    constructor(data: {
+      municipio: string
+      nome: string
+      descricao_completa: string
+      equipe: Vaga[]
+    }) {
+      this.municipio = data.municipio
+      this.nome = data.nome
+      this.descricao_completa = data.descricao_completa
+      this.equipe = data.equipe
+    }
+  }
   class Compra {
     id: number
     quantidade: number
@@ -142,16 +178,32 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     '98 - DIRETORIA & TECNOLOGIAS',
     '99 - OBRAS DE PEQUENO PORTE'
   ]
+  const obraVazia = {
+    municipio: '',
+    nome: '',
+    descricao_completa: '',
+    equipe: []
+  }
+  const [firstLoad, setFirstLoad] = React.useState<boolean>(true)
   const [ResetPedido, SetResetPedido] = React.useState<string>('off')
   const [SituacaoPedido, SetSituacaoPedido] =
     React.useState<string>('solicitando')
-  const [empresaSelecionada, setEmpresaSelecionada] =
-    React.useState<string>('Cantaria')
+  const [empresaSelecionada, setEmpresaSelecionada] = React.useState<string>('')
   const [naturezaMovimentacao, setNaturezaMovimentacao] =
     React.useState<string>('')
+  const [obrasCantaria, setObrasCantaria] = React.useState<Obra[]>([])
+  const [obrasSantaBarbara, setObrasSantaBarbara] = React.useState<Obra[]>([])
+  const [cargosPossiveis, setCargosPossiveis] = React.useState<Cargo[]>([])
+  const [equipeDisponivel, setEquipeDisponivel] = React.useState<Vaga[]>([])
+  const [firstChangeEmpresa, setFirstChangeEmpresa] =
+    React.useState<boolean>(true)
+  const [firstChangeNaturezaMov, setFirstChangeNaturezaMov] =
+    React.useState<boolean>(true)
+  const [botaoDesativado, setBotaoDesativado] = React.useState<boolean>(true)
   const [codigoVaga, setCodigoVaga] = React.useState<string>('')
   const [quantidadeVaga, setQuantidadeVaga] = React.useState<string>('')
-  const [obra, setObra] = React.useState<string>('')
+  const [obra, setObra] = React.useState<Obra>(obraVazia)
+  const [obraDestino, setObraDestino] = React.useState<Obra>(obraVazia)
   const [DataLimite, SetDataLimite] = React.useState<string>('')
   const [MensagemErro, SetMensagemErro] = React.useState<string>('')
   const [ObservacaoGeral, setObservacaoGeral] = React.useState<string>('')
@@ -321,10 +373,29 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const changeEmpresa = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const valor_elemento = e.currentTarget.value
     setEmpresaSelecionada(valor_elemento)
+    setNaturezaMovimentacao('')
+    if (firstChangeEmpresa == false) {
+      const inputNaturezaMovimentacao: any =
+        e.currentTarget.parentElement?.nextSibling?.lastChild
+      console.log(inputNaturezaMovimentacao)
+      inputNaturezaMovimentacao.value = ''
+    } else {
+      setFirstChangeEmpresa(false)
+    }
+    setFirstChangeNaturezaMov(true)
   }
   const changeNaturezaMov = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const valor_elemento = e.currentTarget.value
     setNaturezaMovimentacao(valor_elemento)
+    setObra(obraVazia)
+    if (firstChangeNaturezaMov == false) {
+      const inputObra: any =
+        e.currentTarget.parentElement?.nextSibling?.lastChild
+      inputObra.value = ''
+      setObra(obraVazia)
+    } else {
+      setFirstChangeNaturezaMov(false)
+    }
   }
   const changeCodigoVaga = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const valor_elemento = e.currentTarget.value
@@ -332,11 +403,37 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const changeObra = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const valor_elemento = e.currentTarget.value
-    setObra(valor_elemento)
+    function isElement(obra: Obra) {
+      return obra.descricao_completa == valor_elemento
+    }
+    let obra_encontrada = obrasCantaria.filter(isElement)[0]
+    if (obra_encontrada) {
+      setObra(obra_encontrada)
+      setEquipeDisponivel(obra_encontrada.equipe)
+    } else {
+      obra_encontrada = obrasSantaBarbara.filter(isElement)[0]
+      setObra(obra_encontrada)
+      setEquipeDisponivel(obra_encontrada.equipe)
+    }
+  }
+  const changeObraDestino = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valor_elemento = e.currentTarget.value
+    function isElement(obra: Obra) {
+      return obra.descricao_completa == valor_elemento
+    }
+    let obra_encontrada = obrasCantaria.filter(isElement)[0]
+    if (obra_encontrada) {
+      setObraDestino(obra_encontrada)
+    } else {
+      obra_encontrada = obrasSantaBarbara.filter(isElement)[0]
+      setObraDestino(obra_encontrada)
+    }
+    console.log(obra.nome)
+    console.log(obraDestino.nome)
   }
   const changeVagaSelecionada = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const valor_elemento = e.currentTarget.value
-    setObra(valor_elemento)
+    setCodigoVaga(valor_elemento)
   }
   const changeQuantidadeVaga = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor_elemento = e.currentTarget.value
@@ -345,7 +442,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const changeNomeVaga = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor_elemento = e.currentTarget.value
-    setObra(valor_elemento)
   }
   const solicitarCompra = () => {
     const texto_erro = document.getElementById('mensagemErro')
@@ -445,6 +541,21 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       mandarEmail('criacaoSolicitacao', nomeusur)
     }
   }
+  const requisitarInformacoesMP = async () => {
+    const respostaEnvio = await fetch(
+      `https://davidsenra.pythonanywhere.com/?type=requestInformacoesMP`
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    const json_resposta = JSON.parse(resposta)
+    setObrasCantaria(json_resposta.Obras.Cantaria)
+    setObrasSantaBarbara(json_resposta.Obras.StaBarbara)
+    setCargosPossiveis(json_resposta.Cargos)
+  }
+  if (firstLoad) {
+    setFirstLoad(false)
+    requisitarInformacoesMP()
+  }
   const mandarEmail = async (
     tipo_email: string,
     id_solicitacao: string,
@@ -510,45 +621,68 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
             <DivEmpresa>
               <label>Empresa:</label>
               <select onChange={(e) => changeEmpresa(e)}>
-                <option value="Cantaria">Cantaria</option>
-                <option value="Santa Bárbara">Santa Bárbara</option>
-              </select>
-            </DivEmpresa>
-            <DivEmpresa>
-              <label>Tipo de Solicitação:</label>
-              <select onChange={(e) => changeNaturezaMov(e)}>
                 <option
                   disabled
                   selected
                   value=""
                   style={{ display: 'none' }}
                 ></option>
-                <option value="AberturaVaga">Abertura de Vagas</option>
-                <option value="Admissao">Admissão</option>
-                <option value="Ferias">Solicitar Férias</option>
-                <option value="Faltas">Assinalar Faltas</option>
-                <option value="Transferencia">Transferência de Obra</option>
-                <option value="Adicional">Dia(s) Adicional(is)</option>
-                <option value="Demissao">Demissão</option>
+                <option value="Cantaria">Cantaria</option>
+                <option value="Santa Bárbara">Santa Bárbara</option>
               </select>
             </DivEmpresa>
+            {empresaSelecionada != '' && (
+              <>
+                <DivEmpresa>
+                  <label>Tipo de Solicitação:</label>
+                  <select onChange={(e) => changeNaturezaMov(e)}>
+                    <option
+                      disabled
+                      selected
+                      value=""
+                      style={{ display: 'none' }}
+                    ></option>
+                    <option value="AberturaVaga">Abertura de Vagas</option>
+                    <option value="Admissao">Admissão</option>
+                    <option value="Transferencia">Transferência de Obra</option>
+                    <option value="Ferias">Solicitar Férias</option>
+                    <option value="Faltas">Assinalar Faltas</option>
+                    <option value="Adicional">Dia(s) Adicional(is)</option>
+                    <option value="Desligamento">Desligamento</option>
+                  </select>
+                </DivEmpresa>
+              </>
+            )}
             {naturezaMovimentacao != '' &&
               naturezaMovimentacao != 'Transferencia' && (
                 <>
                   <DivEmpresa>
                     <label>Obra:</label>
-                    <select onChange={(e) => changeCodigoVaga(e)}>
+                    <select onChange={(e) => changeObra(e)}>
                       <option
                         disabled
                         selected
                         value=""
                         style={{ display: 'none' }}
                       ></option>
-                      <option value="RE">Reserva Técnica - Renova</option>
-                      <option value="PI">Igreja da Matriz - Serro</option>
-                      <option value="AJ">
-                        BH - Residencial Arthur Bernardes
-                      </option>
+                      {empresaSelecionada == 'Cantaria' &&
+                        obrasCantaria.map((obra) => (
+                          <option
+                            key={obra.nome}
+                            value={obra.descricao_completa}
+                          >
+                            {obra.descricao_completa}
+                          </option>
+                        ))}
+                      {empresaSelecionada == 'Santa Bárbara' &&
+                        obrasSantaBarbara.map((obra) => (
+                          <option
+                            key={obra.nome}
+                            value={obra.descricao_completa}
+                          >
+                            {obra.descricao_completa}
+                          </option>
+                        ))}
                     </select>
                   </DivEmpresa>
                 </>
@@ -557,7 +691,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               naturezaMovimentacao == 'AberturaVaga' && (
                 <>
                   <DivEmpresa>
-                    <label>Código da Vaga:</label>
+                    <label>Cargo:</label>
                     <select onChange={(e) => changeCodigoVaga(e)}>
                       <option
                         disabled
@@ -565,6 +699,11 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                         value=""
                         style={{ display: 'none' }}
                       ></option>
+                      {cargosPossiveis.map((cargo) => (
+                        <option key={cargo.sigla} value={cargo.completo}>
+                          {cargo.completo}
+                        </option>
+                      ))}
                       <option value="RE">RE - Restaurador</option>
                       <option value="PI">PI - Pintor</option>
                       <option value="AJ">AJ - Ajudante</option>
@@ -587,67 +726,81 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
             {naturezaMovimentacao != '' &&
               naturezaMovimentacao == 'Admissao' && (
                 <>
-                  <DivEmpresa>
-                    <label>Tipo de Admissão:</label>
-                    <select onChange={(e) => changeCodigoVaga(e)}>
-                      <option
-                        disabled
-                        selected
-                        value=""
-                        style={{ display: 'none' }}
-                      ></option>
-                      <option value="CLT">CLT</option>
-                      <option value="MEI">PJ-MEI</option>
-                    </select>
-                  </DivEmpresa>
-                  <DivEmpresa>
-                    <label>Vaga Disponível:</label>
-                    <select onChange={(e) => changeVagaSelecionada(e)}>
-                      <option
-                        disabled
-                        selected
-                        value=""
-                        style={{ display: 'none' }}
-                      ></option>
-                      <option value="RE">RE01 - Restaurador</option>
-                      <option value="RE">RE02 - Restaurador</option>
-                      <option value="PI">PI01 - Pintor</option>
-                      <option value="AJ">AJ01 - Ajudante</option>
-                    </select>
-                  </DivEmpresa>
-                  <br></br>
-                  <br></br>
-                  <h3>Dados Pessoais:</h3>
-                  <DivNomeVaga>
-                    <label>Nome:</label>
-                    <input
-                      name="item"
-                      type="text"
-                      required
-                      autoComplete="off"
-                      onChange={(e) => changeNomeVaga(e)}
-                    ></input>
-                  </DivNomeVaga>
-                  <DivNomeVaga>
-                    <label>RG:</label>
-                    <input
-                      name="item"
-                      type="text"
-                      required
-                      autoComplete="off"
-                      onChange={(e) => changeNomeVaga(e)}
-                    ></input>
-                  </DivNomeVaga>
-                  <DivNomeVaga>
-                    <label>CPF:</label>
-                    <input
-                      name="item"
-                      type="text"
-                      required
-                      autoComplete="off"
-                      onChange={(e) => changeNomeVaga(e)}
-                    ></input>
-                  </DivNomeVaga>
+                  {obra.nome != '' && equipeDisponivel.length > 0 && (
+                    <>
+                      <DivEmpresa>
+                        <label>Vaga Disponível:</label>
+                        <select onChange={(e) => changeVagaSelecionada(e)}>
+                          <option
+                            disabled
+                            selected
+                            value=""
+                            style={{ display: 'none' }}
+                          ></option>
+                          <option value="RE">RE01 - Restaurador</option>
+                          <option value="RE">RE02 - Restaurador</option>
+                          <option value="PI">PI01 - Pintor</option>
+                          <option value="AJ">AJ01 - Ajudante</option>
+                        </select>
+                      </DivEmpresa>
+                      <DivEmpresa>
+                        <label>Tipo de Admissão:</label>
+                        <select onChange={(e) => changeCodigoVaga(e)}>
+                          <option
+                            disabled
+                            selected
+                            value=""
+                            style={{ display: 'none' }}
+                          ></option>
+                          <option value="CLT">CLT</option>
+                          <option value="MEI">PJ-MEI</option>
+                        </select>
+                      </DivEmpresa>
+                      <br></br>
+                      <br></br>
+                      <h3>Dados Pessoais:</h3>
+                      <DivNomeVaga>
+                        <label>Nome:</label>
+                        <input
+                          name="item"
+                          type="text"
+                          required
+                          autoComplete="off"
+                          onChange={(e) => changeNomeVaga(e)}
+                        ></input>
+                      </DivNomeVaga>
+                      <DivNomeVaga>
+                        <label>RG:</label>
+                        <input
+                          name="item"
+                          type="text"
+                          required
+                          autoComplete="off"
+                          onChange={(e) => changeNomeVaga(e)}
+                        ></input>
+                      </DivNomeVaga>
+                      <DivNomeVaga>
+                        <label>CPF:</label>
+                        <input
+                          name="item"
+                          type="text"
+                          required
+                          autoComplete="off"
+                          onChange={(e) => changeNomeVaga(e)}
+                        ></input>
+                      </DivNomeVaga>
+                    </>
+                  )}
+                  {obra.nome != '' && equipeDisponivel.length == 0 && (
+                    <>
+                      <TextoNaoHaVagas className="first">
+                        Não há vagas disponíveis na obra selecionada.
+                      </TextoNaoHaVagas>
+                      <TextoNaoHaVagas>
+                        Favor solicitar a abertura das vagas.
+                      </TextoNaoHaVagas>
+                    </>
+                  )}
                 </>
               )}
             {naturezaMovimentacao != '' &&
@@ -655,34 +808,60 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 <>
                   <DivEmpresa>
                     <label>Obra de Origem:</label>
-                    <select onChange={(e) => changeCodigoVaga(e)}>
+                    <select onChange={(e) => changeObra(e)}>
                       <option
                         disabled
                         selected
                         value=""
                         style={{ display: 'none' }}
                       ></option>
-                      <option value="RE">Reserva Técnica - Renova</option>
-                      <option value="PI">Igreja da Matriz - Serro</option>
-                      <option value="AJ">
-                        BH - Residencial Arthur Bernardes
-                      </option>
+                      {empresaSelecionada == 'Cantaria' &&
+                        obrasCantaria.map((obra) => (
+                          <option
+                            key={obra.nome}
+                            value={obra.descricao_completa}
+                          >
+                            {obra.descricao_completa}
+                          </option>
+                        ))}
+                      {empresaSelecionada == 'Santa Bárbara' &&
+                        obrasSantaBarbara.map((obra) => (
+                          <option
+                            key={obra.nome}
+                            value={obra.descricao_completa}
+                          >
+                            {obra.descricao_completa}
+                          </option>
+                        ))}
                     </select>
                   </DivEmpresa>
                   <DivEmpresa>
                     <label>Obra de Destino:</label>
-                    <select onChange={(e) => changeCodigoVaga(e)}>
+                    <select onChange={(e) => changeObraDestino(e)}>
                       <option
                         disabled
                         selected
                         value=""
                         style={{ display: 'none' }}
                       ></option>
-                      <option value="RE">Reserva Técnica - Renova</option>
-                      <option value="PI">Igreja da Matriz - Serro</option>
-                      <option value="AJ">
-                        BH - Residencial Arthur Bernardes
-                      </option>
+                      {empresaSelecionada == 'Cantaria' &&
+                        obrasCantaria.map((obra) => (
+                          <option
+                            key={obra.nome}
+                            value={obra.descricao_completa}
+                          >
+                            {obra.descricao_completa}
+                          </option>
+                        ))}
+                      {empresaSelecionada == 'Santa Bárbara' &&
+                        obrasSantaBarbara.map((obra) => (
+                          <option
+                            key={obra.nome}
+                            value={obra.descricao_completa}
+                          >
+                            {obra.descricao_completa}
+                          </option>
+                        ))}
                     </select>
                   </DivEmpresa>
                 </>
@@ -690,22 +869,47 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
 
             {naturezaMovimentacao != '' &&
               naturezaMovimentacao != 'Admissao' &&
+              obra.nome != '' &&
               naturezaMovimentacao != 'AberturaVaga' && (
                 <>
-                  <DivEmpresa>
-                    <label>Colaborador(a):</label>
-                    <select onChange={(e) => changeCodigoVaga(e)}>
-                      <option
-                        disabled
-                        selected
-                        value=""
-                        style={{ display: 'none' }}
-                      ></option>
-                      <option value="RE">RE0001 - Fulano</option>
-                      <option value="PI">RE0002 - Beltrano</option>
-                      <option value="AJ">RE0003 - Ciclano</option>
-                    </select>
-                  </DivEmpresa>
+                  {obra.nome != '' && equipeDisponivel.length > 0 && (
+                    <DivEmpresa>
+                      <label>Colaborador(a):</label>
+                      <select onChange={(e) => changeCodigoVaga(e)}>
+                        <option
+                          disabled
+                          selected
+                          value=""
+                          style={{ display: 'none' }}
+                        ></option>
+                        <option value="RE">RE0001 - Fulano</option>
+                        <option value="PI">RE0002 - Beltrano</option>
+                        <option value="AJ">RE0003 - Ciclano</option>
+                      </select>
+                    </DivEmpresa>
+                  )}
+                  {obra.nome != '' && equipeDisponivel.length == 0 && (
+                    <>
+                      <TextoNaoHaVagas className="first">
+                        {naturezaMovimentacao == 'Transferencia'
+                          ? 'Não há trabalhadores registrados na obra de origem.'
+                          : 'Não há trabalhadores registrados na obra selecionada.'}
+                      </TextoNaoHaVagas>
+                      <TextoNaoHaVagas>
+                        Favor solicitar a inclusão no banco de dados.
+                      </TextoNaoHaVagas>
+                    </>
+                  )}
+                  {naturezaMovimentacao == 'Transferencia' &&
+                    obraDestino.nome == obra.nome &&
+                    obra.nome != '' &&
+                    equipeDisponivel.length > 0 && (
+                      <DivEmpresa>
+                        <TextoNaoHaVagas className="second">
+                          A obra de destino não pode ser igual à obra de origem.
+                        </TextoNaoHaVagas>
+                      </DivEmpresa>
+                    )}
                 </>
               )}
             {/* <br></br> */}
