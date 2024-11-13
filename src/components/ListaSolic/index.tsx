@@ -58,6 +58,7 @@ import {
   BotaoVoltar,
   TextoItemEntregue,
   DivRelatorioCompleto,
+  MenuBotoesTipoSolicitacao,
   TextoEmEntrega
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
@@ -260,6 +261,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
     useState<string>('ocioso')
   const [ListaPedidos, SetListaPedidos] = useState<Solicitacao[]>([])
   const [SituacaoExibicao, SetSituacaoExibicao] = useState<string>('carregando')
+  const [TipoSolicitacao, SetTipoSolicitacao] = useState<string>('abertas')
   const [novoFornecedor, SetNovoFornecedor] = useState<string>('')
   const [novoPrecoUnitario, SetNovoPrecoUnitario] = useState<number>(0)
   const [novoPrecoTotal, SetNovoPrecoTotal] = useState<number>(0)
@@ -511,10 +513,12 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro_resposta'
     }
   }
-  const solicitarPedidos = async () => {
-    console.log(listaCardsOpen)
+  const solicitarPedidos = async (tiposolic = '') => {
+    if (tiposolic == '') {
+      tiposolic = TipoSolicitacao
+    }
     const respostaEnvio = await fetch(
-      `https://davidsenra.pythonanywhere.com/?type=requestSolicCompras&access=${nivelusur}&user=${nomeusur}`
+      `https://davidsenra.pythonanywhere.com/?type=requestSolicCompras&access=${nivelusur}&user=${nomeusur}&tiposolic=${tiposolic}`
     )
     const corpo_resposta = respostaEnvio.text()
     const resposta = (await corpo_resposta).toString()
@@ -607,6 +611,11 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
   if (atualizacaoRecebida) {
     solicitarPedidos()
     setAtualizacaoRecebida(false)
+  }
+  const changeTipoSolicitacao = (tipo: string) => {
+    SetSituacaoExibicao('carregando')
+    SetTipoSolicitacao(tipo)
+    solicitarPedidos(tipo)
   }
   const getMinimumDate = () => {
     const today = new Date()
@@ -1593,38 +1602,71 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       <DivGeral className={popUpOpen ? 'noScrolling' : ''}>
         <h1>Solicitações de Compra de Materiais e/ou Serviços</h1>
         <br></br>
+        {(nomeusur == 'David Senra' ||
+          nomeusur == 'Targino Azeredo' ||
+          nomeusur == 'Dolores Belico') &&
+          SituacaoExibicao == 'listaCarregada' && (
+            <>
+              <DivRelatorioCompleto>
+                <button
+                  onClick={() =>
+                    situacaoDownloadPlanilhaGeral == 'ocioso' &&
+                    baixarExcelTodosPedidos()
+                  }
+                  className={
+                    situacaoDownloadPlanilhaGeral == 'baixando'
+                      ? 'desativado'
+                      : ''
+                  }
+                >
+                  Baixar Relatório Completo
+                </button>
+                {situacaoDownloadPlanilhaGeral == 'baixando' && (
+                  <h3>Processando... Aguarde...</h3>
+                )}
+              </DivRelatorioCompleto>
+            </>
+          )}
         {SituacaoExibicao == 'carregando' && (
           <TextoCarregando>Carregando...</TextoCarregando>
+        )}
+        {(SituacaoExibicao == 'listaVazia' ||
+          SituacaoExibicao == 'listaCarregada') && (
+          <MenuBotoesTipoSolicitacao>
+            <li>
+              <button
+                onClick={() => changeTipoSolicitacao('abertas')}
+                className={TipoSolicitacao == 'abertas' ? 'selected' : ''}
+                type="button"
+              >
+                Abertas
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => changeTipoSolicitacao('fechadas')}
+                className={TipoSolicitacao == 'fechadas' ? 'selected' : ''}
+                type="button"
+              >
+                Fechadas
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => changeTipoSolicitacao('todas')}
+                className={TipoSolicitacao == 'todas' ? 'selected' : ''}
+                type="button"
+              >
+                Todas
+              </button>
+            </li>
+          </MenuBotoesTipoSolicitacao>
         )}
         {SituacaoExibicao == 'listaVazia' && (
           <TextoListaVazia>Não há solicitações para exibir.</TextoListaVazia>
         )}
         {SituacaoExibicao == 'listaCarregada' && (
           <ListaSolicitacoes>
-            {(nomeusur == 'David Senra' ||
-              nomeusur == 'Targino Azeredo' ||
-              nomeusur == 'Dolores Belico') && (
-              <>
-                <DivRelatorioCompleto>
-                  <button
-                    onClick={() =>
-                      situacaoDownloadPlanilhaGeral == 'ocioso' &&
-                      baixarExcelTodosPedidos()
-                    }
-                    className={
-                      situacaoDownloadPlanilhaGeral == 'baixando'
-                        ? 'desativado'
-                        : ''
-                    }
-                  >
-                    Baixar Relatório Completo
-                  </button>
-                  {situacaoDownloadPlanilhaGeral == 'baixando' && (
-                    <h3>Processando... Aguarde...</h3>
-                  )}
-                </DivRelatorioCompleto>
-              </>
-            )}
             <GridCabecalhoSolto>
               <li>
                 <b>Nº Solic:</b>

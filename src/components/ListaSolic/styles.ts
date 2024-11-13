@@ -1799,3 +1799,38 @@ export const DivRelatorioCompleto = styled.div`
     display: none;
   }
 `
+
+export const MenuBotoesTipoSolicitacao = styled.ul`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  width: 400px;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  li {
+    width: 100px;
+    height: 30px;
+    button {
+      font-size: 18px;
+      font-weight: bold;
+      padding-left: 4px;
+      padding-right: 4px;
+      width: 90px;
+      height: 30px;
+      background-color: #ffef80;
+      cursor: pointer;
+      &:hover {
+        background-color: #ffe740;
+      }
+      &.selected {
+        background-color: #ff6000;
+        cursor: default;
+        &:hover {
+          background-color: #ff6000;
+        }
+      }
+    }
+  }
+`
