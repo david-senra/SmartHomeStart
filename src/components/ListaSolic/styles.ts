@@ -1827,16 +1827,20 @@ export const MenuBotoesTipoSolicitacao = styled.ul`
       padding-right: 4px;
       width: 90px;
       height: 30px;
+      border-radius: 5px;
       background-color: #ffef80;
       cursor: pointer;
       &:hover {
         background-color: #ffe740;
       }
       &.selected {
-        background-color: #ff6000;
+        background-color: #ff5c00;
         cursor: default;
         &:hover {
-          background-color: #ff6000;
+          background-color: #ff5c00;
+        }
+        &:disabled {
+          color: #3f3f3f;
         }
       }
     }

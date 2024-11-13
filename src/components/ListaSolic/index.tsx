@@ -1636,6 +1636,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
             <li>
               <button
                 onClick={() => changeTipoSolicitacao('abertas')}
+                disabled={TipoSolicitacao == 'abertas'}
                 className={TipoSolicitacao == 'abertas' ? 'selected' : ''}
                 type="button"
               >
@@ -1645,6 +1646,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
             <li>
               <button
                 onClick={() => changeTipoSolicitacao('fechadas')}
+                disabled={TipoSolicitacao == 'fechadas'}
                 className={TipoSolicitacao == 'fechadas' ? 'selected' : ''}
                 type="button"
               >
@@ -1654,6 +1656,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
             <li>
               <button
                 onClick={() => changeTipoSolicitacao('todas')}
+                disabled={TipoSolicitacao == 'todas'}
                 className={TipoSolicitacao == 'todas' ? 'selected' : ''}
                 type="button"
               >
