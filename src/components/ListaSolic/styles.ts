@@ -1230,6 +1230,11 @@ export const IconeLapisImg = styled.img`
 export const ItemCheckDiv = styled.div`
   position: absolute;
   z-index: 7;
+  &.checkMark {
+    right: 10.5%;
+    margin-top: 4px;
+    transform: translate(-10.5%, -10.5%);
+  }
   &.contrato {
     left: 4.75%;
     transform: translate(-4.75%, -4.75%);
@@ -1289,6 +1294,9 @@ export const ItemCheckDiv = styled.div`
       left: 5%;
       margin-top: 0px;
     }
+    margin-top: 0px;
+    left: 97%;
+    transform: translate(-97%, -97%);
   }
 `
 

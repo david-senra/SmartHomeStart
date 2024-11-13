@@ -2555,7 +2555,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           pedido.statusSolicitacao == 'aberto' &&
                           (item.status == 'aberto' ||
                             item.status == 'cancelado') && (
-                            <ItemCheckDiv id={pedido.id}>
+                            <ItemCheckDiv id={pedido.id} className="checkMark">
                               <ItemCheckImg
                                 id={String(item.id)}
                                 src={
@@ -2613,7 +2613,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                           pedido.statusSolicitacao != 'cancelado' &&
                           item.status != 'cancelado' &&
                           item.status != 'aberto' && (
-                            <ItemCheckDiv id={pedido.id}>
+                            <ItemCheckDiv id={pedido.id} className="checkMark">
                               <ItemCheckImg
                                 id={String(item.id)}
                                 src={
