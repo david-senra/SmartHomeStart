@@ -19,12 +19,67 @@ export const FormularioCompra = styled.form`
   }
 `
 
+export const CardAdmissao = styled.div`
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 30vw;
+  margin: auto;
+  margin-bottom: 10px;
+  border: solid 1px black;
+  border-radius: 15px;
+`
+
+export const DivObraQuantidade = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  &.comData {
+    gap: 15px;
+    margin-left: 0px;
+    padding-left: 0px;
+    justify-content: flex-start;
+  }
+  &.noTopMargin {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  &.faltaAdicional {
+    flex-direction: column;
+    border: solid 1px black;
+    border-radius: 15px;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    margin: auto;
+    margin-bottom: 10px;
+    width: 60%;
+    gap: 5px;
+  }
+`
+
+export const DivListaAcrescimos = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+`
+
 export const DivEmpresa = styled.div`
   display: flex;
   padding-top: 20px;
   flex-direction: row;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   label {
     font-weight: bold;
     padding-top: 5px;
@@ -33,6 +88,28 @@ export const DivEmpresa = styled.div`
   select {
     font-size: 18px;
     padding: 5px;
+    &.comData {
+      width: 60%;
+      margin-right: 0px;
+    }
+  }
+  input {
+    font-size: 16px;
+    text-align: center;
+  }
+  &.acrescimoCargo {
+    padding-top: 5px;
+  }
+  &.comData {
+    width: 45%;
+    padding-right: 0px;
+    margin-right: 0px;
+  }
+  &.noTopMargin {
+    margin-top: 5px;
+    padding-top: 5px;
+    height: 38px;
+    margin-bottom: 0px;
   }
   @media only screen and (max-width: 768px) {
     display: flex;
@@ -58,6 +135,13 @@ export const DivQuantidadeVaga = styled.div`
   flex-direction: row;
   justify-content: center;
   gap: 8px;
+  &.justificativaObs {
+    flex-direction: column;
+  }
+
+  &.acrescimoCargo {
+    padding-top: 5px;
+  }
   label {
     font-weight: bold;
     padding-top: 5px;
@@ -67,6 +151,25 @@ export const DivQuantidadeVaga = styled.div`
     font-size: 18px;
     padding: 5px;
     width: 50px;
+  }
+  textarea {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 16px;
+    width: 100%;
+    height: 80px;
+    resize: none;
+    &.justificativa {
+      height: 60px;
+    }
   }
   @media only screen and (max-width: 768px) {
     display: flex;
@@ -102,6 +205,22 @@ export const DivNomeVaga = styled.div`
     padding: 5px;
     width: 350px;
   }
+  &.DadosPessoais {
+    input {
+      font-size: 18px;
+      padding: 5px;
+      width: 180px;
+      text-align: center;
+    }
+  }
+  &.DadosNome {
+    input {
+      font-size: 18px;
+      padding: 5px;
+      width: 300px;
+      text-align: center;
+    }
+  }
   @media only screen and (max-width: 768px) {
     display: flex;
     padding-top: 20px;
@@ -136,6 +255,26 @@ export const GridListaCabecalho = styled.ul`
     justify-content: center;
   }
   margin-left: 2.5vw;
+  &.AberturaVagas {
+    grid-template-columns: 10vw 10vw;
+    margin-left: 0px;
+  }
+  &.Admissao {
+    grid-template-columns: 15vw 7vw 18vw 15vw 14vw;
+    margin-left: 2.5vw;
+  }
+  &.TransferenciaDesligamento {
+    grid-template-columns: 10vw 15vw 12vw 8vw 10vw;
+    margin-left: 1.2vw;
+  }
+  &.Ferias {
+    grid-template-columns: 10vw 15vw 12vw 15vw;
+    margin-left: 1vw;
+  }
+  &.FaltasAdicional {
+    grid-template-columns: 10vw 15vw 12vw 22vw;
+    margin-left: 1vw;
+  }
   @media only screen and (max-width: 768px) {
     width: 80vw;
     justify-content: center;
@@ -169,6 +308,26 @@ export const GridLista = styled.ul`
     justify-content: center;
   }
   margin-left: 2.5vw;
+  &.AberturaVagas {
+    grid-template-columns: 10vw 10vw;
+    margin-left: 0px;
+  }
+  &.Admissao {
+    grid-template-columns: 15vw 7vw 18vw 15vw 14vw;
+    margin-left: 2.5vw;
+  }
+  &.TransferenciaDesligamento {
+    grid-template-columns: 10vw 15vw 12vw 8vw 10vw;
+    margin-left: 1.2vw;
+  }
+  &.Ferias {
+    grid-template-columns: 10vw 15vw 12vw 15vw;
+    margin-left: 1vw;
+  }
+  &.FaltasAdicional {
+    grid-template-columns: 10vw 15vw 12vw 22vw;
+    margin-left: 1vw;
+  }
   @media only screen and (max-width: 768px) {
     width: 80vw;
     justify-content: center;
@@ -666,7 +825,7 @@ export const DivButtonRemoverItem = styled.div`
   button {
     position: absolute;
     right: 1vw auto;
-    margin-top: 2.5px;
+    margin-top: 10px;
     text-align: center;
     width: 25px;
     height: 25px;
@@ -680,6 +839,19 @@ export const DivButtonRemoverItem = styled.div`
     &:hover {
       background-color: #8f1106;
     }
+    &.removerCard {
+      position: absolute;
+      right: 31%;
+      margin-top: -170px;
+      transform: translate(-31%, -31%);
+    }
+    &.remocaoSolicFunc {
+      margin-top: 15px;
+    }
+    &.cardFaltasAdicional {
+      margin-left: 230px;
+      margin-top: -100px;
+    }
   }
 `
 
@@ -689,6 +861,9 @@ export const DivBotoesConfirmacao = styled.li`
   justify-content: center;
   gap: 10px;
   padding-bottom: 100px;
+  &.inclusaoAdmissao {
+    padding-bottom: 20px;
+  }
   #botaoconfirmar {
     text-align: center;
     margin-top: 30px;
@@ -703,6 +878,12 @@ export const DivBotoesConfirmacao = styled.li`
     cursor: pointer;
     &:hover {
       background-color: #9acd32;
+    }
+    &.inclusaoAdmissao {
+      background-color: #1859c9;
+      &:hover {
+        background-color: #1859c9db;
+      }
     }
   }
   #botaocancelar {
@@ -720,6 +901,19 @@ export const DivBotoesConfirmacao = styled.li`
     &:hover {
       background-color: #c0c0c0;
     }
+  }
+`
+
+export const BotaoAdicionarFaltaAdicional = styled.button`
+  background-color: #32cd32;
+  width: 35px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background-color: #0a8a32;
   }
 `
 
@@ -750,6 +944,8 @@ export const DivBotaoNovoPedido = styled.li`
 export const DivMensagemErro = styled.div`
   padding-top: 20px;
   p {
+    font-size: 18px;
+    font-weight: bold;
     text-align: center;
     color: #8f1106;
   }
@@ -760,11 +956,94 @@ export const TextoNaoHaVagas = styled.h2`
   margin-bottom: 10px;
   font-size: 20px;
   color: #8f1106;
+  white-space: pre-wrap;
   &.first {
     margin-top: 30px;
     margin-bottom: 0px;
   }
   &.second {
     margin-top: 20px;
+  }
+`
+
+export const TextoNenhumaFalta = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 7px;
+  color: #8f1106;
+`
+
+export const TextoEstagio = styled.p`
+  font-size: 17px;
+  padding-top: 7px;
+`
+
+export const ListaFaltasDiasAdicionais = styled.ul`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-bottom: 10px;
+  justify-content: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  gap: 7px;
+  flex-wrap: wrap;
+  li {
+    width: 100px;
+    font-size: 15px;
+    padding-right: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: solid 1px black;
+    border-radius: 5px;
+  }
+  &.flexForm {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+`
+
+export const BotaoRemoverFaltaAdicional = styled.button`
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  font-weight: bold;
+  background-color: #eb4334;
+  &:hover {
+    background-color: #8f1106;
+  }
+`
+
+export const SetDataBotaoRemover = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+`
+
+export const ListaFaltasDiasAdicionaisTabela = styled.ul`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding-left: 10px;
+  padding-right: 10px;
+  justify-content: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  gap: 7px;
+  flex-wrap: wrap;
+  li {
+    width: 95px;
+  }
+  &.flexForm {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 `
