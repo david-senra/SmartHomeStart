@@ -435,7 +435,7 @@ const FormularioSolicitacao = ({ nomeusur = '' }) => {
       console.log('Sucesso!')
       SetSituacaoPedido('concluido')
       SetResetPedido('on')
-      mandarEmail('criacaoSolicitacao', nomeusur)
+      // mandarEmail('criacaoSolicitacao', nomeusur)
     }
     setEstadoEnvioSolicitacao('ocioso')
   }

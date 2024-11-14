@@ -768,7 +768,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       setPopupType('')
       document.body.style.overflowY = 'visible'
       atualizarAposFecharSolicitacao()
-      mandarEmail('finalizarSolicitacao', elemento.id)
+      // mandarEmail('finalizarSolicitacao', elemento.id)
     } else {
       console.log('Erro!')
     }
@@ -800,7 +800,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       setPopupType('')
       document.body.style.overflowY = 'visible'
       atualizarAposFecharSolicitacao()
-      mandarEmail('cancelarSolicitacao', elemento.id)
+      // mandarEmail('cancelarSolicitacao', elemento.id)
     } else {
       console.log('Erro!')
     }
@@ -1010,7 +1010,8 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
       if (item_encontrado.status == 'entregue') {
-        mandarEmail('marcarItem', elemento.id, item_encontrado.id.toString())
+        console.log('mandarEmail')
+        // mandarEmail('marcarItem', elemento.id, item_encontrado.id.toString())
       }
       atualizarAposFecharSolicitacao()
     } else if (resposta_servidor == 'solicitacao_trancada') {
