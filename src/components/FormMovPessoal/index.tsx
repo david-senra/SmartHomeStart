@@ -213,116 +213,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.id = data.id
     }
   }
-  class Compra {
-    id: number
-    quantidade: number
-    unidade: string
-    descricao: string
-    centrocusto: string
-    observacao: string
-    status: string
-    editandoQuantidade: boolean
-    novaQuantidade: number
-    editandoUnidade: boolean
-    novaUnidade: string
-    editandoDescricao: boolean
-    novaDescricao: string
-    editandoCentroDeCusto: boolean
-    novoCentroCusto: string
-    novaObservacao: string
-    editandoObservacao: boolean
-    requisicao: string
-    dataEntregue: string
-    dataFinalizado: string
-
-    constructor(data: {
-      id: number
-      quantidade: number
-      unidade: string
-      descricao: string
-      centrocusto: string
-      observacao: string
-      status: string
-      editandoQuantidade: boolean
-      novaQuantidade: number
-      editandoUnidade: boolean
-      novaUnidade: string
-      editandoDescricao: boolean
-      novaDescricao: string
-      editandoCentroDeCusto: boolean
-      novoCentroCusto: string
-      novaObservacao: string
-      editandoObservacao: boolean
-      requisicao: string
-      dataEntregue: string
-      dataFinalizado: string
-    }) {
-      this.id = data.id
-      this.quantidade = data.quantidade
-      this.unidade = data.unidade
-      this.descricao = data.descricao
-      this.centrocusto = data.centrocusto
-      this.observacao = data.observacao
-      this.status = data.status
-      this.editandoQuantidade = data.editandoQuantidade
-      this.novaQuantidade = data.novaQuantidade
-      this.editandoUnidade = data.editandoUnidade
-      this.novaUnidade = data.novaUnidade
-      this.editandoDescricao = data.editandoDescricao
-      this.novaDescricao = data.novaDescricao
-      this.editandoCentroDeCusto = data.editandoCentroDeCusto
-      this.novoCentroCusto = data.novoCentroCusto
-      this.editandoObservacao = data.editandoObservacao
-      this.novaObservacao = data.novaObservacao
-      this.status = data.status
-      this.requisicao = data.requisicao
-      this.dataEntregue = data.dataEntregue
-      this.dataFinalizado = data.dataFinalizado
-    }
-  }
-  const compraInicial = {
-    id: 1,
-    quantidade: 0,
-    unidade: 'und',
-    descricao: '',
-    centrocusto: '',
-    observacao: '',
-    status: 'aberto',
-    editandoQuantidade: false,
-    novaQuantidade: 0,
-    editandoUnidade: false,
-    novaUnidade: 'und',
-    editandoDescricao: false,
-    novaDescricao: '',
-    editandoCentroDeCusto: false,
-    novoCentroCusto: '',
-    editandoObservacao: false,
-    novaObservacao: '',
-    requisicao: '',
-    dataEntregue: '',
-    dataFinalizado: ''
-  }
-  const listaCentrosCusto = [
-    '03 - ADMINISTRATIVO',
-    '04 - RESERVA TÉCNICA',
-    '05 - OBRAS FINALIZADAS',
-    '20 - PIRAPORA DO BOM JESUS',
-    '22 - COMERCIAL',
-    '34 - EMPRÉSTIMOS',
-    '35 - MACACOS/CAPELA DE SÃO SEBASTIÃO',
-    '38 - MORRO DO PILAR/INTENDENTE CAMARA',
-    '42 - CAMARGOS',
-    '48 - ENCARGOS BANCARIOS',
-    '51 - CONGONHAS HOTEL DO JUCÃO',
-    '52 - SANTA BÁRBARA/IGREJA MATRIZ DE SANTO ANTÔNIO',
-    '53 - CMD MERCADO MUNICIPAL',
-    '54 - SERRO',
-    '55 - SERRO',
-    '56 - BH - RESIDENCIAL ARTHUR BERNARDES',
-    '57 - CATAS ALTAS IGREJA MATRIZ DE SANTO ANTÔNIO',
-    '98 - DIRETORIA & TECNOLOGIAS',
-    '99 - OBRAS DE PEQUENO PORTE'
-  ]
   const obraVazia = {
     id: 0,
     municipio: '',
@@ -368,8 +258,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const [empresaSelecionada, setEmpresaSelecionada] = React.useState<string>('')
   const [admissaoNaAbertura, setAdmissaoNaABertura] =
     React.useState<boolean>(false)
-  const [colaboradorSelecionado, setColaboradorSelecionado] =
-    React.useState<string>('')
   const [naturezaMovimentacao, setNaturezaMovimentacao] =
     React.useState<string>('')
   const [obrasCantaria, setObrasCantaria] = React.useState<Obra[]>([])
@@ -388,7 +276,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const [cargosPossiveis, setCargosPossiveis] = React.useState<Cargo[]>([])
   const [equipeDisponivel, setEquipeDisponivel] = React.useState<Vaga[]>([])
   const [vagasDisponiveis, setVagasDisponiveis] = React.useState<Vaga[]>([])
-  const [vagaSelecionada, setVagaSelecionada] = React.useState<string>('')
   const [firstChangeEmpresa, setFirstChangeEmpresa] =
     React.useState<boolean>(true)
   const [firstChangeNaturezaMov, setFirstChangeNaturezaMov] =
@@ -397,59 +284,11 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const [mensagemErroInclusao, setMensagemErroInclusao] =
     React.useState<string>('')
   const [firstChangeObra, setFirstChangeObra] = React.useState<boolean>(true)
-  const [botaoDesativado, setBotaoDesativado] = React.useState<boolean>(true)
-  const [codigoVaga, setCodigoVaga] = React.useState<string>('')
-  const [quantidadeVaga, setQuantidadeVaga] = React.useState<string>('')
   const [obra, setObra] = React.useState<Obra>(obraVazia)
   const [obraDestino, setObraDestino] = React.useState<Obra>(obraVazia)
-  const [DataLimite, SetDataLimite] = React.useState<string>('')
   const [MensagemErro, SetMensagemErro] = React.useState<string>('')
   const [ObservacaoGeral, setObservacaoGeral] = React.useState<string>('')
   const [JustificativaGeral, setJustificativaGeral] = React.useState<string>('')
-  const [sugestaoFornecedores, setSugestaoFornecedores] =
-    React.useState<string>('')
-  const [listaItems, setListaItems] = React.useState<number[]>([1])
-  const [listaCompras, setListaCompras] = React.useState<Compra[]>([
-    compraInicial
-  ])
-  const adicionarItem = () => {
-    let ultimo_item
-    if (listaItems.length == 0) {
-      ultimo_item = 0
-    } else {
-      ultimo_item = listaItems.at(-1)
-    }
-    if (ultimo_item !== undefined && listaItems.length < 20) {
-      const nova_lista = [...listaItems]
-      nova_lista.push(ultimo_item + 1)
-      setListaItems(nova_lista)
-      const novaCompra = {
-        id: ultimo_item + 1,
-        quantidade: 0,
-        unidade: 'und',
-        descricao: '',
-        centrocusto: '',
-        observacao: '',
-        status: 'aberto',
-        editandoQuantidade: false,
-        novaQuantidade: 0,
-        editandoUnidade: false,
-        novaUnidade: 'und',
-        editandoDescricao: false,
-        novaDescricao: '',
-        editandoCentroDeCusto: false,
-        novoCentroCusto: '',
-        editandoObservacao: false,
-        novaObservacao: '',
-        requisicao: '',
-        dataEntregue: '',
-        dataFinalizado: ''
-      }
-      const nova_lista_compras = [...listaCompras]
-      nova_lista_compras.push(novaCompra)
-      setListaCompras(nova_lista_compras)
-    }
-  }
   const removerPedidoAcrescimo = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -619,93 +458,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       return 'MUDE O TEXTO AQUI'
     }
   }
-  const changeItemDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const id_elemento = parseInt(e.currentTarget.id)
-    const valor_elemento = e.currentTarget.value
-    const nova_lista = [...listaCompras]
-    function isElement(compra: Compra) {
-      return compra.id == id_elemento
-    }
-    const indice_elemento = nova_lista.findIndex(isElement)
-    const elemento = nova_lista.filter(isElement)[0]
-    elemento.descricao = valor_elemento
-    elemento.novaDescricao = valor_elemento
-    nova_lista.splice(indice_elemento, 1)
-    nova_lista.splice(indice_elemento, 0, elemento)
-    setListaCompras(nova_lista)
-    console.log(listaCompras)
-  }
-  const changeItemQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const id_elemento = parseInt(e.currentTarget.id)
-    const valor_elemento = parseFloat(e.currentTarget.value)
-    const nova_lista = [...listaCompras]
-    function isElement(compra: Compra) {
-      return compra.id == id_elemento
-    }
-    const indice_elemento = nova_lista.findIndex(isElement)
-    const elemento = nova_lista.filter(isElement)[0]
-    console.log(valor_elemento)
-    elemento.quantidade = valor_elemento
-    elemento.novaQuantidade = valor_elemento
-    nova_lista.splice(indice_elemento, 1)
-    nova_lista.splice(indice_elemento, 0, elemento)
-    setListaCompras(nova_lista)
-    console.log(listaCompras)
-  }
-  const changeItemUnidade = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id_elemento = parseInt(e.currentTarget.id)
-    const valor_elemento = e.currentTarget.value
-    const nova_lista = [...listaCompras]
-    function isElement(compra: Compra) {
-      return compra.id == id_elemento
-    }
-    const indice_elemento = nova_lista.findIndex(isElement)
-    const elemento = nova_lista.filter(isElement)[0]
-    elemento.unidade = valor_elemento
-    elemento.novaUnidade = valor_elemento
-    nova_lista.splice(indice_elemento, 1)
-    nova_lista.splice(indice_elemento, 0, elemento)
-    setListaCompras(nova_lista)
-    console.log(listaCompras)
-  }
-  const changeItemCentroCusto = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id_elemento = parseInt(e.currentTarget.id)
-    const valor_elemento = e.currentTarget.value
-    const nova_lista = [...listaCompras]
-    function isElement(compra: Compra) {
-      return compra.id == id_elemento
-    }
-    const indice_elemento = nova_lista.findIndex(isElement)
-    const elemento = nova_lista.filter(isElement)[0]
-    elemento.centrocusto = valor_elemento
-    elemento.novoCentroCusto = valor_elemento
-    nova_lista.splice(indice_elemento, 1)
-    nova_lista.splice(indice_elemento, 0, elemento)
-    setListaCompras(nova_lista)
-    console.log(listaCompras)
-  }
-  const changeItemObservacao = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const id_elemento = parseInt(e.currentTarget.id)
-    const valor_elemento = e.currentTarget.value
-    const nova_lista = [...listaCompras]
-    function isElement(compra: Compra) {
-      return compra.id == id_elemento
-    }
-    const indice_elemento = nova_lista.findIndex(isElement)
-    const elemento = nova_lista.filter(isElement)[0]
-    elemento.observacao = valor_elemento
-    elemento.novaObservacao = valor_elemento
-    nova_lista.splice(indice_elemento, 1)
-    nova_lista.splice(indice_elemento, 0, elemento)
-    setListaCompras(nova_lista)
-    console.log(listaCompras)
-  }
-  const changeSugestaoFornecedores = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const valor_elemento = e.currentTarget.value
-    setSugestaoFornecedores(valor_elemento)
-  }
   const changeObservacao = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const valor_elemento = e.currentTarget.value
     setObservacaoGeral(valor_elemento)
@@ -713,10 +465,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const changeJustificativa = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const valor_elemento = e.currentTarget.value
     setJustificativaGeral(valor_elemento)
-  }
-  const changeDataLimite = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valor_elemento = e.currentTarget.value
-    SetDataLimite(valor_elemento)
   }
   const changeEmpresa = (e: React.ChangeEvent<HTMLSelectElement>) => {
     SetMensagemErro('')
@@ -739,7 +487,11 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     setAdmissaoNaABertura(false)
     const valor_elemento = e.currentTarget.value
     setNaturezaMovimentacao(valor_elemento)
+    setPedidosAdmissaoVagas([admissao_inicial])
+    setPedidoAcrescimoCargos([acrescimo_inicial])
     setObra(obraVazia)
+    setInclusaoPedidosAdmissaoVagas([])
+    setPedidosFuncionarios([solicitacao_funcionario_inicial])
     if (firstChangeNaturezaMov == false) {
       const inputObra: any =
         e.currentTarget.parentElement?.nextSibling?.lastChild
@@ -747,8 +499,20 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       setObra(obraVazia)
     } else {
       setFirstChangeNaturezaMov(false)
+      setNaturezaMovimentacao(valor_elemento)
+      setPedidosAdmissaoVagas([admissao_inicial])
+      setPedidoAcrescimoCargos([acrescimo_inicial])
+      setObra(obraVazia)
+      setInclusaoPedidosAdmissaoVagas([])
+      setPedidosFuncionarios([solicitacao_funcionario_inicial])
     }
     setFirstChangeObra(true)
+    setNaturezaMovimentacao(valor_elemento)
+    setPedidosAdmissaoVagas([admissao_inicial])
+    setPedidoAcrescimoCargos([acrescimo_inicial])
+    setObra(obraVazia)
+    setInclusaoPedidosAdmissaoVagas([])
+    setPedidosFuncionarios([solicitacao_funcionario_inicial])
   }
   const changeAdmissaoNaAbertura = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -797,8 +561,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       const equipe_empregada = equipe.filter(isVagaOcupada)
       setEquipeDisponivel(equipe_empregada)
       setVagasDisponiveis(vagas_disponiveis)
-      setColaboradorSelecionado('')
-      setVagaSelecionada('')
     } else {
       obra_encontrada = obrasSantaBarbara.filter(isElement)[0]
       const equipe = obra_encontrada.equipe
@@ -807,8 +569,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       const equipe_empregada = equipe.filter(isVagaOcupada)
       setEquipeDisponivel(equipe_empregada)
       setVagasDisponiveis(vagas_disponiveis)
-      setColaboradorSelecionado('')
-      setVagaSelecionada('')
     }
     if (
       naturezaMovimentacao != 'AberturaVaga' &&
@@ -926,7 +686,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     }
     console.log(obra.nome)
     console.log(obraDestino.nome)
-    setVagaSelecionada('')
   }
   const changeColaboradorSelecionado = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -1439,9 +1198,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.push(nova_admissao)
     setPedidosFuncionarios(nova_lista)
   }
-  const changeNomeVaga = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valor_elemento = e.currentTarget.value
-  }
   const solicitarCompra = () => {
     const texto_erro = document.getElementById('mensagemErro')
     texto_erro?.scrollIntoView()
@@ -1472,15 +1228,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           SetSituacaoPedido('confirmando')
         }
       } else if (naturezaMovimentacao == 'Admissao') {
+        console.log('hi')
         console.log(pedidosAdmissaoVaga)
+        console.log(equipeDisponivel)
         const valores_vagas: string[] = []
         pedidosAdmissaoVaga.map((pedido) => {
           if (pedido.codigo_vaga.slice(0, 2) == 'ES') {
             pedido.tipo_admissao = 'estagiario'
           }
-          if (equipeDisponivel.length == 0) {
+          if (vagasDisponiveis.length == 0) {
             erro = 'yes'
-            SetMensagemErro('')
           } else if (pedido.codigo_vaga == '') {
             erro = 'yes'
             SetMensagemErro(
@@ -1535,7 +1292,10 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         } else {
           const conjunto_Funcionarios: string[] = []
           pedidosFuncionarios.map((pedido) => {
-            if (pedido.id_pessoa == '') {
+            if (equipeDisponivel.length == 0) {
+              erro = 'yes'
+              SetMensagemErro('')
+            } else if (pedido.id_pessoa == '') {
               erro = 'yes'
               SetMensagemErro(
                 'Todos os colaboradores do pedido precisam ser definidos!'
@@ -1776,39 +1536,55 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     }
   }
   const enviarSolicitacao = async () => {
-    const anoData = DataLimite.split('-')[0]
-    const mesData = DataLimite.split('-')[1]
-    const diaData = DataLimite.split('-')[2]
-    const dataLimiteFormatada = diaData + '/' + mesData + '/' + anoData
     const dataAgora = new Date()
     const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
-    console.log(dataAgoraBrasil)
     const horaDataAgora = dataAgora.getHours()
     const minutosDataAgora = dataAgora.getMinutes()
     const horarioAgora = horaDataAgora + ':' + minutosDataAgora
-    const jsonCompra = {
+    const jsonSolicitacaoMP = {
       usuario: nomeusur,
-      empresa: empresaSelecionada,
-      itens: listaCompras,
-      sugestfornecedor: sugestaoFornecedores,
-      obsFinal: ObservacaoGeral,
-      dataLimite: dataLimiteFormatada,
+      natureza_solicitacao: naturezaMovimentacao,
       data_solicitacao: dataAgoraBrasil,
       horarioSolicitacao: horarioAgora,
+      empresa: empresaSelecionada,
+      obra: obra,
+      obra_destino: obraDestino,
+      pedido_abertura_vagas: pedidoAcrescimoCargos,
+      pedido_abertura_inclui_admissao: admissaoNaAbertura,
+      pedido_admissao_vagas: pedidosAdmissaoVaga,
+      pedido_admissao_vagas_inclusao: inclusaoPedidosAdmissaoVaga,
+      pedidos_funcionarios: pedidosFuncionarios,
+      justificativa: JustificativaGeral,
+      observacao_geral: ObservacaoGeral,
+      requisicao: 'criacaoSolicitMovPessoal',
       statusSolicitacao: 'aberto',
       isCardOpen: false,
       altura: 0,
-      editandoEmpresa: false,
-      novaEmpresa: empresaSelecionada,
-      editandoDataLimite: false,
-      novaDataLimite: dataLimiteFormatada,
-      editandoSugFor: false,
-      novaSugFor: sugestaoFornecedores,
-      editandoObsFinal: false,
-      novaObsFinal: ObservacaoGeral,
-      podeDestrancar: true,
-      requisicao: 'criacaoSolicitacao'
+      podeDestrancar: true
     }
+    // const jsonCompra = {
+    //   usuario: nomeusur,
+    //   empresa: empresaSelecionada,
+    //   itens: listaCompras,
+    //   sugestfornecedor: sugestaoFornecedores,
+    //   obsFinal: ObservacaoGeral,
+    //   dataLimite: dataLimiteFormatada,
+    //   data_solicitacao: dataAgoraBrasil,
+    //   horarioSolicitacao: horarioAgora,
+    //   statusSolicitacao: 'aberto',
+    //   isCardOpen: false,
+    //   altura: 0,
+    //   editandoEmpresa: false,
+    //   novaEmpresa: empresaSelecionada,
+    //   editandoDataLimite: false,
+    //   novaDataLimite: dataLimiteFormatada,
+    //   editandoSugFor: false,
+    //   novaSugFor: sugestaoFornecedores,
+    //   editandoObsFinal: false,
+    //   novaObsFinal: ObservacaoGeral,
+    //   podeDestrancar: true,
+    //   requisicao: 'criacaoSolicitacao'
+    // }
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -1818,16 +1594,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(jsonCompra)
+        body: JSON.stringify(jsonSolicitacaoMP)
       }
     )
     const corpo_resposta = respostaEnvio.text()
     const resposta = (await corpo_resposta).toString()
-    if (resposta.includes('solicitacao_recebida')) {
+    if (resposta.includes('sol_mp_recebida')) {
       console.log('Sucesso!')
       SetSituacaoPedido('concluido')
       SetResetPedido('on')
-      mandarEmail('criacaoSolicitacao', nomeusur)
+      mandarEmail('criacaoSolicitacaoMP', nomeusur)
     }
   }
   const requisitarInformacoesMP = async () => {
@@ -1862,37 +1638,30 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     }
   }
   const NovoPedido = () => {
-    setEmpresaSelecionada('Cantaria')
-    SetDataLimite('')
+    setEmpresaSelecionada('')
+    setAdmissaoNaABertura(false)
+    setNaturezaMovimentacao('')
+    setPedidoAcrescimoCargos([])
+    setInclusaoPedidosAdmissaoVagas([])
+    setPedidosAdmissaoVagas([admissao_inicial])
+    setPedidosFuncionarios([solicitacao_funcionario_inicial])
     SetMensagemErro('')
     setObservacaoGeral('')
-    setSugestaoFornecedores('')
-    setListaItems([1])
-    const compraInicial = {
-      id: 1,
-      quantidade: 0,
-      unidade: 'und',
-      descricao: '',
-      centrocusto: '',
-      observacao: '',
-      status: 'aberto',
-      editandoQuantidade: false,
-      novaQuantidade: 0,
-      editandoUnidade: false,
-      novaUnidade: 'und',
-      editandoDescricao: false,
-      novaDescricao: '',
-      editandoCentroDeCusto: false,
-      novoCentroCusto: '',
-      editandoObservacao: false,
-      novaObservacao: '',
-      requisicao: '',
-      dataEntregue: '',
-      dataFinalizado: ''
-    }
-    setListaCompras([compraInicial])
     SetSituacaoPedido('solicitando')
     SetResetPedido('off')
+    setCargosPossiveis([])
+    setEquipeDisponivel([])
+    setVagasDisponiveis([])
+    setFirstChangeEmpresa(true)
+    setFirstChangeNaturezaMov(true)
+    setErroInclusao(false)
+    setMensagemErroInclusao('')
+    setFirstChangeObra(true)
+    setObra(obraVazia)
+    setObraDestino(obraVazia)
+    SetMensagemErro('')
+    setObservacaoGeral('')
+    setJustificativaGeral('')
   }
   return (
     <>
@@ -2917,17 +2686,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 {textoNatureza(naturezaMovimentacao)}
               </li>
               <br></br>
-              {naturezaMovimentacao == 'Transferencia' && (
-                <>
-                  <li>
-                    <b>Obra de origem:</b> {obra.descricao_completa}
-                  </li>
-                  <li>
-                    <b>Obra de destino:</b> {obraDestino.descricao_completa}
-                  </li>
-                  <br></br>
-                </>
-              )}
               {naturezaMovimentacao != 'Admissao' && (
                 <li>
                   <b>{textoItens(naturezaMovimentacao)}</b>
@@ -2936,6 +2694,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               {naturezaMovimentacao == 'AberturaVaga' && (
                 <li>
                   <GridListaCabecalho className="AberturaVagas">
+                    <GridItemCabecalho>Obra</GridItemCabecalho>
                     <GridItemCabecalho>Vaga</GridItemCabecalho>
                     <GridItemCabecalhoUltimo>
                       Quantidade:
@@ -2947,6 +2706,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 pedidoAcrescimoCargos.map((pedido_acrescimo) => (
                   <li key={pedido_acrescimo.id}>
                     <GridLista className="AberturaVagas">
+                      <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>
                         {pedido_acrescimo.sigla.split(' - ')[1]}
                       </GridItem>
@@ -2959,6 +2719,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               {naturezaMovimentacao == 'Ferias' && (
                 <li>
                   <GridListaCabecalho className="Ferias">
+                    <GridItemCabecalho>Obra:</GridItemCabecalho>
                     <GridItemCabecalho>ID:</GridItemCabecalho>
                     <GridItemCabecalho>Nome:</GridItemCabecalho>
                     <GridItemCabecalho>Cargo:</GridItemCabecalho>
@@ -2972,6 +2733,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 pedidosFuncionarios.map((pedido_funcionario) => (
                   <li key={pedido_funcionario.id}>
                     <GridLista className="Ferias">
+                      <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido_funcionario.id_pessoa}</GridItem>
                       <GridItem>{pedido_funcionario.nome}</GridItem>
                       <GridItem>{pedido_funcionario.cargo}</GridItem>
@@ -2983,31 +2745,25 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     </GridLista>
                   </li>
                 ))}
-              {(naturezaMovimentacao == 'Transferencia' ||
-                naturezaMovimentacao == 'Desligamento') && (
+              {naturezaMovimentacao == 'Desligamento' && (
                 <li>
-                  <GridListaCabecalho className="TransferenciaDesligamento">
+                  <GridListaCabecalho className="Desligamento">
+                    <GridItemCabecalho>Obra:</GridItemCabecalho>
                     <GridItemCabecalho>ID:</GridItemCabecalho>
                     <GridItemCabecalho>Nome:</GridItemCabecalho>
                     <GridItemCabecalho>Cargo:</GridItemCabecalho>
-                    <GridItemCabecalho>
-                      {naturezaMovimentacao == 'Transferencia'
-                        ? 'Transf. Imediata?'
-                        : 'Desl. Imediato?'}
-                    </GridItemCabecalho>
+                    <GridItemCabecalho>Desl. Imediato?</GridItemCabecalho>
                     <GridItemCabecalhoUltimo>
-                      {naturezaMovimentacao == 'Transferencia'
-                        ? 'Data da Transferência:'
-                        : 'Data do Desligamento:'}
+                      Data do Desligamento:
                     </GridItemCabecalhoUltimo>
                   </GridListaCabecalho>
                 </li>
               )}
-              {(naturezaMovimentacao == 'Transferencia' ||
-                naturezaMovimentacao == 'Desligamento') &&
+              {naturezaMovimentacao == 'Desligamento' &&
                 pedidosFuncionarios.map((pedido_funcionario) => (
                   <li key={pedido_funcionario.id}>
-                    <GridLista className="TransferenciaDesligamento">
+                    <GridLista className="Desligamento">
+                      <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido_funcionario.id_pessoa}</GridItem>
                       <GridItem>{pedido_funcionario.nome}</GridItem>
                       <GridItem>{pedido_funcionario.cargo}</GridItem>
@@ -3017,9 +2773,38 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       <GridItemUltimo>
                         {pedido_funcionario.imediato
                           ? '-'
-                          : naturezaMovimentacao == 'Transferencia'
-                            ? pedido_funcionario.data_transferencia
-                            : pedido_funcionario.data_desligamento}
+                          : pedido_funcionario.data_desligamento}
+                      </GridItemUltimo>
+                    </GridLista>
+                  </li>
+                ))}
+              {naturezaMovimentacao == 'Transferencia' && (
+                <li>
+                  <GridListaCabecalho className="Transferencia">
+                    <GridItemCabecalho>Obra de Origem:</GridItemCabecalho>
+                    <GridItemCabecalho>Obra de Destino:</GridItemCabecalho>
+                    <GridItemCabecalho>ID:</GridItemCabecalho>
+                    <GridItemCabecalho>Nome:</GridItemCabecalho>
+                    <GridItemCabecalho>Cargo:</GridItemCabecalho>
+                    <GridItemCabecalhoUltimo>
+                      Data da Transf.
+                    </GridItemCabecalhoUltimo>
+                  </GridListaCabecalho>
+                </li>
+              )}
+              {naturezaMovimentacao == 'Transferencia' &&
+                pedidosFuncionarios.map((pedido_funcionario) => (
+                  <li key={pedido_funcionario.id}>
+                    <GridLista className="Transferencia">
+                      <GridItem>{obra.descricao_completa}</GridItem>
+                      <GridItem>{obraDestino.descricao_completa}</GridItem>
+                      <GridItem>{pedido_funcionario.id_pessoa}</GridItem>
+                      <GridItem>{pedido_funcionario.nome}</GridItem>
+                      <GridItem>{pedido_funcionario.cargo}</GridItem>
+                      <GridItemUltimo>
+                        {pedido_funcionario.imediato
+                          ? 'Imediata'
+                          : pedido_funcionario.data_transferencia}
                       </GridItemUltimo>
                     </GridLista>
                   </li>
@@ -3028,6 +2813,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 naturezaMovimentacao == 'Adicional') && (
                 <li>
                   <GridListaCabecalho className="FaltasAdicional">
+                    <GridItemCabecalho>Obra:</GridItemCabecalho>
                     <GridItemCabecalho>ID:</GridItemCabecalho>
                     <GridItemCabecalho>Nome:</GridItemCabecalho>
                     <GridItemCabecalho>Cargo:</GridItemCabecalho>
@@ -3044,6 +2830,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 pedidosFuncionarios.map((pedido_funcionario) => (
                   <li key={pedido_funcionario.id}>
                     <GridLista className="FaltasAdicional">
+                      <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido_funcionario.id_pessoa}</GridItem>
                       <GridItem>{pedido_funcionario.nome}</GridItem>
                       <GridItem>{pedido_funcionario.cargo}</GridItem>
@@ -3107,6 +2894,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               {(naturezaMovimentacao == 'Admissao' || admissaoNaAbertura) && (
                 <li>
                   <GridListaCabecalho className="Admissao">
+                    <GridItemCabecalho>Obra:</GridItemCabecalho>
                     <GridItemCabecalho>Vaga:</GridItemCabecalho>
                     <GridItemCabecalho>Regime:</GridItemCabecalho>
                     <GridItemCabecalho>Nome:</GridItemCabecalho>
@@ -3121,6 +2909,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     pedido.incluir && (
                       <li key={pedido.id}>
                         <GridLista className="Admissao">
+                          <GridItem>{obra.descricao_completa}</GridItem>
                           <GridItem>{pedido.codigo_vaga}</GridItem>
                           <GridItem>
                             {pedido.tipo_admissao == 'estagiario'
@@ -3138,6 +2927,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 pedidosAdmissaoVaga.map((pedido) => (
                   <li key={pedido.id}>
                     <GridLista className="Admissao">
+                      <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido.codigo_vaga}</GridItem>
                       <GridItem>{pedido.tipo_admissao}</GridItem>
                       <GridItem>{pedido.nome}</GridItem>

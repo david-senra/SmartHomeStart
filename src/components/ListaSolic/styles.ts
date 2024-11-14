@@ -1231,9 +1231,9 @@ export const ItemCheckDiv = styled.div`
   position: absolute;
   z-index: 7;
   &.checkMark {
-    right: 10.5%;
+    right: 11%;
     margin-top: 4px;
-    transform: translate(-10.5%, -10.5%);
+    transform: translate(-11%, -11%);
   }
   &.contrato {
     left: 4.75%;

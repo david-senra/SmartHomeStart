@@ -256,23 +256,27 @@ export const GridListaCabecalho = styled.ul`
   }
   margin-left: 2.5vw;
   &.AberturaVagas {
-    grid-template-columns: 10vw 10vw;
+    grid-template-columns: 22vw 10vw 10vw;
     margin-left: 0px;
   }
   &.Admissao {
-    grid-template-columns: 15vw 7vw 18vw 15vw 14vw;
+    grid-template-columns: 22vw 15vw 7vw 18vw 10vw 10vw;
     margin-left: 2.5vw;
   }
-  &.TransferenciaDesligamento {
-    grid-template-columns: 10vw 15vw 12vw 8vw 10vw;
+  &.Desligamento {
+    grid-template-columns: 15vw 8vw 15vw 12vw 8vw 10vw;
+    margin-left: 1.2vw;
+  }
+  &.Transferencia {
+    grid-template-columns: 14vw 14vw 7vw 13vw 11vw 9.5vw;
     margin-left: 1.2vw;
   }
   &.Ferias {
-    grid-template-columns: 10vw 15vw 12vw 15vw;
+    grid-template-columns: 15vw 8vw 15vw 12vw 15vw;
     margin-left: 1vw;
   }
   &.FaltasAdicional {
-    grid-template-columns: 10vw 15vw 12vw 22vw;
+    grid-template-columns: 15vw 8vw 15vw 12vw 22vw;
     margin-left: 1vw;
   }
   @media only screen and (max-width: 768px) {
@@ -309,23 +313,27 @@ export const GridLista = styled.ul`
   }
   margin-left: 2.5vw;
   &.AberturaVagas {
-    grid-template-columns: 10vw 10vw;
+    grid-template-columns: 22vw 10vw 10vw;
     margin-left: 0px;
   }
   &.Admissao {
-    grid-template-columns: 15vw 7vw 18vw 15vw 14vw;
+    grid-template-columns: 22vw 15vw 7vw 18vw 10vw 10vw;
     margin-left: 2.5vw;
   }
-  &.TransferenciaDesligamento {
-    grid-template-columns: 10vw 15vw 12vw 8vw 10vw;
+  &.Desligamento {
+    grid-template-columns: 15vw 8vw 15vw 12vw 8vw 10vw;
+    margin-left: 1.2vw;
+  }
+  &.Transferencia {
+    grid-template-columns: 14vw 14vw 7vw 13vw 11vw 9.5vw;
     margin-left: 1.2vw;
   }
   &.Ferias {
-    grid-template-columns: 10vw 15vw 12vw 15vw;
+    grid-template-columns: 15vw 8vw 15vw 12vw 15vw;
     margin-left: 1vw;
   }
   &.FaltasAdicional {
-    grid-template-columns: 10vw 15vw 12vw 22vw;
+    grid-template-columns: 15vw 8vw 15vw 12vw 22vw;
     margin-left: 1vw;
   }
   @media only screen and (max-width: 768px) {
