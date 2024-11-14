@@ -1603,7 +1603,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       console.log('Sucesso!')
       SetSituacaoPedido('concluido')
       SetResetPedido('on')
-      mandarEmail('criacaoSolicitacaoMP', nomeusur)
+      // mandarEmail('criacaoSolicitacaoMP', nomeusur)
     }
   }
   const requisitarInformacoesMP = async () => {

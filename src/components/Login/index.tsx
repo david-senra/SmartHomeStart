@@ -22,6 +22,7 @@ function Login() {
   const navigate = useNavigate()
   const [acesso, setAcesso] = useState(false)
   const [nivel_acesso, setNivelAcesso] = useState(0)
+  const [nivel_acesso_mp, setNivelAcessoMP] = useState(0)
   const [nome_usuario, setNomeUsuario] = useState('')
   const [usuarioId, setUsuarioId] = useState('')
   const [paginaAtual, setPaginaAtual] = useState('login')
@@ -34,6 +35,7 @@ function Login() {
         state: {
           user: usuarioId,
           niv_acesso: nivel_acesso,
+          niv_acesso_mp: nivel_acesso_mp,
           nome_user: nome_usuario
         }
       })
@@ -104,6 +106,7 @@ function Login() {
     if (resposta.includes('acesso')) {
       const nome_usuario = resposta.split(';')[1]
       const nivel_acesso = resposta.split(';')[2]
+      const nivel_acesso_mp = resposta.split(';')[3]
       const texto_erro = document.getElementById('text_error')
       if (texto_erro != null) {
         texto_erro.textContent = 'Acesso concedido! Carregando...'
@@ -111,6 +114,7 @@ function Login() {
         setUsuarioId(usuario)
         setNomeUsuario(nome_usuario)
         setNivelAcesso(parseInt(nivel_acesso))
+        setNivelAcessoMP(parseInt(nivel_acesso_mp))
         return 'acesso'
       }
       return 'acesso'

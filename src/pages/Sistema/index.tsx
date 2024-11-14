@@ -13,10 +13,12 @@ const Sistema = () => {
   const location = useLocation()
   // let id_usuario = ''
   let nivel_acesso = 0
+  let nivel_acesso_mp = 0
   let nome_usuario = ''
   if (location.state != null) {
     // id_usuario = location.state.user
     nivel_acesso = location.state.niv_acesso
+    nivel_acesso_mp = location.state.niv_acesso_mp
     nome_usuario = location.state.nome_user
     console.log(nome_usuario)
     console.log(nivel_acesso)
@@ -48,14 +50,14 @@ const Sistema = () => {
                 Exibir Solicitações
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso >= 4 && (
+            {nivel_acesso_mp >= 4 && (
               <ItemMenuPrincipal
                 onClick={() => setOpcao('solicitar_movimentacao_pessoal')}
               >
                 Solicitar Mov. de Pessoal
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso >= 4 && (
+            {nivel_acesso_mp >= 3 && (
               <ItemMenuPrincipal
                 onClick={() => setOpcao('exibir_movimentacao_pessoal')}
               >

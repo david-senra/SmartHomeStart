@@ -634,7 +634,7 @@ export const DivTraco = styled.div<{
   tipoUsuario: string
 }>`
   position: relative;
-  right: ${(props) => (props.tipoUsuario == 'solicitante' ? '0.1' : '60.1')}vw;
+  right: ${(props) => (props.tipoUsuario == 'solicitante' ? '60.1' : '60.1')}vw;
   width: 60vw;
   bottom: 13.5px;
   border-bottom: solid 2px;
@@ -642,7 +642,7 @@ export const DivTraco = styled.div<{
   z-index: -1;
   @media only screen and (max-width: 768px) {
     position: relative;
-    right: ${(props) => (props.tipoUsuario == 'solicitante' ? '0.1' : '85')}vw;
+    right: ${(props) => (props.tipoUsuario == 'solicitante' ? '85' : '85')}vw;
     width: 84vw;
     bottom: 13.5px;
     border-bottom: solid 2px;
@@ -1846,6 +1846,19 @@ export const MenuBotoesTipoSolicitacao = styled.ul`
         &:disabled {
           color: #3f3f3f;
         }
+      }
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    width: 80vw;
+    justify-content: space-between;
+    gap: 5px;
+    li {
+      width: 80px;
+      height: 30px;
+      button {
+        font-size: 16px;
+        width: 80px;
       }
     }
   }
