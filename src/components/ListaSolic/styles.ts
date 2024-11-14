@@ -659,7 +659,9 @@ export const DivEntregue = styled.div<{ tipo: string }>`
   border-bottom: hidden 2px;
   border-top: hidden 2px;
   background-color: ${(props) =>
-    props.tipo == 'finalizado' ? '#d2f8d2' : '#FFCCCB'};
+    props.tipo == 'entregue' || props.tipo == 'finalizado'
+      ? '#d2f8d2'
+      : '#FFCCCB'};
   z-index: -1;
   @media only screen and (max-width: 768px) {
     position: absolute;
@@ -669,7 +671,9 @@ export const DivEntregue = styled.div<{ tipo: string }>`
     border-bottom: hidden 2px;
     border-top: hidden 2px;
     background-color: ${(props) =>
-      props.tipo == 'finalizado' ? '#d2f8d2' : '#FFCCCB'};
+      props.tipo == 'finalizado' || props.tipo == 'entregue'
+        ? '#d2f8d2'
+        : '#FFCCCB'};
     z-index: -1;
   }
 `
