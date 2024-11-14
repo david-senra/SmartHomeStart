@@ -1277,6 +1277,10 @@ export const ItemCheckDiv = styled.div`
         }
       }
     }
+    &.itemFinalizado {
+      left: 10%;
+      transform: translate(-10%, -10%);
+    }
   }
   @media only screen and (max-width: 1400px) {
     &.contrato {

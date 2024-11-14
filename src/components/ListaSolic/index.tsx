@@ -2580,7 +2580,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             item.fornecedor != '') && (
                             <ItemCheckDiv
                               id={pedido.id}
-                              className={`contrato ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' ? 'encurtado' : ''} ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' && pedido.itens.length <= 2 ? 'penultimo' : ''} ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' && pedido.itens.length <= 1 ? 'ultimo' : ''} ${item.id == pedido.itens.length - 1 ? 'penultimo' : ''} ${item.id == pedido.itens.length ? 'ultimo' : ''}`}
+                              className={`contrato ${item.status == 'finalizado' ? 'itemFinalizado' : ''} ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' ? 'encurtado' : ''} ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' && pedido.itens.length <= 2 ? 'penultimo' : ''} ${pedido.sugestfornecedor == '' && pedido.obsFinal == '' && pedido.itens.length <= 1 ? 'ultimo' : ''} ${item.id == pedido.itens.length - 1 ? 'penultimo' : ''} ${item.id == pedido.itens.length ? 'ultimo' : ''}`}
                             >
                               <ItemCheckImg
                                 src={IconeContrato}
