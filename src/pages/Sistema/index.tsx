@@ -4,6 +4,7 @@ import Header from '../../containers/Header'
 import { ErroSistema } from '../../components/ErroSistema'
 import FormularioSolicitacao from '../../components/FormSolic'
 import ListaSolicitacao from '../../components/ListaSolic'
+import ListaSolicitacaoMP from '../../components/ListaMovPessoal'
 import EditarParam from '../../components/EditarParam'
 import FormMovimentacaoPessoal from '../../components/FormMovPessoal'
 import { Container, MenuPrincipal, ItemMenuPrincipal } from '../../styles'
@@ -50,7 +51,7 @@ const Sistema = () => {
                 Exibir Solicitações
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso_mp >= 4 && (
+            {(nivel_acesso_mp == 2 || nivel_acesso_mp >= 4) && (
               <ItemMenuPrincipal
                 onClick={() => setOpcao('solicitar_movimentacao_pessoal')}
               >
@@ -93,6 +94,12 @@ const Sistema = () => {
           )}
           {opcao == 'solicitar_movimentacao_pessoal' && (
             <FormMovimentacaoPessoal nomeusur={nome_usuario} />
+          )}
+          {opcao == 'exibir_movimentacao_pessoal' && (
+            <ListaSolicitacaoMP
+              nomeusur={nome_usuario}
+              nivelusur={nivel_acesso_mp}
+            />
           )}
           {opcao == 'editar_parametros' && <EditarParam />}
         </Container>

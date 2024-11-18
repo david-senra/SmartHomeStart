@@ -28,6 +28,12 @@ export const CardAdmissao = styled.div`
   margin-bottom: 10px;
   border: solid 1px black;
   border-radius: 15px;
+  &.admissaoVaga {
+    width: 40vw;
+  }
+  &.RemocaoVagas {
+    width: 42vw;
+  }
 `
 
 export const DivObraQuantidade = styled.div`
@@ -59,7 +65,18 @@ export const DivObraQuantidade = styled.div`
     padding-top: 5px;
     margin: auto;
     margin-bottom: 10px;
-    width: 60%;
+    width: 80%;
+    gap: 5px;
+  }
+  &.promocao {
+    flex-direction: column;
+    border: solid 1px black;
+    border-radius: 15px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    margin: auto;
+    margin-bottom: 10px;
+    width: 90%;
     gap: 5px;
   }
 `
@@ -84,12 +101,15 @@ export const DivEmpresa = styled.div`
     font-weight: bold;
     padding-top: 5px;
     font-size: 18px;
+    &.noBreak {
+      white-space: nowrap;
+    }
   }
   select {
     font-size: 18px;
     padding: 5px;
     &.comData {
-      width: 60%;
+      width: 80%;
       margin-right: 0px;
     }
   }
@@ -99,9 +119,12 @@ export const DivEmpresa = styled.div`
   }
   &.acrescimoCargo {
     padding-top: 5px;
+    select {
+      text-align: center;
+    }
   }
   &.comData {
-    width: 45%;
+    width: 55%;
     padding-right: 0px;
     margin-right: 0px;
   }
@@ -110,6 +133,22 @@ export const DivEmpresa = styled.div`
     padding-top: 5px;
     height: 38px;
     margin-bottom: 0px;
+  }
+  &.promocao {
+    select {
+      text-align: center;
+    }
+  }
+  &.admissaoVaga {
+    width: 100%;
+    select {
+      text-align: center;
+    }
+  }
+  &.colaborador {
+    select {
+      text-align: center;
+    }
   }
   @media only screen and (max-width: 768px) {
     display: flex;
@@ -256,19 +295,19 @@ export const GridListaCabecalho = styled.ul`
   }
   margin-left: 2.5vw;
   &.AberturaVagas {
-    grid-template-columns: 22vw 10vw 10vw;
+    grid-template-columns: 22vw 20vw 10vw;
     margin-left: 0px;
   }
   &.Admissao {
-    grid-template-columns: 22vw 15vw 7vw 18vw 10vw 10vw;
+    grid-template-columns: 16vw 22vw 6vw 14vw 10vw 10vw;
     margin-left: 2.5vw;
   }
   &.Desligamento {
-    grid-template-columns: 15vw 8vw 15vw 12vw 8vw 10vw;
+    grid-template-columns: 18vw 8vw 15vw 12vw 8vw 10vw;
     margin-left: 1.2vw;
   }
   &.Transferencia {
-    grid-template-columns: 14vw 14vw 7vw 13vw 11vw 9.5vw;
+    grid-template-columns: 16vw 16vw 7vw 13vw 13vw 9.5vw;
     margin-left: 1.2vw;
   }
   &.Ferias {
@@ -278,6 +317,14 @@ export const GridListaCabecalho = styled.ul`
   &.FaltasAdicional {
     grid-template-columns: 15vw 8vw 15vw 12vw 22vw;
     margin-left: 1vw;
+  }
+  &.RemocaoVaga {
+    grid-template-columns: 18vw 8vw 18vw;
+    margin-left: 0.6vw;
+  }
+  &.Promocao {
+    grid-template-columns: 18vw 8vw 12vw 14vw 14vw 8vw;
+    margin-left: 0.6vw;
   }
   @media only screen and (max-width: 768px) {
     width: 80vw;
@@ -313,19 +360,19 @@ export const GridLista = styled.ul`
   }
   margin-left: 2.5vw;
   &.AberturaVagas {
-    grid-template-columns: 22vw 10vw 10vw;
+    grid-template-columns: 22vw 20vw 10vw;
     margin-left: 0px;
   }
   &.Admissao {
-    grid-template-columns: 22vw 15vw 7vw 18vw 10vw 10vw;
+    grid-template-columns: 16vw 22vw 6vw 14vw 10vw 10vw;
     margin-left: 2.5vw;
   }
   &.Desligamento {
-    grid-template-columns: 15vw 8vw 15vw 12vw 8vw 10vw;
+    grid-template-columns: 18vw 8vw 15vw 12vw 8vw 10vw;
     margin-left: 1.2vw;
   }
   &.Transferencia {
-    grid-template-columns: 14vw 14vw 7vw 13vw 11vw 9.5vw;
+    grid-template-columns: 16vw 16vw 7vw 13vw 13vw 9.5vw;
     margin-left: 1.2vw;
   }
   &.Ferias {
@@ -335,6 +382,14 @@ export const GridLista = styled.ul`
   &.FaltasAdicional {
     grid-template-columns: 15vw 8vw 15vw 12vw 22vw;
     margin-left: 1vw;
+  }
+  &.RemocaoVaga {
+    grid-template-columns: 18vw 8vw 18vw;
+    margin-left: 0.6vw;
+  }
+  &.Promocao {
+    grid-template-columns: 18vw 8vw 12vw 14vw 14vw 8vw;
+    margin-left: 0.6vw;
   }
   @media only screen and (max-width: 768px) {
     width: 80vw;
@@ -849,16 +904,32 @@ export const DivButtonRemoverItem = styled.div`
     }
     &.removerCard {
       position: absolute;
-      right: 31%;
+      right: 27%;
       margin-top: -170px;
-      transform: translate(-31%, -31%);
+      transform: translate(-27%, -27%);
+    }
+    &.remocaoVagas {
+      position: absolute;
+      right: 26%;
+      margin-top: -50px;
+      transform: translate(-26%, -26%);
     }
     &.remocaoSolicFunc {
       margin-top: 15px;
     }
     &.cardFaltasAdicional {
-      margin-left: 230px;
-      margin-top: -100px;
+      margin-left: 305px;
+      margin-top: -90px;
+    }
+    &.cardPromocao {
+      margin-left: 345px;
+      margin-top: -35px;
+      select {
+        text-align: center;
+      }
+      &.cardOpenPromocao {
+        margin-top: -100px;
+      }
     }
   }
 `
@@ -984,6 +1055,10 @@ export const TextoNenhumaFalta = styled.p`
 export const TextoEstagio = styled.p`
   font-size: 17px;
   padding-top: 7px;
+  &.cargoPromocao {
+    padding-top: 5px;
+    font-size: 18px;
+  }
 `
 
 export const ListaFaltasDiasAdicionais = styled.ul`

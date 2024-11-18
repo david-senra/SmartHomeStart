@@ -31,30 +31,43 @@ import {
   BotaoRemoverFaltaAdicional,
   SetDataBotaoRemover
 } from './styles'
+import { textChangeRangeIsUnchanged } from 'typescript'
 
 const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   class Vaga {
     id: string
+    sigla_cargo: string
     cargo: string
     situacao: string
     nome: string
     rg: string
     cpf: string
+    salario_padrao: number
+    salario_padrao_obra: number
+    salario_especifico: number
 
     constructor(data: {
       id: string
+      sigla_cargo: string
       cargo: string
       situacao: string
       nome: string
       rg: string
       cpf: string
+      salario_padrao: number
+      salario_padrao_obra: number
+      salario_especifico: number
     }) {
       this.id = data.id
+      this.sigla_cargo = data.sigla_cargo
       this.cargo = data.cargo
       this.situacao = data.situacao
       this.nome = data.nome
       this.rg = data.rg
       this.cpf = data.cpf
+      this.salario_padrao = data.salario_padrao
+      this.salario_padrao_obra = data.salario_padrao_obra
+      this.salario_especifico = data.salario_especifico
     }
   }
   class Cargo {
@@ -62,32 +75,41 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nome: string
     completo: string
     numero: number
+    salario_padrao: number
+    promocoes_possiveis: string[]
 
     constructor(data: {
       sigla: string
       nome: string
       completo: string
       numero: number
+      salario_padrao: number
+      promocoes_possiveis: string[]
     }) {
       this.sigla = data.sigla
       this.nome = data.nome
       this.completo = data.completo
       this.numero = data.numero
+      this.salario_padrao = data.salario_padrao
+      this.promocoes_possiveis = data.promocoes_possiveis
     }
   }
   class AcrescimoCargo {
     id: number
     sigla: string
     quantidade_pedida: number
+    status: string
 
     constructor(data: {
       id: number
       sigla: string
       quantidade_pedida: number
+      status: string
     }) {
       this.id = data.id
       this.sigla = data.sigla
       this.quantidade_pedida = data.quantidade_pedida
+      this.status = data.status
     }
   }
   class SolicitacaoFuncionario {
@@ -95,6 +117,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     sigla: string
     nome: string
     cargo: string
+    novo_cargo: string
+    possiveis_promocoes: string[]
     id_pessoa: string
     obra_atual: string
     imediato: boolean
@@ -106,12 +130,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     data_adicional_atual: string
     faltas: string[]
     dias_adicionais: string[]
+    remocaoNoDesligamentoTransferencia: boolean
 
     constructor(data: {
       id: number
       sigla: string
       nome: string
       cargo: string
+      novo_cargo: string
+      possiveis_promocoes: string[]
       id_pessoa: string
       obra_atual: string
       imediato: boolean
@@ -123,11 +150,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       data_adicional_atual: string
       faltas: string[]
       dias_adicionais: string[]
+      remocaoNoDesligamentoTransferencia: boolean
     }) {
       this.id = data.id
       this.sigla = data.sigla
       this.nome = data.nome
       this.cargo = data.cargo
+      this.novo_cargo = data.novo_cargo
+      this.possiveis_promocoes = data.possiveis_promocoes
       this.id_pessoa = data.id_pessoa
       this.obra_atual = data.obra_atual
       this.imediato = data.imediato
@@ -139,6 +169,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.data_adicional_atual = data.data_adicional_atual
       this.faltas = data.faltas
       this.dias_adicionais = data.dias_adicionais
+      this.remocaoNoDesligamentoTransferencia =
+        data.remocaoNoDesligamentoTransferencia
     }
   }
   class AdmissaoVaga {
@@ -192,23 +224,37 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.cpf = data.cpf
     }
   }
+  class InclusaoRemocaoVaga {
+    id: string
+    codigo_vaga: string
+    cargo: string
+
+    constructor(data: { id: string; codigo_vaga: string; cargo: string }) {
+      this.id = data.id
+      this.codigo_vaga = data.codigo_vaga
+      this.cargo = data.cargo
+    }
+  }
   class Obra {
     id: number
     municipio: string
     nome: string
     descricao_completa: string
+    cargos_especificos: string[]
     equipe: Vaga[]
 
     constructor(data: {
       municipio: string
       nome: string
       descricao_completa: string
+      cargos_especificos: string[]
       equipe: Vaga[]
       id: number
     }) {
       this.municipio = data.municipio
       this.nome = data.nome
       this.descricao_completa = data.descricao_completa
+      this.cargos_especificos = data.cargos_especificos
       this.equipe = data.equipe
       this.id = data.id
     }
@@ -218,12 +264,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     municipio: '',
     nome: '',
     descricao_completa: '',
+    cargos_especificos: [],
     equipe: []
   }
   const acrescimo_inicial = {
     id: 1,
     sigla: '',
-    quantidade_pedida: 1
+    quantidade_pedida: 1,
+    status: 'aberto'
   }
   const admissao_inicial = {
     id: 1,
@@ -238,6 +286,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     sigla: '',
     nome: '',
     cargo: '',
+    novo_cargo: '',
+    possiveis_promocoes: [],
     id_pessoa: '',
     obra_atual: '',
     imediato: true,
@@ -248,16 +298,24 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     data_falta_atual: '',
     data_adicional_atual: '',
     faltas: [],
-    dias_adicionais: []
+    dias_adicionais: [],
+    remocaoNoDesligamentoTransferencia: false
   }
 
   const [firstLoad, setFirstLoad] = React.useState<boolean>(true)
+  const [contadorRemocao, setContadorRemocao] = React.useState<number>(1)
   const [ResetPedido, SetResetPedido] = React.useState<string>('off')
   const [SituacaoPedido, SetSituacaoPedido] =
     React.useState<string>('solicitando')
   const [empresaSelecionada, setEmpresaSelecionada] = React.useState<string>('')
   const [admissaoNaAbertura, setAdmissaoNaABertura] =
     React.useState<boolean>(false)
+  const [
+    remocaoNoDesligamentoTransferencia,
+    setRemocaoNoDesligamentoTransferencia
+  ] = React.useState<boolean>(false)
+  const [preNaturezaMovimentacao, setPreNaturezaMovimentacao] =
+    React.useState<string>('')
   const [naturezaMovimentacao, setNaturezaMovimentacao] =
     React.useState<string>('')
   const [obrasCantaria, setObrasCantaria] = React.useState<Obra[]>([])
@@ -267,6 +325,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   >([acrescimo_inicial])
   const [inclusaoPedidosAdmissaoVaga, setInclusaoPedidosAdmissaoVagas] =
     React.useState<InclusaoAdmissaoVaga[]>([])
+  const [inclusaoPedidosRemocaoVaga, setInclusaoPedidosRemocaoVagas] =
+    React.useState<InclusaoRemocaoVaga[]>([])
   const [pedidosAdmissaoVaga, setPedidosAdmissaoVagas] = React.useState<
     AdmissaoVaga[]
   >([admissao_inicial])
@@ -318,14 +378,23 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const removerPedidoFunc = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    const id_elemento = parseInt(e.currentTarget.id)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
     if (pedidosFuncionarios.length != 1) {
       SetMensagemErro('')
-      const id_elemento = parseInt(e.currentTarget.id)
       const nova_lista = [...pedidosFuncionarios]
+      const elemento = nova_lista.filter(isElement)[0]
       const lista_modificada = nova_lista.filter(
         (obj) => obj.id !== id_elemento
       )
       setPedidosFuncionarios(lista_modificada)
+      const nova_lista_remocoes = [...inclusaoPedidosRemocaoVaga]
+      const lista_modificada_remoces = nova_lista_remocoes.filter(
+        (obj) => obj.codigo_vaga !== elemento.id_pessoa
+      )
+      setInclusaoPedidosRemocaoVagas(lista_modificada_remoces)
     }
   }
   const getMinimumDateFromStart = (startDate: string) => {
@@ -377,13 +446,23 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const textoNatureza = (texto: string) => {
     if (texto == 'AberturaVaga') {
-      return 'Abertura de Vagas'
+      if (admissaoNaAbertura) {
+        return 'Abertura de Vagas c/ Admissão de Pessoal'
+      } else {
+        return 'Abertura de Vagas'
+      }
+    } else if (texto == 'RemocaoVaga') {
+      return 'Remoção de Vagas'
     } else if (texto == 'Admissao') {
       return 'Admissão de Pessoal'
     } else if (texto == 'Transferencia') {
       return 'Transferência de Obra'
     } else if (texto == 'Desligamento') {
-      return 'Desligamento de Pessoal'
+      if (remocaoNoDesligamentoTransferencia) {
+        return 'Desligamento de Pessoal c/ Remoção de Vagas'
+      } else {
+        return 'Desligamento de Pessoal'
+      }
     } else if (texto == 'Ferias') {
       return 'Pedido de Férias'
     } else if (texto == 'Adicional') {
@@ -403,6 +482,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         return 'Assinalar Falta'
       } else {
         return 'Assinalar Faltas'
+      }
+    } else if (texto == 'Promocao') {
+      if (pedidosFuncionarios.length == 1) {
+        return 'Solicitar Promoção'
+      } else {
+        return 'Solicitar Promoções'
       }
     } else {
       return 'MUDE O TEXTO AQUI'
@@ -454,6 +539,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       } else {
         return 'DIAS ADICIONAIS ASSINALADOS:'
       }
+    } else if (texto == 'Promocao') {
+      if (pedidosFuncionarios.length == 1) {
+        return 'PROMOÇÃO SOLICITADA:'
+      } else {
+        return 'PROMOÇÕES SOLICITADAS:'
+      }
     } else {
       return 'MUDE O TEXTO AQUI'
     }
@@ -470,6 +561,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     SetMensagemErro('')
     const valor_elemento = e.currentTarget.value
     setEmpresaSelecionada(valor_elemento)
+    setPreNaturezaMovimentacao('')
     setNaturezaMovimentacao('')
     if (firstChangeEmpresa == false) {
       const inputNaturezaMovimentacao: any =
@@ -514,6 +606,18 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     setInclusaoPedidosAdmissaoVagas([])
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
   }
+  const changePreNaturezaMov = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    SetMensagemErro('')
+    setAdmissaoNaABertura(false)
+    setPedidosAdmissaoVagas([admissao_inicial])
+    setPedidoAcrescimoCargos([acrescimo_inicial])
+    setObra(obraVazia)
+    setInclusaoPedidosAdmissaoVagas([])
+    setPedidosFuncionarios([solicitacao_funcionario_inicial])
+    setNaturezaMovimentacao('')
+    setFirstChangeObra(true)
+    setPreNaturezaMovimentacao(e.target.value)
+  }
   const changeAdmissaoNaAbertura = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -534,8 +638,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       return pedido.id == parseInt(id_elemento)
     }
     const indice_elemento = nova_lista.findIndex(isElement)
+    console.log(valor_elemento)
     const elemento = nova_lista.filter(isElement)[0]
-    elemento.sigla = valor_elemento
+    if (valor_elemento.split(' - ')[2] != undefined) {
+      elemento.sigla =
+        valor_elemento.split(' - ')[1] + ' - ' + valor_elemento.split(' - ')[2]
+    } else {
+      elemento.sigla = valor_elemento.split(' - ')[1]
+    }
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidoAcrescimoCargos(nova_lista)
@@ -628,7 +738,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           inputInclusao.value = '1'
         }
       })
-      setAdmissaoNaABertura(false)
       const inputInclusaoAdmissaoExterno = document.getElementsByClassName(
         'inputIncluirAdmissaoVagas'
       )
@@ -642,16 +751,17 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       })
       setAdmissaoNaABertura(false)
     }
+    console.log(vagasDisponiveis)
     const nova_lista = [...pedidoAcrescimoCargos]
     nova_lista.length = 0
     const acrescimo_inicio = {
       id: 1,
       sigla: '',
-      quantidade_pedida: 1
+      quantidade_pedida: 1,
+      status: 'aberto'
     }
     nova_lista.push(acrescimo_inicio)
     setPedidoAcrescimoCargos(nova_lista)
-    console.log(pedidoAcrescimoCargos)
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
     const inputInputColaborador =
       document.getElementsByClassName('inputColaborador')
@@ -670,6 +780,17 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         inputImediato.value = 'sim'
       }
     })
+    const inputInputRemocao = document.getElementsByClassName(
+      'inputDesligamentoTransferenciaRemocao'
+    )
+    const exercicesIdCinco: any = Array.from(new Set(inputInputRemocao))
+    exercicesIdCinco.map((inputRemocao: any) => {
+      if (inputRemocao != null) {
+        inputRemocao.value = 'nao'
+      }
+    })
+    setInclusaoPedidosRemocaoVagas([])
+    setRemocaoNoDesligamentoTransferencia(false)
   }
   const changeObraDestino = (e: React.ChangeEvent<HTMLSelectElement>) => {
     SetMensagemErro('')
@@ -699,9 +820,22 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
+    let cargos_possiveis: Cargo[] = []
+    cargos_possiveis = [...cargosPossiveis]
+    cargos_possiveis = cargos_possiveis.filter(
+      (cargo) => cargo.sigla == valor_elemento.split(' - ')[0].slice(0, 2)
+    )
+    elemento.novo_cargo = ''
+    elemento.possiveis_promocoes = cargos_possiveis[0].promocoes_possiveis
     elemento.id_pessoa = valor_elemento.split(' - ')[0]
     elemento.nome = valor_elemento.split(' - ')[1]
-    elemento.cargo = valor_elemento.split(' - ')[2]
+    console.log(valor_elemento)
+    if (valor_elemento.split(' - ')[3] != undefined) {
+      elemento.cargo =
+        valor_elemento.split(' - ')[2] + ' - ' + valor_elemento.split(' - ')[3]
+    } else {
+      elemento.cargo = valor_elemento.split(' - ')[2]
+    }
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosFuncionarios(nova_lista)
@@ -799,6 +933,68 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     } else if (naturezaMovimentacao == 'Desligamento') {
       elemento.data_desligamento = data_ptBr
     }
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosFuncionarios(nova_lista)
+  }
+  const changeNovoCargo = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosFuncionarios]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == parseInt(id_elemento)
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.novo_cargo = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosFuncionarios(nova_lista)
+  }
+  const changeRemocaoVaga = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id.split(';')[0]
+    const codigo_vaga_remocao = e.currentTarget.id.split(';')[1]
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosFuncionarios]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == parseInt(id_elemento)
+    }
+    function isVaga(vaga: InclusaoRemocaoVaga) {
+      return vaga.codigo_vaga == codigo_vaga_remocao
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    if (valor_elemento == 'sim') {
+      elemento.remocaoNoDesligamentoTransferencia = true
+      const pedidoRemocaoVaga = {
+        id: contadorRemocao.toString(),
+        codigo_vaga: elemento.id_pessoa,
+        cargo: elemento.cargo
+      }
+      const nova_lista_remocoes = [...inclusaoPedidosRemocaoVaga]
+      nova_lista_remocoes.push(pedidoRemocaoVaga)
+      setInclusaoPedidosRemocaoVagas(nova_lista_remocoes)
+      setRemocaoNoDesligamentoTransferencia(true)
+    } else {
+      const nova_lista_remocoes = [...inclusaoPedidosRemocaoVaga]
+      const lista_modificada = nova_lista_remocoes.filter(
+        (obj) => obj.codigo_vaga !== codigo_vaga_remocao
+      )
+      setInclusaoPedidosRemocaoVagas(lista_modificada)
+      let verificandoRemocoes = false
+      elemento.remocaoNoDesligamentoTransferencia = false
+      pedidosFuncionarios.map((pedido) => {
+        if (pedido.remocaoNoDesligamentoTransferencia == true) {
+          verificandoRemocoes = true
+        }
+      })
+      if (verificandoRemocoes == false) {
+        setRemocaoNoDesligamentoTransferencia(false)
+      }
+    }
+    remocaoNoDesligamentoTransferencia
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosFuncionarios(nova_lista)
@@ -1140,7 +1336,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const novo_acrescimo = {
       id: novo_id,
       sigla: '',
-      quantidade_pedida: 1
+      quantidade_pedida: 1,
+      status: 'aberto'
     }
     nova_lista.push(novo_acrescimo)
     setPedidoAcrescimoCargos(nova_lista)
@@ -1183,6 +1380,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       sigla: '',
       nome: '',
       cargo: '',
+      novo_cargo: '',
+      possiveis_promocoes: [],
       id_pessoa: '',
       obra_atual: '',
       imediato: true,
@@ -1193,7 +1392,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       data_falta_atual: '',
       data_adicional_atual: '',
       faltas: [],
-      dias_adicionais: []
+      dias_adicionais: [],
+      remocaoNoDesligamentoTransferencia: false
     }
     nova_lista.push(nova_admissao)
     setPedidosFuncionarios(nova_lista)
@@ -1212,6 +1412,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     } else {
       let erro = ''
       if (naturezaMovimentacao == 'AberturaVaga') {
+        const conjunto_pedido_abertura_vagas: string[] = []
         pedidoAcrescimoCargos.map((pedido) => {
           if (pedido.sigla == '') {
             erro = 'yes'
@@ -1222,43 +1423,68 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               'Todos os cargos pedidos devem ter quantidades definidas!'
             )
           }
+          conjunto_pedido_abertura_vagas.push(pedido.sigla)
+          const duplicates = conjunto_pedido_abertura_vagas.filter(
+            (item, index) =>
+              conjunto_pedido_abertura_vagas.indexOf(item) !== index
+          )
+          if (duplicates.length > 0) {
+            erro = 'yes'
+            SetMensagemErro('Há vagas repetidas no seu pedido de abertura!')
+          }
         })
+
         if (erro == '') {
           SetMensagemErro('')
           SetSituacaoPedido('confirmando')
         }
-      } else if (naturezaMovimentacao == 'Admissao') {
+      } else if (
+        naturezaMovimentacao == 'Admissao' ||
+        naturezaMovimentacao == 'RemocaoVaga'
+      ) {
         console.log('hi')
         console.log(pedidosAdmissaoVaga)
         console.log(equipeDisponivel)
         const valores_vagas: string[] = []
         pedidosAdmissaoVaga.map((pedido) => {
-          if (pedido.codigo_vaga.slice(0, 2) == 'ES') {
+          if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.codigo_vaga.slice(0, 2) == 'ES'
+          ) {
             pedido.tipo_admissao = 'estagiario'
           }
           if (vagasDisponiveis.length == 0) {
             erro = 'yes'
           } else if (pedido.codigo_vaga == '') {
             erro = 'yes'
-            SetMensagemErro(
-              'É necessário indicar uma vaga existente para cada admissão pedida!'
-            )
-          } else if (pedido.tipo_admissao == '') {
+            if (naturezaMovimentacao == 'Admissao')
+              SetMensagemErro(
+                'É necessário indicar uma vaga existente para cada admissão pedida!'
+              )
+            else {
+              SetMensagemErro(
+                'É necessário indicar uma vaga para cada remoção pedida!'
+              )
+            }
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.tipo_admissao == ''
+          ) {
             erro = 'yes'
             SetMensagemErro(
               "É preciso assinalar o 'Tipo de Admissão' para todos os pedidos!"
             )
-          } else if (pedido.nome == '') {
+          } else if (naturezaMovimentacao == 'Admissao' && pedido.nome == '') {
             erro = 'yes'
             SetMensagemErro(
               'É preciso indicar um nome para todas as admissões pedidas!'
             )
-          } else if (pedido.rg == '') {
+          } else if (naturezaMovimentacao == 'Admissao' && pedido.rg == '') {
             erro = 'yes'
             SetMensagemErro(
               'É preciso indicar um RG para todas as admissões pedidas!'
             )
-          } else if (pedido.cpf == '') {
+          } else if (naturezaMovimentacao == 'Admissao' && pedido.cpf == '') {
             erro = 'yes'
             SetMensagemErro(
               'É preciso indicar um CPF para todas as admissões pedidas!'
@@ -1271,9 +1497,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         )
         if (duplicates.length > 0) {
           erro = 'yes'
-          SetMensagemErro(
-            'Só é possível fazer um pedido de admissão por vaga disponível!'
-          )
+          if (naturezaMovimentacao == 'RemocaoVaga')
+            SetMensagemErro(
+              'Só é possível fazer um pedido de remoção por vaga!'
+            )
+          else {
+            SetMensagemErro(
+              'Só é possível fazer um pedido de admissão por vaga disponível!'
+            )
+          }
         }
         if (erro == '') {
           SetMensagemErro('')
@@ -1326,9 +1558,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           )
           if (duplicates_conjunto_pessoas.length > 0) {
             erro = 'yes'
-            SetMensagemErro(
-              'Só é possível solicitar uma transferência por pessoa!'
-            )
+            if (naturezaMovimentacao == 'Transferencia') {
+              SetMensagemErro(
+                'Só é possível solicitar uma transferência por pessoa!'
+              )
+            } else {
+              SetMensagemErro(
+                'Há mais de um pedido de desligamento para a mesma pessoa!'
+              )
+            }
           }
           if (erro == '') {
             SetMensagemErro('')
@@ -1430,6 +1668,52 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           SetMensagemErro('')
           SetSituacaoPedido('confirmando')
         }
+      } else if (naturezaMovimentacao == 'Promocao') {
+        const conjunto_Funcionarios: string[] = []
+        pedidosFuncionarios.map((pedido) => {
+          if (pedido.id_pessoa == '') {
+            erro = 'yes'
+            SetMensagemErro(
+              'Todos os colaboradores do pedido de promoção devem ser definidos!'
+            )
+          } else if (pedido.novo_cargo == '') {
+            erro = 'yes'
+            SetMensagemErro(
+              'É necessário indicar um novo cargo para todas as promoções pretendidas!'
+            )
+          } else {
+            if (pedido.novo_cargo.includes(pedido.cargo)) {
+              erro = 'yes'
+              SetMensagemErro(
+                'O cargo de promoção deve ser distinto do cargo atual!'
+              )
+            } else {
+              if (
+                pedido.id_pessoa.slice(0, 2) + ' - ' + pedido.cargo ==
+                pedido.novo_cargo
+              ) {
+                erro = 'yes'
+                SetMensagemErro(
+                  'O cargo de promoção deve ser distinto do cargo atual!'
+                )
+              }
+            }
+          }
+          conjunto_Funcionarios.push(pedido.id_pessoa)
+        })
+        const duplicates_conjunto_pessoas = conjunto_Funcionarios.filter(
+          (item, index) => conjunto_Funcionarios.indexOf(item) !== index
+        )
+        if (duplicates_conjunto_pessoas.length > 0) {
+          erro = 'yes'
+          SetMensagemErro(
+            'Não é permitido repetir a mesma pessoa em mais de um pedido de promoção!'
+          )
+        }
+        if (erro == '') {
+          SetMensagemErro('')
+          SetSituacaoPedido('confirmando')
+        }
       }
     }
   }
@@ -1444,6 +1728,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       let erro = 'hi'
       if (naturezaMovimentacao == 'AberturaVaga') {
         console.log(pedidoAcrescimoCargos)
+        const conjuntoPedidosAcrescimos: string[] = []
         pedidoAcrescimoCargos.map((pedido) => {
           if (pedido.sigla == '') {
             erro = 'yes'
@@ -1456,7 +1741,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           } else {
             erro = ''
           }
+          conjuntoPedidosAcrescimos.push(pedido.sigla)
         })
+        const duplicates = conjuntoPedidosAcrescimos.filter(
+          (item, index) => conjuntoPedidosAcrescimos.indexOf(item) !== index
+        )
+        if (duplicates.length > 0) {
+          erro = 'yes'
+          SetMensagemErro('Há vagas repetidas no seu pedido de abertura!')
+        }
         if (erro == '') {
           const pedidosCargos: InclusaoAdmissaoVaga[] = []
           pedidoAcrescimoCargos.map((pedido: AcrescimoCargo) => {
@@ -1467,7 +1760,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                   const pedidoCargo = {
                     id: pedido.sigla + i.toString(),
                     incluir: false,
-                    codigo_vaga: `${pedido.sigla.split(' - ')[1]} #${i + 1}`,
+                    codigo_vaga: `${pedido.sigla} #${i + 1}`,
                     tipo_admissao: '',
                     nome: '',
                     rg: '',
@@ -1693,7 +1986,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               <>
                 <DivEmpresa>
                   <label>Tipo de Solicitação:</label>
-                  <select onChange={(e) => changeNaturezaMov(e)}>
+                  <select onChange={(e) => changePreNaturezaMov(e)}>
                     empresa:Cantaria
                     <option
                       disabled
@@ -1701,17 +1994,84 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       value=""
                       style={{ display: 'none' }}
                     ></option>
-                    <option value="AberturaVaga">Abertura de Vagas</option>
-                    <option value="Admissao">Admissão</option>
-                    <option value="Transferencia">Transferência de Obra</option>
-                    <option value="Ferias">Solicitar Férias</option>
-                    <option value="Faltas">Assinalar Faltas</option>
-                    <option value="Adicional">Dia(s) Adicional(is)</option>
-                    <option value="Desligamento">Desligamento</option>
+                    <option value="AberturaRemocaoVagas">
+                      Vagas, Contratação e Desligamento
+                    </option>
+                    <option value="TransferenciaPromocao">
+                      Transferência, Promoção ou Aumento
+                    </option>
+                    <option value="FeriasFaltasHorasExtra">
+                      Férias, Faltas e Horas Extra
+                    </option>
                   </select>
                 </DivEmpresa>
               </>
             )}
+            {empresaSelecionada != '' &&
+              preNaturezaMovimentacao != '' &&
+              preNaturezaMovimentacao == 'AberturaRemocaoVagas' && (
+                <>
+                  <DivEmpresa>
+                    <label>Detalhe da Solicitação:</label>
+                    <select onChange={(e) => changeNaturezaMov(e)}>
+                      empresa:Cantaria
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="AberturaVaga">Abertura de Vagas</option>
+                      <option value="RemocaoVaga">Remoção de Vagas</option>
+                      <option value="Admissao">Admissão</option>
+                      <option value="Desligamento">Desligamento</option>
+                    </select>
+                  </DivEmpresa>
+                </>
+              )}
+            {empresaSelecionada != '' &&
+              preNaturezaMovimentacao != '' &&
+              preNaturezaMovimentacao == 'TransferenciaPromocao' && (
+                <>
+                  <DivEmpresa>
+                    <label>Detalhe da Solicitação:</label>
+                    <select onChange={(e) => changeNaturezaMov(e)}>
+                      empresa:Cantaria
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="Transferencia">
+                        Transferência de Obra
+                      </option>
+                      <option value="Promocao">Promoção</option>
+                    </select>
+                  </DivEmpresa>
+                </>
+              )}
+            {empresaSelecionada != '' &&
+              preNaturezaMovimentacao != '' &&
+              preNaturezaMovimentacao == 'FeriasFaltasHorasExtra' && (
+                <>
+                  <DivEmpresa>
+                    <label>Detalhe da Solicitação:</label>
+                    <select onChange={(e) => changeNaturezaMov(e)}>
+                      empresa:Cantaria
+                      <option
+                        disabled
+                        selected
+                        value=""
+                        style={{ display: 'none' }}
+                      ></option>
+                      <option value="Ferias">Solicitar Férias</option>
+                      <option value="Faltas">Assinalar Faltas</option>
+                      <option value="Adicional">Dia(s) Adicional(is)</option>
+                    </select>
+                  </DivEmpresa>
+                </>
+              )}
             {naturezaMovimentacao != '' &&
               naturezaMovimentacao != 'Transferencia' && (
                 <>
@@ -1894,9 +2254,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     vagasDisponiveis.length > 0 &&
                     pedidosAdmissaoVaga.map((pedido) => (
                       <>
-                        <CardAdmissao key={pedido.id}>
-                          <DivEmpresa>
-                            <label>Vaga Disponível:</label>
+                        <CardAdmissao key={pedido.id} className="admissaoVaga">
+                          <DivEmpresa className="admissaoVaga">
+                            <label>Vaga Disp:</label>
                             <select
                               id={pedido.id.toString()}
                               defaultValue={pedido.codigo_vaga}
@@ -1911,10 +2271,26 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                                 <option
                                   key={vaga.id}
                                   value={
-                                    vaga.id + ' - ' + vaga.cargo.split(' - ')[1]
+                                    vaga.cargo.split(' - ')[2] != undefined
+                                      ? vaga.id +
+                                        ' - ' +
+                                        vaga.cargo.split(' - ')[1] +
+                                        ' - ' +
+                                        vaga.cargo.split(' - ')[2]
+                                      : vaga.id +
+                                        ' - ' +
+                                        vaga.cargo.split(' - ')[1]
                                   }
                                 >
-                                  {vaga.id + ' - ' + vaga.cargo.split(' - ')[1]}
+                                  {vaga.cargo.split(' - ')[2] != undefined
+                                    ? vaga.id +
+                                      ' - ' +
+                                      vaga.cargo.split(' - ')[1] +
+                                      ' - ' +
+                                      vaga.cargo.split(' - ')[2]
+                                    : vaga.id +
+                                      ' - ' +
+                                      vaga.cargo.split(' - ')[1]}
                                 </option>
                               ))}
                             </select>
@@ -2006,6 +2382,93 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 </>
               )}
             {naturezaMovimentacao != '' &&
+              naturezaMovimentacao == 'RemocaoVaga' && (
+                <>
+                  {obra.nome != '' && vagasDisponiveis.length == 0 && (
+                    <>
+                      <TextoNaoHaVagas className="first">
+                        Não há vagas em aberto na obra selecionada.
+                      </TextoNaoHaVagas>
+                    </>
+                  )}
+                  {obra.nome != '' && vagasDisponiveis.length > 0 && (
+                    <>
+                      <br></br>
+                      <br></br>
+                    </>
+                  )}
+                  {obra.nome != '' &&
+                    vagasDisponiveis.length > 0 &&
+                    pedidosAdmissaoVaga.map((pedido) => (
+                      <>
+                        <CardAdmissao key={pedido.id} className="RemocaoVagas">
+                          <DivEmpresa>
+                            <label>Vaga:</label>
+                            <select
+                              id={pedido.id.toString()}
+                              defaultValue={pedido.codigo_vaga}
+                              onChange={(e) => changeVagaSelecionada(e)}
+                            >
+                              <option
+                                disabled
+                                selected
+                                style={{ display: 'none' }}
+                              ></option>
+                              {vagasDisponiveis.map((vaga) => (
+                                <option
+                                  key={vaga.id}
+                                  value={
+                                    vaga.cargo.split(' - ')[2] != undefined
+                                      ? vaga.id +
+                                        ' - ' +
+                                        vaga.cargo.split(' - ')[1] +
+                                        ' - ' +
+                                        vaga.cargo.split(' - ')[2]
+                                      : vaga.id +
+                                        ' - ' +
+                                        vaga.cargo.split(' - ')[1]
+                                  }
+                                >
+                                  {vaga.cargo.split(' - ')[2] != undefined
+                                    ? vaga.id +
+                                      ' - ' +
+                                      vaga.cargo.split(' - ')[1] +
+                                      ' - ' +
+                                      vaga.cargo.split(' - ')[2]
+                                    : vaga.id +
+                                      ' - ' +
+                                      vaga.cargo.split(' - ')[1]}
+                                </option>
+                              ))}
+                            </select>
+                          </DivEmpresa>
+                        </CardAdmissao>
+                        {pedidosAdmissaoVaga.length > 1 && (
+                          <DivButtonRemoverItem>
+                            <button
+                              className="remocaoVagas"
+                              id={pedido.id.toString()}
+                              type="button"
+                              onClick={(e) => removerPedidoAdmissao(e)}
+                            >
+                              X
+                            </button>
+                          </DivButtonRemoverItem>
+                        )}
+                      </>
+                    ))}
+                  {obra.nome != '' &&
+                    vagasDisponiveis.length > 0 &&
+                    pedidosAdmissaoVaga.length < vagasDisponiveis.length && (
+                      <DivButtonAdicionarItem>
+                        <button type="button" onClick={adicionarAdmissaoVaga}>
+                          +
+                        </button>
+                      </DivButtonAdicionarItem>
+                    )}
+                </>
+              )}
+            {naturezaMovimentacao != '' &&
               naturezaMovimentacao == 'Transferencia' && (
                 <>
                   <DivEmpresa>
@@ -2070,23 +2533,30 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               )}
             {naturezaMovimentacao != '' &&
               naturezaMovimentacao != 'Admissao' &&
+              naturezaMovimentacao != 'RemocaoVaga' &&
               obra.nome != '' &&
               naturezaMovimentacao != 'AberturaVaga' && <br></br>}
             {naturezaMovimentacao != '' &&
-              naturezaMovimentacao != 'Admissao' &&
-              obra.nome != '' &&
-              naturezaMovimentacao != 'AberturaVaga' && (
+              (naturezaMovimentacao == 'Faltas' ||
+                naturezaMovimentacao == 'Adicional' ||
+                naturezaMovimentacao == 'Transferencia' ||
+                naturezaMovimentacao == 'Promocao' ||
+                naturezaMovimentacao == 'Desligamento' ||
+                naturezaMovimentacao == 'Ferias') &&
+              obra.nome != '' && (
                 <>
                   {equipeDisponivel.length > 0 &&
                     pedidosFuncionarios.map((pedido) => (
                       <DivObraQuantidade
                         key={pedido.id}
-                        className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'faltaAdicional' : ''}`}
+                        className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'faltaAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'promocao' : ''} ${pedido.id_pessoa != '' ? 'cardOpenPromocao' : ''}`}
                       >
                         <DivEmpresa
-                          className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin`}
+                          className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin colaborador`}
                         >
-                          <label>Colaborador(a):</label>
+                          <label>
+                            {pedido.imediato ? 'Colaborador(a)' : 'Col:'}
+                          </label>
                           <select
                             id={pedido.id.toString()}
                             defaultValue={pedido.nome}
@@ -2102,16 +2572,34 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               <option
                                 key={pessoa.id}
                                 value={
-                                  pessoa.id +
-                                  ' - ' +
-                                  pessoa.nome +
-                                  ' - ' +
-                                  pessoa.cargo.split(' - ')[1]
+                                  pessoa.cargo.split(' - ')[2] != undefined
+                                    ? pessoa.id +
+                                      ' - ' +
+                                      pessoa.nome +
+                                      ' - ' +
+                                      pessoa.cargo.split(' - ')[1] +
+                                      ' - ' +
+                                      pessoa.cargo.split(' - ')[2]
+                                    : pessoa.id +
+                                      ' - ' +
+                                      pessoa.nome +
+                                      ' - ' +
+                                      pessoa.cargo.split(' - ')[1]
                                 }
                               >
-                                {pessoa.nome +
-                                  ' - ' +
-                                  pessoa.cargo.split(' - ')[1]}
+                                {pessoa.cargo.split(' - ')[2] != undefined
+                                  ? pessoa.id.slice(0, 2) +
+                                    ' - ' +
+                                    pessoa.nome +
+                                    ' - ' +
+                                    pessoa.cargo.split(' - ')[1] +
+                                    ' - ' +
+                                    pessoa.cargo.split(' - ')[2]
+                                  : pessoa.id.slice(0, 2) +
+                                    ' - ' +
+                                    pessoa.nome +
+                                    ' - ' +
+                                    pessoa.cargo.split(' - ')[1]}
                               </option>
                             ))}
                           </select>
@@ -2148,7 +2636,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                         {(naturezaMovimentacao == 'Transferencia' ||
                           naturezaMovimentacao == 'Desligamento') && (
                           <DivEmpresa className="noTopMargin">
-                            <label>
+                            <label className="noBreak">
                               {naturezaMovimentacao == 'Transferencia'
                                 ? pedido.imediato
                                   ? 'Transf. Imediata?'
@@ -2189,6 +2677,32 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               ></input>
                             </DivEmpresa>
                           )}
+                        {(naturezaMovimentacao == 'Transferencia' ||
+                          naturezaMovimentacao == 'Desligamento') && (
+                          <DivEmpresa className="noTopMargin">
+                            <label className="noBreak">
+                              {pedido.imediato ? 'Remover Vaga?' : 'Rem. Vaga?'}
+                            </label>
+                            <select
+                              id={
+                                pedido.id.toString() +
+                                ';' +
+                                pedido.id_pessoa +
+                                ';' +
+                                pedido.cargo
+                              }
+                              onChange={(e) => changeRemocaoVaga(e)}
+                              className={
+                                'inputDesligamentoTransferenciaRemocao'
+                              }
+                            >
+                              <option selected value="nao">
+                                Não
+                              </option>
+                              <option value="sim">Sim</option>
+                            </select>
+                          </DivEmpresa>
+                        )}
                         {(naturezaMovimentacao == 'Faltas' ||
                           naturezaMovimentacao == 'Adicional') && (
                           <DivEmpresa className="noTopMargin">
@@ -2312,15 +2826,80 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               ))}
                             </ListaFaltasDiasAdicionais>
                           )}
+                        {naturezaMovimentacao == 'Promocao' &&
+                          pedido.id_pessoa != '' && (
+                            <DivEmpresa className="noTopMargin">
+                              <label>Cargo Atual:</label>
+                              <TextoEstagio className="cargoPromocao">
+                                {pedido.cargo.split(' - ')[2] != undefined
+                                  ? pedido.id_pessoa.slice(0, 2) +
+                                    ' - ' +
+                                    pedido.cargo.split(' - ')[0] +
+                                    ' - ' +
+                                    pedido.cargo.split(' - ')[1] +
+                                    ' - ' +
+                                    pedido.cargo.split(' - ')[2]
+                                  : pedido.id_pessoa.slice(0, 2) +
+                                    ' - ' +
+                                    pedido.cargo}
+                              </TextoEstagio>
+                            </DivEmpresa>
+                          )}
+                        {naturezaMovimentacao == 'Promocao' &&
+                          pedido.id_pessoa != '' && (
+                            <DivEmpresa className="noTopMargin promocao">
+                              <label>Novo Cargo:</label>
+                              <select
+                                id={pedido.id.toString()}
+                                onChange={(e) => changeNovoCargo(e)}
+                              >
+                                <option
+                                  disabled
+                                  selected
+                                  value=""
+                                  style={{ display: 'none' }}
+                                ></option>
+                                {pedido.possiveis_promocoes.map((cargo) => (
+                                  <option key={cargo} value={cargo}>
+                                    {cargo}
+                                  </option>
+                                ))}
+                              </select>
+                            </DivEmpresa>
+                          )}
+                        {naturezaMovimentacao == 'Promocao' &&
+                          pedido.id_pessoa != '' && (
+                            <DivEmpresa className="noTopMargin">
+                              <label>Remover Cargo Atual?</label>
+                              <select
+                                id={
+                                  pedido.id.toString() +
+                                  ';' +
+                                  pedido.id_pessoa +
+                                  ';' +
+                                  pedido.cargo
+                                }
+                                onChange={(e) => changeRemocaoVaga(e)}
+                                className={
+                                  'inputDesligamentoTransferenciaRemocao'
+                                }
+                              >
+                                <option selected value="nao">
+                                  Não
+                                </option>
+                                <option value="sim">Sim</option>
+                              </select>
+                            </DivEmpresa>
+                          )}
                         {pedidosFuncionarios.length > 1 && (
                           <DivButtonRemoverItem
-                            className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'cardFaltasAdicional' : ''}`}
+                            className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'cardFaltasAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'cardPromocao' : ''}`}
                           >
                             <button
                               id={pedido.id.toString()}
                               type="button"
                               onClick={(e) => removerPedidoFunc(e)}
-                              className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'cardFaltasAdicional' : ''}`}
+                              className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'cardFaltasAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'cardPromocao' : ''} ${pedido.id_pessoa != '' ? 'cardOpenPromocao' : ''}`}
                             >
                               X
                             </button>
@@ -2362,8 +2941,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                         </TextoNaoHaVagas>
                       </DivEmpresa>
                     )}
-                  {naturezaMovimentacao != 'Admissao' &&
-                    obraDestino.nome != obra.nome &&
+                  {obraDestino.nome != obra.nome &&
                     obra.nome != '' &&
                     equipeDisponivel.length > 0 && (
                       <DivQuantidadeVaga className="justificativaObs">
@@ -2686,11 +3264,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 {textoNatureza(naturezaMovimentacao)}
               </li>
               <br></br>
-              {naturezaMovimentacao != 'Admissao' && (
-                <li>
-                  <b>{textoItens(naturezaMovimentacao)}</b>
-                </li>
-              )}
+              {naturezaMovimentacao != 'Admissao' &&
+                naturezaMovimentacao != 'RemocaoVaga' && (
+                  <li>
+                    <b>{textoItens(naturezaMovimentacao)}</b>
+                  </li>
+                )}
               {naturezaMovimentacao == 'AberturaVaga' && (
                 <li>
                   <GridListaCabecalho className="AberturaVagas">
@@ -2708,7 +3287,11 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     <GridLista className="AberturaVagas">
                       <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>
-                        {pedido_acrescimo.sigla.split(' - ')[1]}
+                        {pedido_acrescimo.sigla.split(' - ')[1] != undefined
+                          ? pedido_acrescimo.sigla.split(' - ')[0] +
+                            ' - ' +
+                            pedido_acrescimo.sigla.split(' - ')[1]
+                          : pedido_acrescimo.sigla.split(' - ')[0]}
                       </GridItem>
                       <GridItemUltimo>
                         {pedido_acrescimo.quantidade_pedida}
@@ -2754,7 +3337,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     <GridItemCabecalho>Cargo:</GridItemCabecalho>
                     <GridItemCabecalho>Desl. Imediato?</GridItemCabecalho>
                     <GridItemCabecalhoUltimo>
-                      Data do Desligamento:
+                      Data do Deslig:
                     </GridItemCabecalhoUltimo>
                   </GridListaCabecalho>
                 </li>
@@ -2766,7 +3349,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido_funcionario.id_pessoa}</GridItem>
                       <GridItem>{pedido_funcionario.nome}</GridItem>
-                      <GridItem>{pedido_funcionario.cargo}</GridItem>
+                      <GridItem>
+                        {pedido_funcionario.cargo.split(' - ')[2] != undefined
+                          ? pedido_funcionario.cargo.split(' - ')[0] +
+                            ' - ' +
+                            pedido_funcionario.cargo.split(' - ')[1] +
+                            ' - ' +
+                            pedido_funcionario.cargo.split(' - ')[2]
+                          : pedido_funcionario.cargo}
+                      </GridItem>
                       <GridItem>
                         {pedido_funcionario.imediato ? 'SIM' : 'NÃO'}
                       </GridItem>
@@ -2887,7 +3478,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       ).length == 1)
                       ? 'ADMISSÃO SOLICITADA:'
                       : 'ADMISSÕES SOLICITADAS:'}
-                    :
                   </b>
                 </li>
               )}
@@ -2929,10 +3519,129 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     <GridLista className="Admissao">
                       <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido.codigo_vaga}</GridItem>
-                      <GridItem>{pedido.tipo_admissao}</GridItem>
+                      <GridItem>
+                        {pedido.tipo_admissao == 'estagiario'
+                          ? '-'
+                          : pedido.tipo_admissao}
+                      </GridItem>
                       <GridItem>{pedido.nome}</GridItem>
                       <GridItem>{pedido.rg}</GridItem>
                       <GridItemUltimo>{pedido.cpf}</GridItemUltimo>
+                    </GridLista>
+                  </li>
+                ))}
+              {naturezaMovimentacao == 'RemocaoVaga' && (
+                <li>
+                  <b>
+                    {(naturezaMovimentacao == 'RemocaoVaga' &&
+                      pedidosAdmissaoVaga.length == 1) ||
+                    (naturezaMovimentacao == 'RemocaoVaga' &&
+                      inclusaoPedidosAdmissaoVaga.filter(
+                        (pedido) => pedido.incluir
+                      ).length == 1)
+                      ? 'REMOÇÃO DE VAGA SOLICITADA:'
+                      : 'REMOÇÕES DE VAGA SOLICITADAS:'}
+                  </b>
+                </li>
+              )}
+              {naturezaMovimentacao == 'RemocaoVaga' && (
+                <li>
+                  <GridListaCabecalho className="RemocaoVaga">
+                    <GridItemCabecalho>Obra:</GridItemCabecalho>
+                    <GridItemCabecalho>Cód. da Vaga:</GridItemCabecalho>
+                    <GridItemCabecalhoUltimo>Cargo:</GridItemCabecalhoUltimo>
+                  </GridListaCabecalho>
+                </li>
+              )}
+              {naturezaMovimentacao == 'RemocaoVaga' &&
+                pedidosAdmissaoVaga.map((pedido) => (
+                  <li key={pedido.id}>
+                    <GridLista className="RemocaoVaga">
+                      <GridItem>{obra.descricao_completa}</GridItem>
+                      <GridItem>{pedido.codigo_vaga.split(' - ')[0]}</GridItem>
+                      <GridItemUltimo>
+                        {pedido.codigo_vaga.split(' - ')[2] != undefined
+                          ? pedido.codigo_vaga.split(' - ')[1] +
+                            ' - ' +
+                            pedido.codigo_vaga.split(' - ')[2]
+                          : pedido.codigo_vaga.split(' - ')[1]}
+                      </GridItemUltimo>
+                    </GridLista>
+                  </li>
+                ))}
+
+              {naturezaMovimentacao == 'Promocao' && (
+                <li>
+                  <GridListaCabecalho className="Promocao">
+                    <GridItemCabecalho>Obra:</GridItemCabecalho>
+                    <GridItemCabecalho>ID:</GridItemCabecalho>
+                    <GridItemCabecalho>Nome:</GridItemCabecalho>
+                    <GridItemCabecalho>Cargo Atual:</GridItemCabecalho>
+                    <GridItemCabecalho>Novo Cargo:</GridItemCabecalho>
+                    <GridItemCabecalhoUltimo>
+                      R. Vaga Orig.?
+                    </GridItemCabecalhoUltimo>
+                  </GridListaCabecalho>
+                </li>
+              )}
+              {naturezaMovimentacao == 'Promocao' &&
+                pedidosFuncionarios.map((pedido) => (
+                  <li key={pedido.id}>
+                    <GridLista className="Promocao">
+                      <GridItem>{obra.descricao_completa}</GridItem>
+                      <GridItem>{pedido.id_pessoa}</GridItem>
+                      <GridItem>{pedido.nome}</GridItem>
+                      <GridItem>{pedido.cargo}</GridItem>
+                      <GridItem>
+                        {pedido.novo_cargo.split(' - ')[2] != undefined
+                          ? pedido.novo_cargo.split(' - ')[1] +
+                            ' - ' +
+                            pedido.novo_cargo.split(' - ')[2]
+                          : pedido.novo_cargo.split(' - ')[1]}
+                      </GridItem>
+                      <GridItemUltimo>
+                        {pedido.remocaoNoDesligamentoTransferencia == true
+                          ? 'SIM'
+                          : 'NÃO'}
+                      </GridItemUltimo>
+                    </GridLista>
+                  </li>
+                ))}
+              {naturezaMovimentacao == 'Desligamento' &&
+                remocaoNoDesligamentoTransferencia && (
+                  <>
+                    <br></br>
+                    <br></br>
+                  </>
+                )}
+              {naturezaMovimentacao == 'Desligamento' &&
+                remocaoNoDesligamentoTransferencia && (
+                  <li>
+                    <b>
+                      {inclusaoPedidosAdmissaoVaga.length == 1
+                        ? 'REMOÇÃO DE VAGA SOLICITADA:'
+                        : 'REMOÇÕES DE VAGA SOLICITADAS:'}
+                    </b>
+                  </li>
+                )}
+              {naturezaMovimentacao == 'Desligamento' &&
+                remocaoNoDesligamentoTransferencia && (
+                  <li>
+                    <GridListaCabecalho className="RemocaoVaga">
+                      <GridItemCabecalho>Obra:</GridItemCabecalho>
+                      <GridItemCabecalho>Cód. da Vaga:</GridItemCabecalho>
+                      <GridItemCabecalhoUltimo>Cargo:</GridItemCabecalhoUltimo>
+                    </GridListaCabecalho>
+                  </li>
+                )}
+              {naturezaMovimentacao == 'Desligamento' &&
+                remocaoNoDesligamentoTransferencia &&
+                inclusaoPedidosRemocaoVaga.map((pedido) => (
+                  <li key={pedido.id}>
+                    <GridLista className="RemocaoVaga">
+                      <GridItem>{obra.descricao_completa}</GridItem>
+                      <GridItem>{pedido.codigo_vaga}</GridItem>
+                      <GridItemUltimo>{pedido.cargo}</GridItemUltimo>
                     </GridLista>
                   </li>
                 ))}
