@@ -65,7 +65,7 @@ export const DivObraQuantidade = styled.div`
     padding-top: 5px;
     margin: auto;
     margin-bottom: 10px;
-    width: 80%;
+    width: 85%;
     gap: 5px;
   }
   &.promocao {
@@ -107,10 +107,14 @@ export const DivEmpresa = styled.div`
   }
   select {
     font-size: 18px;
+    text-align: center;
     padding: 5px;
     &.comData {
       width: 80%;
       margin-right: 0px;
+    }
+    &.inputColaborador {
+      max-width: 350px;
     }
   }
   input {
@@ -148,6 +152,28 @@ export const DivEmpresa = styled.div`
   &.colaborador {
     select {
       text-align: center;
+    }
+  }
+  &.colaborador {
+    select {
+      text-align: center;
+    }
+  }
+  &.faltaAdicional {
+    select {
+      max-width: 350px;
+    }
+  }
+  &.horasHorasExtras {
+    padding-top: 0px;
+    margin-top: 0px;
+    margin-left: 5px;
+    text-align: center;
+    select {
+      text-align: center;
+      option {
+        text-align: center;
+      }
     }
   }
   @media only screen and (max-width: 768px) {
@@ -317,6 +343,10 @@ export const GridListaCabecalho = styled.ul`
   &.FaltasAdicional {
     grid-template-columns: 15vw 8vw 15vw 12vw 22vw;
     margin-left: 1vw;
+    &.horasExtras {
+      grid-template-columns: 20vw 8vw 15vw 12vw 15vw;
+      margin-left: 1vw;
+    }
   }
   &.RemocaoVaga {
     grid-template-columns: 18vw 8vw 18vw;
@@ -382,6 +412,10 @@ export const GridLista = styled.ul`
   &.FaltasAdicional {
     grid-template-columns: 15vw 8vw 15vw 12vw 22vw;
     margin-left: 1vw;
+    &.horasExtras {
+      grid-template-columns: 20vw 8vw 15vw 12vw 15vw;
+      margin-left: 1vw;
+    }
   }
   &.RemocaoVaga {
     grid-template-columns: 18vw 8vw 18vw;
@@ -910,15 +944,15 @@ export const DivButtonRemoverItem = styled.div`
     }
     &.remocaoVagas {
       position: absolute;
-      right: 26%;
+      right: 25%;
       margin-top: -50px;
-      transform: translate(-26%, -26%);
+      transform: translate(-25%, -25%);
     }
     &.remocaoSolicFunc {
       margin-top: 15px;
     }
     &.cardFaltasAdicional {
-      margin-left: 305px;
+      margin-left: 318px;
       margin-top: -90px;
     }
     &.cardPromocao {
@@ -1059,6 +1093,15 @@ export const TextoEstagio = styled.p`
     padding-top: 5px;
     font-size: 18px;
   }
+  &.erroNiveisPromocao {
+    color: #8f1106;
+  }
+  &.erroDomingo {
+    position: absolute;
+    color: #8f1106;
+    margin-top: -20px;
+    margin-right: -80px;
+  }
 `
 
 export const ListaFaltasDiasAdicionais = styled.ul`
@@ -1086,6 +1129,33 @@ export const ListaFaltasDiasAdicionais = styled.ul`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  &.horasExtra {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 200px;
+    margin: auto;
+    margin-bottom: 15px;
+    &.flexForm {
+      display: flex;
+      flex-direction: row;
+      width: 600px;
+      column-gap: 20px;
+      row-gap: 10px;
+      flex-wrap: wrap;
+    }
+    li {
+      margin: auto;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-right: 5px;
+      height: 25px;
+      width: 200px;
+    }
   }
 `
 
@@ -1128,5 +1198,18 @@ export const ListaFaltasDiasAdicionaisTabela = styled.ul`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  &.horasExtras {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+    gap: 0px;
+    li {
+      text-align: center;
+      margin: auto;
+      width: 200px;
+    }
   }
 `

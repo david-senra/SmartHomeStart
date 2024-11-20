@@ -42,6 +42,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nome: string
     rg: string
     cpf: string
+    contato: string
     salario_padrao: number
     salario_padrao_obra: number
     salario_especifico: number
@@ -54,6 +55,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: string
       rg: string
       cpf: string
+      contato: string
       salario_padrao: number
       salario_padrao_obra: number
       salario_especifico: number
@@ -65,9 +67,21 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.nome = data.nome
       this.rg = data.rg
       this.cpf = data.cpf
+      this.contato = data.contato
       this.salario_padrao = data.salario_padrao
       this.salario_padrao_obra = data.salario_padrao_obra
       this.salario_especifico = data.salario_especifico
+    }
+  }
+  class DiaHoraExtra {
+    id: number
+    dia: string
+    horas: string
+
+    constructor(data: { id: number; dia: string; horas: string }) {
+      this.id = data.id
+      this.dia = data.dia
+      this.horas = data.horas
     }
   }
   class Cargo {
@@ -128,8 +142,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     data_desligamento: string
     data_falta_atual: string
     data_adicional_atual: string
+    data_horas_extra_atual: string
+    dia_horas_extra_atual: string
+    horas_extra_data_atual: string
     faltas: string[]
     dias_adicionais: string[]
+    dias_horas_extras: DiaHoraExtra[]
     remocaoNoDesligamentoTransferencia: boolean
 
     constructor(data: {
@@ -148,8 +166,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       data_desligamento: string
       data_falta_atual: string
       data_adicional_atual: string
+      data_horas_extra_atual: string
+      dia_horas_extra_atual: string
+      horas_extra_data_atual: string
       faltas: string[]
       dias_adicionais: string[]
+      dias_horas_extras: DiaHoraExtra[]
       remocaoNoDesligamentoTransferencia: boolean
     }) {
       this.id = data.id
@@ -167,8 +189,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.data_desligamento = data.data_desligamento
       this.data_falta_atual = data.data_falta_atual
       this.data_adicional_atual = data.data_adicional_atual
+      this.data_horas_extra_atual = data.data_horas_extra_atual
+      this.dia_horas_extra_atual = data.dia_horas_extra_atual
+      this.horas_extra_data_atual = data.horas_extra_data_atual
       this.faltas = data.faltas
       this.dias_adicionais = data.dias_adicionais
+      this.dias_horas_extras = data.dias_horas_extras
       this.remocaoNoDesligamentoTransferencia =
         data.remocaoNoDesligamentoTransferencia
     }
@@ -180,6 +206,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nome: string
     rg: string
     cpf: string
+    contato: string
 
     constructor(data: {
       id: number
@@ -188,6 +215,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: string
       rg: string
       cpf: string
+      contato: string
     }) {
       this.id = data.id
       this.codigo_vaga = data.codigo_vaga
@@ -195,6 +223,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.nome = data.nome
       this.rg = data.rg
       this.cpf = data.cpf
+      this.contato = data.contato
     }
   }
   class InclusaoAdmissaoVaga {
@@ -205,6 +234,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nome: string
     rg: string
     cpf: string
+    contato: string
 
     constructor(data: {
       id: string
@@ -214,6 +244,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: string
       rg: string
       cpf: string
+      contato: string
     }) {
       this.id = data.id
       this.incluir = data.incluir
@@ -222,6 +253,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.nome = data.nome
       this.rg = data.rg
       this.cpf = data.cpf
+      this.contato = data.contato
     }
   }
   class InclusaoRemocaoVaga {
@@ -279,7 +311,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     tipo_admissao: '',
     nome: '',
     rg: '',
-    cpf: ''
+    cpf: '',
+    contato: ''
   }
   const solicitacao_funcionario_inicial = {
     id: 1,
@@ -297,8 +330,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     data_desligamento: '',
     data_falta_atual: '',
     data_adicional_atual: '',
+    data_horas_extra_atual: '',
+    dia_horas_extra_atual: '',
+    horas_extra_data_atual: '',
     faltas: [],
     dias_adicionais: [],
+    dias_horas_extras: [],
     remocaoNoDesligamentoTransferencia: false
   }
 
@@ -489,6 +526,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       } else {
         return 'Solicitar Promoções'
       }
+    } else if (texto == 'HorasExtras') {
+      if (
+        pedidosFuncionarios.length == 1 &&
+        pedidosFuncionarios[0].dias_horas_extras.length == 1 &&
+        pedidosFuncionarios[0].dias_horas_extras[0].horas == '1'
+      ) {
+        return 'Assinalar Hora Extra'
+      } else {
+        return 'Assinalar Horas Extras'
+      }
     } else {
       return 'MUDE O TEXTO AQUI'
     }
@@ -544,6 +591,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         return 'PROMOÇÃO SOLICITADA:'
       } else {
         return 'PROMOÇÕES SOLICITADAS:'
+      }
+    } else if (texto == 'HorasExtras') {
+      if (
+        pedidosFuncionarios.length == 1 &&
+        pedidosFuncionarios[0].dias_horas_extras.length == 1 &&
+        pedidosFuncionarios[0].dias_horas_extras[0].horas == '1'
+      ) {
+        return 'HORA EXTRA ASSINALADA:'
+      } else {
+        return 'HORAS EXTRAS ASSINALADAS:'
       }
     } else {
       return 'MUDE O TEXTO AQUI'
@@ -691,7 +748,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         tipo_admissao: '',
         nome: '',
         rg: '',
-        cpf: ''
+        cpf: '',
+        contato: ''
       }
       setPedidosAdmissaoVagas([admissao_inicial])
       const inputVaga: any =
@@ -763,6 +821,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.push(acrescimo_inicio)
     setPedidoAcrescimoCargos(nova_lista)
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
+    pedidosFuncionarios.map((pedido) => (pedido.novo_cargo = ''))
     const inputInputColaborador =
       document.getElementsByClassName('inputColaborador')
     const exercicesIdTres: any = Array.from(new Set(inputInputColaborador))
@@ -787,6 +846,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     exercicesIdCinco.map((inputRemocao: any) => {
       if (inputRemocao != null) {
         inputRemocao.value = 'nao'
+      }
+    })
+
+    const inputInputNovoCargo =
+      document.getElementsByClassName('inputHoraExtra')
+    const exercicesIdSeis: any = Array.from(new Set(inputInputNovoCargo))
+    exercicesIdSeis.map((inputNovoCargo: any) => {
+      if (inputNovoCargo != null) {
+        inputNovoCargo.value = ''
       }
     })
     setInclusaoPedidosRemocaoVagas([])
@@ -829,7 +897,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     elemento.possiveis_promocoes = cargos_possiveis[0].promocoes_possiveis
     elemento.id_pessoa = valor_elemento.split(' - ')[0]
     elemento.nome = valor_elemento.split(' - ')[1]
-    console.log(valor_elemento)
     if (valor_elemento.split(' - ')[3] != undefined) {
       elemento.cargo =
         valor_elemento.split(' - ')[2] + ' - ' + valor_elemento.split(' - ')[3]
@@ -839,6 +906,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosFuncionarios(nova_lista)
+    const inputInputNovoCargo =
+      document.getElementsByClassName('inputHoraExtra')
+    const exercicesId: any = Array.from(new Set(inputInputNovoCargo))
+    exercicesId.map((inputNovoCargo: any) => {
+      if (inputNovoCargo != null) {
+        inputNovoCargo.value = ''
+      }
+    })
   }
   const changeInicioFerias = (e: React.ChangeEvent<HTMLInputElement>) => {
     SetMensagemErro('')
@@ -1002,6 +1077,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const changeDataFaltasAdicional = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    function ConversorData(numero: number) {
+      if (numero >= 0 && numero < 5) {
+        return 'semana'
+      } else if (numero == 6) {
+        return 'domingo'
+      } else {
+        return 'sabado'
+      }
+    }
     SetMensagemErro('')
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
@@ -1019,7 +1103,32 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       elemento.data_falta_atual = data_ptBr
     } else if (naturezaMovimentacao == 'Adicional') {
       elemento.data_adicional_atual = data_ptBr
+    } else if (naturezaMovimentacao == 'HorasExtras') {
+      const data_determinada: Date = new Date(
+        ano_data + '-' + mes_data + '-' + dia_data
+      )
+      const dia_semana = data_determinada.getDay()
+      const tipo_dia_semana = ConversorData(dia_semana)
+      console.log(tipo_dia_semana)
+      elemento.dia_horas_extra_atual = tipo_dia_semana
+      elemento.data_horas_extra_atual = data_ptBr
     }
+    console.log(elemento)
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosFuncionarios(nova_lista)
+  }
+  const changeHorasExtra = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosFuncionarios]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == parseInt(id_elemento)
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.horas_extra_data_atual = valor_elemento
     console.log(elemento)
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
@@ -1230,6 +1339,60 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       }
     })
   }
+  const adicionarHorasExtras = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...pedidosFuncionarios]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == parseInt(id_elemento)
+    }
+    function isDataSelecionada(pedido: DiaHoraExtra) {
+      return pedido.dia == elemento.data_horas_extra_atual
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const dias_repetidos = elemento.dias_horas_extras.filter(isDataSelecionada)
+    if (dias_repetidos.length == 0 && elemento.horas_extra_data_atual != '') {
+      const dia_a_inserir = {
+        id: dias_repetidos.length + 1,
+        dia: elemento.data_horas_extra_atual,
+        horas: elemento.horas_extra_data_atual
+      }
+      elemento.dias_horas_extras.push(dia_a_inserir)
+    }
+    elemento.data_horas_extra_atual = ''
+    elemento.horas_extra_data_atual = ''
+    elemento.dia_horas_extra_atual = ''
+    nova_lista.map((elemento) => {
+      elemento.data_horas_extra_atual = ''
+      elemento.horas_extra_data_atual = ''
+      elemento.dia_horas_extra_atual = ''
+    })
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosFuncionarios(nova_lista)
+    const inputInputHoraExtra =
+      document.getElementsByClassName('inputHoraExtra')
+    const exercicesId: any = Array.from(new Set(inputInputHoraExtra))
+    exercicesId.map((inputHoraExtra: any) => {
+      if (inputHoraExtra != null) {
+        inputHoraExtra.value = ''
+      }
+    })
+    const inputInputDataFaltaAdicional = document.getElementsByClassName(
+      'inputDataFaltaDiaAdicional'
+    )
+    const exercicesIdDois: any = Array.from(
+      new Set(inputInputDataFaltaAdicional)
+    )
+    exercicesIdDois.map((inputFaltaAdicional: any) => {
+      if (inputFaltaAdicional != null) {
+        inputFaltaAdicional.value = ''
+      }
+    })
+  }
   const adicionarDiaAdicional = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -1289,6 +1452,42 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         (obj) => obj !== data_dia
       )
       elemento.dias_adicionais = lista_modificada
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      setPedidosFuncionarios(nova_lista)
+    }
+  }
+  const removerHorasExtras = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id.split(';')[0]
+    const data_dia = e.currentTarget.id.split(';')[1]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == parseInt(id_elemento)
+    }
+    if (pedidosFuncionarios.length != 1) {
+      SetMensagemErro('')
+      const nova_lista = [...pedidosFuncionarios]
+      const indice_elemento = nova_lista.findIndex(isElement)
+      const elemento = nova_lista.filter(isElement)[0]
+      const nova_lista_horas_extra = elemento.dias_horas_extras
+      const lista_modificada = nova_lista_horas_extra.filter(
+        (obj) => obj.dia !== data_dia
+      )
+      elemento.dias_horas_extras = lista_modificada
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      setPedidosFuncionarios(nova_lista)
+    } else {
+      SetMensagemErro('')
+      const nova_lista = [...pedidosFuncionarios]
+      const indice_elemento = 0
+      const elemento = nova_lista[0]
+      const nova_lista_horas_extra = elemento.dias_horas_extras
+      const lista_modificada = nova_lista_horas_extra.filter(
+        (obj) => obj.dia !== data_dia
+      )
+      elemento.dias_horas_extras = lista_modificada
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       setPedidosFuncionarios(nova_lista)
@@ -1359,7 +1558,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       tipo_admissao: '',
       nome: '',
       rg: '',
-      cpf: ''
+      cpf: '',
+      contato: ''
     }
     nova_lista.push(nova_admissao)
     setPedidosAdmissaoVagas(nova_lista)
@@ -1391,8 +1591,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       data_desligamento: '',
       data_falta_atual: '',
       data_adicional_atual: '',
+      data_horas_extra_atual: '',
+      dia_horas_extra_atual: '',
+      horas_extra_data_atual: '',
       faltas: [],
       dias_adicionais: [],
+      dias_horas_extras: [],
       remocaoNoDesligamentoTransferencia: false
     }
     nova_lista.push(nova_admissao)
@@ -1627,7 +1831,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         }
       } else if (
         naturezaMovimentacao == 'Adicional' ||
-        naturezaMovimentacao == 'Faltas'
+        naturezaMovimentacao == 'Faltas' ||
+        naturezaMovimentacao == 'HorasExtras'
       ) {
         const conjunto_Funcionarios: string[] = []
         pedidosFuncionarios.map((pedido) => {
@@ -1651,6 +1856,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
             erro = 'yes'
             SetMensagemErro(
               'É necessário assinalar pelo menos uma falta para cada solicitação!'
+            )
+          } else if (
+            naturezaMovimentacao == 'HorasExtras' &&
+            pedido.dias_horas_extras.length == 0
+          ) {
+            erro = 'yes'
+            SetMensagemErro(
+              'É necessário assinalar pelo menos um dia com horas extras por solicitação!'
             )
           }
           conjunto_Funcionarios.push(pedido.id_pessoa)
@@ -1764,7 +1977,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     tipo_admissao: '',
                     nome: '',
                     rg: '',
-                    cpf: ''
+                    cpf: '',
+                    contato: ''
                   }
                   pedidosCargos.push(pedidoCargo)
                 })
@@ -1998,7 +2212,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       Vagas, Contratação e Desligamento
                     </option>
                     <option value="TransferenciaPromocao">
-                      Transferência, Promoção ou Aumento
+                      Transferência ou Promoção
                     </option>
                     <option value="FeriasFaltasHorasExtra">
                       Férias, Faltas e Horas Extra
@@ -2067,7 +2281,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       ></option>
                       <option value="Ferias">Solicitar Férias</option>
                       <option value="Faltas">Assinalar Faltas</option>
-                      <option value="Adicional">Dia(s) Adicional(is)</option>
+                      <option value="Adicional">
+                        Assinalar Dia(s) Adicional(is)
+                      </option>
+                      <option value="HorasExtras">
+                        Assinalar Horas Extras
+                      </option>
                     </select>
                   </DivEmpresa>
                 </>
@@ -2539,6 +2758,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
             {naturezaMovimentacao != '' &&
               (naturezaMovimentacao == 'Faltas' ||
                 naturezaMovimentacao == 'Adicional' ||
+                naturezaMovimentacao == 'HorasExtras' ||
                 naturezaMovimentacao == 'Transferencia' ||
                 naturezaMovimentacao == 'Promocao' ||
                 naturezaMovimentacao == 'Desligamento' ||
@@ -2549,10 +2769,10 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     pedidosFuncionarios.map((pedido) => (
                       <DivObraQuantidade
                         key={pedido.id}
-                        className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'faltaAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'promocao' : ''} ${pedido.id_pessoa != '' ? 'cardOpenPromocao' : ''}`}
+                        className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' || naturezaMovimentacao == 'HorasExtras' ? 'faltaAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'promocao' : ''} ${pedido.id_pessoa != '' ? 'cardOpenPromocao' : ''}`}
                       >
                         <DivEmpresa
-                          className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin colaborador`}
+                          className={`${pedido.imediato == false ? 'comData' : ''} noTopMargin colaborador ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' || naturezaMovimentacao == 'HorasExtras' ? 'faltaAdicional' : ''}`}
                         >
                           <label>
                             {pedido.imediato ? 'Colaborador(a)' : 'Col:'}
@@ -2704,19 +2924,23 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                           </DivEmpresa>
                         )}
                         {(naturezaMovimentacao == 'Faltas' ||
-                          naturezaMovimentacao == 'Adicional') && (
+                          naturezaMovimentacao == 'Adicional' ||
+                          naturezaMovimentacao == 'HorasExtras') && (
                           <DivEmpresa className="noTopMargin">
                             <label>
                               {naturezaMovimentacao == 'Faltas'
                                 ? 'Data da Falta:'
-                                : 'Data do Dia Adicional:'}
+                                : naturezaMovimentacao == 'Adicional'
+                                  ? 'Data do Dia Adicional:'
+                                  : 'Data das Horas Extras:'}
                             </label>
                             <input
                               id={pedido.id.toString()}
                               name="item"
                               type="date"
                               min={
-                                naturezaMovimentacao == 'Adicional'
+                                naturezaMovimentacao == 'Adicional' ||
+                                naturezaMovimentacao == 'HorasExtras'
                                   ? getTodayDate()
                                   : ''
                               }
@@ -2750,15 +2974,106 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                                   +
                                 </BotaoAdicionarFaltaAdicional>
                               )}
+                            {naturezaMovimentacao == 'HorasExtras' &&
+                              pedido.data_horas_extra_atual != '' &&
+                              pedido.dia_horas_extra_atual != 'domingo' && (
+                                <DivEmpresa className="horasHorasExtras">
+                                  {pedido.dia_horas_extra_atual != '' && (
+                                    <label>Nº Horas:</label>
+                                  )}
+                                  {pedido.dia_horas_extra_atual == 'sabado' && (
+                                    <select
+                                      style={{ textAlign: 'left' }}
+                                      id={pedido.id.toString()}
+                                      onChange={(e) => changeHorasExtra(e)}
+                                      className={'inputHoraExtra'}
+                                    >
+                                      <option
+                                        disabled
+                                        selected
+                                        style={{ display: 'none' }}
+                                      ></option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        1
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        2
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        3
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        4
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        5
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        6
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        7
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        8
+                                      </option>
+                                    </select>
+                                  )}
+                                  {pedido.dia_horas_extra_atual == 'semana' && (
+                                    <select
+                                      style={{ textAlign: 'left' }}
+                                      id={pedido.id.toString()}
+                                      onChange={(e) => changeHorasExtra(e)}
+                                      className={'inputHoraExtra'}
+                                    >
+                                      <option
+                                        disabled
+                                        selected
+                                        style={{ display: 'none' }}
+                                      ></option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        1
+                                      </option>
+                                      <option style={{ textAlign: 'left' }}>
+                                        2
+                                      </option>
+                                    </select>
+                                  )}
+                                </DivEmpresa>
+                              )}
+                            {naturezaMovimentacao == 'HorasExtras' &&
+                              pedido.data_horas_extra_atual != '' &&
+                              pedido.dia_horas_extra_atual != 'domingo' &&
+                              pedido.dia_horas_extra_atual != '' && (
+                                <BotaoAdicionarFaltaAdicional
+                                  id={pedido.id.toString()}
+                                  type="button"
+                                  onClick={adicionarHorasExtras}
+                                >
+                                  +
+                                </BotaoAdicionarFaltaAdicional>
+                              )}
+                            {naturezaMovimentacao == 'HorasExtras' &&
+                              pedido.data_horas_extra_atual != '' &&
+                              pedido.dia_horas_extra_atual == 'domingo' && (
+                                <DivEmpresa>
+                                  <TextoEstagio className="erroDomingo">
+                                    Domingo!
+                                  </TextoEstagio>
+                                </DivEmpresa>
+                              )}
                           </DivEmpresa>
                         )}
                         {(naturezaMovimentacao == 'Faltas' ||
-                          naturezaMovimentacao == 'Adicional') && (
+                          naturezaMovimentacao == 'Adicional' ||
+                          naturezaMovimentacao == 'HorasExtras') && (
                           <DivEmpresa className="noTopMargin">
                             <label>
                               {naturezaMovimentacao == 'Faltas'
                                 ? 'Falta(s):'
-                                : 'Dia(s) Adicional(is):'}
+                                : naturezaMovimentacao == 'Adicional'
+                                  ? 'Dia(s) Adicional(is):'
+                                  : 'Dia(s) e Hora(s):'}
                             </label>
                             {naturezaMovimentacao == 'Faltas' &&
                               pedido.faltas.length == 0 && (
@@ -2770,6 +3085,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               pedido.dias_adicionais.length == 0 && (
                                 <TextoNenhumaFalta>
                                   Nenhum dia adicional incluído.
+                                </TextoNenhumaFalta>
+                              )}
+                            {naturezaMovimentacao == 'HorasExtras' &&
+                              pedido.dias_horas_extras.length == 0 && (
+                                <TextoNenhumaFalta>
+                                  Nenhuma hora extra incluída.
                                 </TextoNenhumaFalta>
                               )}
                           </DivEmpresa>
@@ -2826,6 +3147,38 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               ))}
                             </ListaFaltasDiasAdicionais>
                           )}
+                        {naturezaMovimentacao == 'HorasExtras' &&
+                          pedido.dias_horas_extras.length > 0 && (
+                            <ListaFaltasDiasAdicionais
+                              className={`horasExtra ${
+                                [5, 8, 11, 14, 17].includes(
+                                  pedido.dias_horas_extras.length
+                                )
+                                  ? 'what'
+                                  : 'flexForm'
+                              }`}
+                            >
+                              {pedido.dias_horas_extras.map((dia_h_extra) => (
+                                <SetDataBotaoRemover key={dia_h_extra.id}>
+                                  <li key={dia_h_extra.id}>
+                                    {dia_h_extra.dia} - {dia_h_extra.horas}{' '}
+                                    horas
+                                  </li>
+                                  <BotaoRemoverFaltaAdicional
+                                    id={
+                                      pedido.id.toString() +
+                                      ';' +
+                                      dia_h_extra.dia
+                                    }
+                                    type="button"
+                                    onClick={removerHorasExtras}
+                                  >
+                                    X
+                                  </BotaoRemoverFaltaAdicional>
+                                </SetDataBotaoRemover>
+                              ))}
+                            </ListaFaltasDiasAdicionais>
+                          )}
                         {naturezaMovimentacao == 'Promocao' &&
                           pedido.id_pessoa != '' && (
                             <DivEmpresa className="noTopMargin">
@@ -2846,10 +3199,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                             </DivEmpresa>
                           )}
                         {naturezaMovimentacao == 'Promocao' &&
-                          pedido.id_pessoa != '' && (
+                          pedido.id_pessoa != '' &&
+                          pedido.possiveis_promocoes.length > 0 && (
                             <DivEmpresa className="noTopMargin promocao">
                               <label>Novo Cargo:</label>
                               <select
+                                className={'inputHoraExtra'}
                                 id={pedido.id.toString()}
                                 onChange={(e) => changeNovoCargo(e)}
                               >
@@ -2868,7 +3223,18 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                             </DivEmpresa>
                           )}
                         {naturezaMovimentacao == 'Promocao' &&
-                          pedido.id_pessoa != '' && (
+                          pedido.id_pessoa != '' &&
+                          pedido.possiveis_promocoes.length == 0 && (
+                            <DivEmpresa className="noTopMargin promocao">
+                              <label>Novo Cargo:</label>
+                              <TextoEstagio className="erroNiveisPromocao">
+                                Não há níveis para promoção deste cargo!
+                              </TextoEstagio>
+                            </DivEmpresa>
+                          )}
+                        {naturezaMovimentacao == 'Promocao' &&
+                          pedido.id_pessoa != '' &&
+                          pedido.possiveis_promocoes.length > 0 && (
                             <DivEmpresa className="noTopMargin">
                               <label>Remover Cargo Atual?</label>
                               <select
@@ -2891,15 +3257,25 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               </select>
                             </DivEmpresa>
                           )}
+                        {naturezaMovimentacao == 'Promocao' &&
+                          pedido.id_pessoa != '' &&
+                          pedido.possiveis_promocoes.length == 0 && (
+                            <DivEmpresa className="noTopMargin">
+                              <TextoEstagio className="erroNiveisPromocao">
+                                Favor entrar em contato com a direção, ou
+                                solicitar uma transferência de cargo!
+                              </TextoEstagio>
+                            </DivEmpresa>
+                          )}
                         {pedidosFuncionarios.length > 1 && (
                           <DivButtonRemoverItem
-                            className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'cardFaltasAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'cardPromocao' : ''}`}
+                            className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' || naturezaMovimentacao == 'HorasExtras' ? 'cardFaltasAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'cardPromocao' : ''} `}
                           >
                             <button
                               id={pedido.id.toString()}
                               type="button"
                               onClick={(e) => removerPedidoFunc(e)}
-                              className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' ? 'cardFaltasAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'cardPromocao' : ''} ${pedido.id_pessoa != '' ? 'cardOpenPromocao' : ''}`}
+                              className={`remocaoSolicFunc ${naturezaMovimentacao == 'Faltas' || naturezaMovimentacao == 'Adicional' || naturezaMovimentacao == 'HorasExtras' ? 'cardFaltasAdicional' : ''} ${naturezaMovimentacao == 'Promocao' ? 'cardPromocao' : ''} ${pedido.id_pessoa != '' ? 'cardOpenPromocao' : ''}`}
                             >
                               X
                             </button>
@@ -3401,32 +3777,40 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                   </li>
                 ))}
               {(naturezaMovimentacao == 'Faltas' ||
-                naturezaMovimentacao == 'Adicional') && (
+                naturezaMovimentacao == 'Adicional' ||
+                naturezaMovimentacao == 'HorasExtras') && (
                 <li>
-                  <GridListaCabecalho className="FaltasAdicional">
+                  <GridListaCabecalho
+                    className={`FaltasAdicional ${naturezaMovimentacao == 'HorasExtras' ? 'horasExtras' : ''}`}
+                  >
                     <GridItemCabecalho>Obra:</GridItemCabecalho>
                     <GridItemCabecalho>ID:</GridItemCabecalho>
                     <GridItemCabecalho>Nome:</GridItemCabecalho>
                     <GridItemCabecalho>Cargo:</GridItemCabecalho>
                     <GridItemCabecalhoUltimo>
                       {naturezaMovimentacao == 'Adicional'
-                        ? 'Dias Adicionais'
-                        : 'Faltas'}
+                        ? 'Dias Adicionais:'
+                        : naturezaMovimentacao == 'Faltas'
+                          ? 'Faltas:'
+                          : 'Horas Extras:'}
                     </GridItemCabecalhoUltimo>
                   </GridListaCabecalho>
                 </li>
               )}
               {(naturezaMovimentacao == 'Faltas' ||
-                naturezaMovimentacao == 'Adicional') &&
+                naturezaMovimentacao == 'Adicional' ||
+                naturezaMovimentacao == 'HorasExtras') &&
                 pedidosFuncionarios.map((pedido_funcionario) => (
                   <li key={pedido_funcionario.id}>
-                    <GridLista className="FaltasAdicional">
+                    <GridLista
+                      className={`FaltasAdicional ${naturezaMovimentacao == 'HorasExtras' ? 'horasExtras' : ''}`}
+                    >
                       <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>{pedido_funcionario.id_pessoa}</GridItem>
                       <GridItem>{pedido_funcionario.nome}</GridItem>
                       <GridItem>{pedido_funcionario.cargo}</GridItem>
                       <GridItemUltimo>
-                        {naturezaMovimentacao == 'Faltas' ? (
+                        {naturezaMovimentacao == 'Faltas' && (
                           <ListaFaltasDiasAdicionaisTabela
                             className={
                               [3, 5, 7, 8, 10, 11, 13, 14, 15, 17].includes(
@@ -3440,7 +3824,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               <li key={falta}>{falta}</li>
                             ))}
                           </ListaFaltasDiasAdicionaisTabela>
-                        ) : (
+                        )}
+                        {naturezaMovimentacao == 'Adicional' && (
                           <ListaFaltasDiasAdicionaisTabela
                             className={
                               [3, 5, 7, 8, 10, 11, 13, 14, 15, 17].includes(
@@ -3453,6 +3838,20 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                             {pedido_funcionario.dias_adicionais.map(
                               (dia_adicional) => (
                                 <li key={dia_adicional}>{dia_adicional}</li>
+                              )
+                            )}
+                          </ListaFaltasDiasAdicionaisTabela>
+                        )}
+                        {naturezaMovimentacao == 'HorasExtras' && (
+                          <ListaFaltasDiasAdicionaisTabela
+                            className={'horasExtras'}
+                          >
+                            {pedido_funcionario.dias_horas_extras.map(
+                              (dia_horas_extras) => (
+                                <li key={dia_horas_extras.id}>
+                                  {dia_horas_extras.dia} -{' '}
+                                  {dia_horas_extras.horas} hs
+                                </li>
                               )
                             )}
                           </ListaFaltasDiasAdicionaisTabela>
