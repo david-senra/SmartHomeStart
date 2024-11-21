@@ -650,30 +650,10 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
         ) {
           numeroItens += solicitacao.pedidos_funcionarios.length
         }
-        let linhasSugForn = 0
         let linhasobs = 0
         console.log('numeroItens')
         console.log(numeroItens)
-        if (solicitacao.justificativa != '') {
-          if (
-            solicitacao.justificativa.indexOf('\n') == -1 &&
-            solicitacao.justificativa.length < 91
-          ) {
-            linhasSugForn = 1
-          } else {
-            const textos_isolado_fornec: string[] =
-              solicitacao.justificativa.split(/\r\n|\r|\n/)
-            const numero_quebras_fornec = textos_isolado_fornec.length
-            let numero_linhas_corridas_forn = 0
-            textos_isolado_fornec.forEach((texto) => {
-              texto.length >= 91 && (numero_linhas_corridas_forn += 1)
-            })
-            linhasSugForn =
-              numero_linhas_corridas_forn + numero_quebras_fornec / 1.65
-          }
-        }
         console.log('linhasJustif')
-        console.log(linhasSugForn)
         if (solicitacao.obsFinal != '') {
           if (
             solicitacao.obsFinal.indexOf('\n') == -1 &&
@@ -693,7 +673,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
         }
         console.log('linhasObs')
         console.log(linhasobs)
-        solicitacao.altura = linhasSugForn + linhasobs + numeroItens
+        solicitacao.altura = linhasobs + numeroItens
         dados_solicitacoes.push(solicitacao)
         solicitacao.isCardOpen = resposta
         SetListaPedidos(dados_solicitacoes)
@@ -2601,30 +2581,14 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                     {/* <GridItemsPedido
                       className={`gridFake ${pedido.obsFinal != '' && 'obsOrSugest'}`}
                     ></GridItemsPedido> */}
-                    {pedido.justificativa != '' && (
-                      <DivSugestFornecedoresObs>
-                        <div>
-                          <b>Justificativa:</b>
-                        </div>
-                        <BoxTextoSugest>
-                          <p>{pedido.justificativa}</p>
-                          {pedido.statusSolicitacao == 'aberto' &&
-                            pedido.usuario == nomeusur && (
-                              <IconeLapisDiv>
-                                <IconeLapisImg
-                                  id={pedido.id}
-                                  src={IconeLapisEditar}
-                                  className="ObsSugForn"
-                                ></IconeLapisImg>
-                              </IconeLapisDiv>
-                            )}
-                        </BoxTextoSugest>
-                      </DivSugestFornecedoresObs>
-                    )}
                     {pedido.obsFinal != '' && (
                       <DivSugestFornecedoresObs>
                         <div>
-                          <b>Observação:</b>
+                          <b>
+                            {pedido.natureza_solicitacao == 'AberturaVaga'
+                              ? 'Justificativa/Obs:'
+                              : 'Observações:'}
+                          </b>
                         </div>
                         <BoxTextoSugest>
                           {pedido.obsFinal}

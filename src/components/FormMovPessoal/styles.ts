@@ -32,7 +32,14 @@ export const CardAdmissao = styled.div`
     width: 40vw;
   }
   &.RemocaoVagas {
-    width: 42vw;
+    width: 50vw;
+    max-width: 50vw;
+  }
+  @media only screen and (min-width: 1300px) {
+    &.RemocaoVagas {
+      width: auto;
+      max-width: 35vw;
+    }
   }
 `
 
@@ -329,7 +336,7 @@ export const GridListaCabecalho = styled.ul`
     margin-left: 2.5vw;
   }
   &.Desligamento {
-    grid-template-columns: 18vw 8vw 15vw 12vw 8vw 10vw;
+    grid-template-columns: 18vw 8vw 15vw 12vw 10vw;
     margin-left: 1.2vw;
   }
   &.Transferencia {
@@ -353,7 +360,7 @@ export const GridListaCabecalho = styled.ul`
     margin-left: 0.6vw;
   }
   &.Promocao {
-    grid-template-columns: 18vw 8vw 12vw 14vw 14vw 8vw;
+    grid-template-columns: 18vw 7vw 14vw 14vw 14vw 8vw;
     margin-left: 0.6vw;
   }
   @media only screen and (max-width: 768px) {
@@ -398,7 +405,7 @@ export const GridLista = styled.ul`
     margin-left: 2.5vw;
   }
   &.Desligamento {
-    grid-template-columns: 18vw 8vw 15vw 12vw 8vw 10vw;
+    grid-template-columns: 18vw 8vw 15vw 12vw 10vw;
     margin-left: 1.2vw;
   }
   &.Transferencia {
@@ -422,7 +429,7 @@ export const GridLista = styled.ul`
     margin-left: 0.6vw;
   }
   &.Promocao {
-    grid-template-columns: 18vw 8vw 12vw 14vw 14vw 8vw;
+    grid-template-columns: 18vw 7vw 14vw 14vw 14vw 8vw;
     margin-left: 0.6vw;
   }
   @media only screen and (max-width: 768px) {
@@ -943,10 +950,8 @@ export const DivButtonRemoverItem = styled.div`
       transform: translate(-27%, -27%);
     }
     &.remocaoVagas {
-      position: absolute;
-      right: 25%;
-      margin-top: -50px;
-      transform: translate(-25%, -25%);
+      margin-left: 26vw;
+      margin-top: -55px;
     }
     &.remocaoSolicFunc {
       margin-top: 15px;
@@ -963,6 +968,14 @@ export const DivButtonRemoverItem = styled.div`
       }
       &.cardOpenPromocao {
         margin-top: -100px;
+      }
+    }
+  }
+  @media only screen and (min-width: 1300px) {
+    button {
+      &.remocaoVagas {
+        margin-left: 18vw;
+        margin-top: -55px;
       }
     }
   }

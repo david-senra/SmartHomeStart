@@ -633,6 +633,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const changeNaturezaMov = (e: React.ChangeEvent<HTMLSelectElement>) => {
     SetMensagemErro('')
+    setObservacaoGeral('')
     setAdmissaoNaABertura(false)
     const valor_elemento = e.currentTarget.value
     setNaturezaMovimentacao(valor_elemento)
@@ -665,6 +666,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const changePreNaturezaMov = (e: React.ChangeEvent<HTMLSelectElement>) => {
     SetMensagemErro('')
+    setObservacaoGeral('')
     setAdmissaoNaABertura(false)
     setPedidosAdmissaoVagas([admissao_inicial])
     setPedidoAcrescimoCargos([acrescimo_inicial])
@@ -882,16 +884,20 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     SetMensagemErro('')
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
+    console.log(valor_elemento)
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == parseInt(id_elemento)
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
+    elemento.dias_horas_extras = []
+    elemento.faltas = []
+    elemento.dias_adicionais = []
     let cargos_possiveis: Cargo[] = []
     cargos_possiveis = [...cargosPossiveis]
     cargos_possiveis = cargos_possiveis.filter(
-      (cargo) => cargo.sigla == valor_elemento.split(' - ')[0].slice(0, 2)
+      (cargo) => cargo.sigla == valor_elemento.split(' - ')[0].slice(2, 4)
     )
     elemento.novo_cargo = ''
     elemento.possiveis_promocoes = cargos_possiveis[0].promocoes_possiveis
@@ -903,6 +909,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     } else {
       elemento.cargo = valor_elemento.split(' - ')[2]
     }
+    nova_lista.map((elemento) => (elemento.novo_cargo = ''))
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosFuncionarios(nova_lista)
@@ -2388,16 +2395,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     </DivButtonAdicionarItem>
                   )}
                   <DivQuantidadeVaga className="justificativaObs">
-                    <label>Justificativa:</label>
-                    <textarea
-                      name="justificativa"
-                      className="justificativa"
-                      autoComplete="off"
-                      onChange={(e) => changeJustificativa(e)}
-                    ></textarea>
-                  </DivQuantidadeVaga>
-                  <DivQuantidadeVaga className="justificativaObs">
-                    <label>Observação:</label>
+                    <label>Justificativa/Observação:</label>
                     <textarea
                       name="justificativa"
                       className="observacao"
@@ -2685,6 +2683,17 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                         </button>
                       </DivButtonAdicionarItem>
                     )}
+                  {obra.nome != '' && (
+                    <DivQuantidadeVaga className="justificativaObs">
+                      <label>Justificativa/Observação:</label>
+                      <textarea
+                        name="justificativa"
+                        className="observacao"
+                        autoComplete="off"
+                        onChange={(e) => changeObservacao(e)}
+                      ></textarea>
+                    </DivQuantidadeVaga>
+                  )}
                 </>
               )}
             {naturezaMovimentacao != '' &&
@@ -2808,16 +2817,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                                 }
                               >
                                 {pessoa.cargo.split(' - ')[2] != undefined
-                                  ? pessoa.id.slice(0, 2) +
-                                    ' - ' +
-                                    pessoa.nome +
+                                  ? pessoa.nome +
                                     ' - ' +
                                     pessoa.cargo.split(' - ')[1] +
                                     ' - ' +
                                     pessoa.cargo.split(' - ')[2]
-                                  : pessoa.id.slice(0, 2) +
-                                    ' - ' +
-                                    pessoa.nome +
+                                  : pessoa.nome +
                                     ' - ' +
                                     pessoa.cargo.split(' - ')[1]}
                               </option>
@@ -3185,14 +3190,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               <label>Cargo Atual:</label>
                               <TextoEstagio className="cargoPromocao">
                                 {pedido.cargo.split(' - ')[2] != undefined
-                                  ? pedido.id_pessoa.slice(0, 2) +
+                                  ? pedido.id_pessoa.slice(2, 4) +
                                     ' - ' +
                                     pedido.cargo.split(' - ')[0] +
                                     ' - ' +
                                     pedido.cargo.split(' - ')[1] +
                                     ' - ' +
                                     pedido.cargo.split(' - ')[2]
-                                  : pedido.id_pessoa.slice(0, 2) +
+                                  : pedido.id_pessoa.slice(2, 4) +
                                     ' - ' +
                                     pedido.cargo}
                               </TextoEstagio>
@@ -3711,7 +3716,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     <GridItemCabecalho>ID:</GridItemCabecalho>
                     <GridItemCabecalho>Nome:</GridItemCabecalho>
                     <GridItemCabecalho>Cargo:</GridItemCabecalho>
-                    <GridItemCabecalho>Desl. Imediato?</GridItemCabecalho>
                     <GridItemCabecalhoUltimo>
                       Data do Deslig:
                     </GridItemCabecalhoUltimo>
@@ -3734,12 +3738,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                             pedido_funcionario.cargo.split(' - ')[2]
                           : pedido_funcionario.cargo}
                       </GridItem>
-                      <GridItem>
-                        {pedido_funcionario.imediato ? 'SIM' : 'NÃO'}
-                      </GridItem>
                       <GridItemUltimo>
                         {pedido_funcionario.imediato
-                          ? '-'
+                          ? 'IMEDIATO'
                           : pedido_funcionario.data_desligamento}
                       </GridItemUltimo>
                     </GridLista>
@@ -4087,7 +4088,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
               {ObservacaoGeral != '' && (
                 <DivLineBreak>
                   <TextoComLineBreak>
-                    <b>Observações:</b>{' '}
+                    <b>
+                      {naturezaMovimentacao == 'AberturaVaga'
+                        ? 'Justificativa/Observações:'
+                        : 'Observações:'}
+                      :
+                    </b>{' '}
                     {ObservacaoGeral.indexOf('\n') == -1 &&
                     ObservacaoGeral.length < 91
                       ? ObservacaoGeral
