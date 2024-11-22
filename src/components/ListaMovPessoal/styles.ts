@@ -69,7 +69,7 @@ export const ListaSolicitacoes = styled.ul`
 `
 
 export const CardSolicitacao = styled.ul<{ tamanho: number }>`
-  max-height: ${(props) => (120 + props.tamanho * 60).toString()}px;
+  max-height: ${(props) => (180 + props.tamanho * 60).toString()}px;
   overflow-x: visible;
   position: relative;
   display: grid;
@@ -267,7 +267,9 @@ export const GridCabecalhoItemsPedido = styled.ul<{
     const tipoPedido = props.tipoSolicitacao
     if (tipoPedido == 'AberturaVaga') {
       return '20vw 15vw 15vw'
-    } else {
+    } else if (tipoPedido == 'Desligamento') {
+      return '17vw 8vw 15vw 15vw 8vw'
+    } else if (tipoPedido == 'Admissao') {
       return '1fr 1fr'
     }
   }};
@@ -277,6 +279,12 @@ export const GridCabecalhoItemsPedido = styled.ul<{
   padding-right: 0px;
   li {
     border-bottom: solid 1px black;
+  }
+  &.admissao {
+    grid-template-columns: 14vw 15.5vw 4vw 10vw 7vw 7vw 10vw;
+  }
+  &.remocaoVagas {
+    grid-template-columns: 15vw 8vw 15vw;
   }
   @media only screen and (max-width: 768px) {
     display: grid;
@@ -304,7 +312,9 @@ export const GridItemsPedido = styled.ul<{
     const tipoPedido = props.tipoSolicitacao
     if (tipoPedido == 'AberturaVaga') {
       return '20vw 15vw 15vw'
-    } else {
+    } else if (tipoPedido == 'Desligamento') {
+      return '17vw 8vw 15vw 15vw 8vw'
+    } else if (tipoPedido == 'Admissao') {
       return '1fr 1fr'
     }
   }};
@@ -362,6 +372,12 @@ export const GridItemsPedido = styled.ul<{
       display: flex;
       flex-direction: row;
     }
+  }
+  &.admissao {
+    grid-template-columns: 14vw 15.5vw 4vw 10vw 7vw 7vw 10vw;
+  }
+  &.remocaoVagas {
+    grid-template-columns: 15vw 8vw 15vw;
   }
   @media only screen and (max-width: 768px) {
     display: grid;
@@ -710,6 +726,9 @@ export const IconeTranca = styled.img`
   position: absolute;
   right: 3vw;
   cursor: pointer;
+  &.trancaSolitaria {
+    top: 10px;
+  }
   @media only screen and (max-width: 768px) {
     height: 10px;
   }
@@ -1924,6 +1943,28 @@ export const TextoSituacaoCabecalho = styled.p`
         transform: translate(-5.5%, -5.5%);
       }
     }
+    &.noSpecial {
+      &::after {
+        content: 'ABERTO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &::after {
+      content: 'ABERTO';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 5px;
+      right: 5.5%;
+      transform: translate(-5.5%, -5.5%);
+    }
   }
   &.andamento {
     &::after {
@@ -1974,5 +2015,80 @@ export const TextoSituacaoCabecalho = styled.p`
         transform: translate(-5.5%, -5.5%);
       }
     }
+  }
+`
+
+export const DivBotoesAprovacao = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  margin-top: 20px;
+  border-bottom: 1px solid black;
+  button {
+    width: 140px;
+    &.rejeitar {
+      cursor: pointer;
+      border: 1px solid black;
+      text-align: center;
+      padding: 5px;
+      color: white;
+      background-color: #ff6865;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      &:hover {
+        background-color: red;
+      }
+      &.desativado {
+        background-color: gray;
+        cursor: default;
+        &:hover {
+          background-color: gray;
+          cursor: default;
+        }
+      }
+    }
+    &.aprovar {
+      cursor: pointer;
+      border: 1px solid black;
+      text-align: center;
+      padding: 5px;
+      color: white;
+      background-color: #4cbb17;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      &:hover {
+        background-color: green;
+      }
+      &.desativado {
+        background-color: gray;
+        cursor: default;
+        &:hover {
+          background-color: gray;
+          cursor: default;
+        }
+      }
+    }
+  }
+  h3 {
+    width: 140px;
+    background-color: yellow;
+    border: 1px solid black;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  @media only screen and (max-width: 768px) {
+    display: block;
+  }
+`
+
+export const DivTituloSecaoCard = styled.div`
+  margin-bottom: 10px;
+  &.aberturaVagas {
+    margin-top: 20px;
   }
 `

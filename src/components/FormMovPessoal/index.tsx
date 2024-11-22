@@ -31,7 +31,6 @@ import {
   BotaoRemoverFaltaAdicional,
   SetDataBotaoRemover
 } from './styles'
-import { textChangeRangeIsUnchanged } from 'typescript'
 
 const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   class Vaga {
@@ -108,28 +107,18 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.promocoes_possiveis = data.promocoes_possiveis
     }
   }
-  class AcrescimoCargo {
-    id: number
+  class SolicitacaoFuncionario {
+    id: string
+    incluir: boolean
     sigla: string
     quantidade_pedida: number
     status: string
-
-    constructor(data: {
-      id: number
-      sigla: string
-      quantidade_pedida: number
-      status: string
-    }) {
-      this.id = data.id
-      this.sigla = data.sigla
-      this.quantidade_pedida = data.quantidade_pedida
-      this.status = data.status
-    }
-  }
-  class SolicitacaoFuncionario {
-    id: number
-    sigla: string
+    codigo_vaga: string
+    tipo_admissao: string
     nome: string
+    rg: string
+    cpf: string
+    contato: string
     cargo: string
     novo_cargo: string
     possiveis_promocoes: string[]
@@ -151,9 +140,17 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     remocaoNoDesligamentoTransferencia: boolean
 
     constructor(data: {
-      id: number
+      id: string
+      incluir: boolean
       sigla: string
+      quantidade_pedida: number
+      status: string
+      codigo_vaga: string
+      tipo_admissao: string
       nome: string
+      rg: string
+      cpf: string
+      contato: string
       cargo: string
       novo_cargo: string
       possiveis_promocoes: string[]
@@ -175,8 +172,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       remocaoNoDesligamentoTransferencia: boolean
     }) {
       this.id = data.id
+      this.incluir = data.incluir
       this.sigla = data.sigla
+      this.quantidade_pedida = data.quantidade_pedida
+      this.status = data.status
+      this.codigo_vaga = data.codigo_vaga
+      this.tipo_admissao = data.tipo_admissao
       this.nome = data.nome
+      this.rg = data.rg
+      this.cpf = data.cpf
+      this.contato = data.contato
       this.cargo = data.cargo
       this.novo_cargo = data.novo_cargo
       this.possiveis_promocoes = data.possiveis_promocoes
@@ -197,74 +202,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.dias_horas_extras = data.dias_horas_extras
       this.remocaoNoDesligamentoTransferencia =
         data.remocaoNoDesligamentoTransferencia
-    }
-  }
-  class AdmissaoVaga {
-    id: number
-    codigo_vaga: string
-    tipo_admissao: string
-    nome: string
-    rg: string
-    cpf: string
-    contato: string
-
-    constructor(data: {
-      id: number
-      codigo_vaga: string
-      tipo_admissao: string
-      nome: string
-      rg: string
-      cpf: string
-      contato: string
-    }) {
-      this.id = data.id
-      this.codigo_vaga = data.codigo_vaga
-      this.tipo_admissao = data.tipo_admissao
-      this.nome = data.nome
-      this.rg = data.rg
-      this.cpf = data.cpf
-      this.contato = data.contato
-    }
-  }
-  class InclusaoAdmissaoVaga {
-    id: string
-    incluir: boolean
-    codigo_vaga: string
-    tipo_admissao: string
-    nome: string
-    rg: string
-    cpf: string
-    contato: string
-
-    constructor(data: {
-      id: string
-      incluir: boolean
-      codigo_vaga: string
-      tipo_admissao: string
-      nome: string
-      rg: string
-      cpf: string
-      contato: string
-    }) {
-      this.id = data.id
-      this.incluir = data.incluir
-      this.codigo_vaga = data.codigo_vaga
-      this.tipo_admissao = data.tipo_admissao
-      this.nome = data.nome
-      this.rg = data.rg
-      this.cpf = data.cpf
-      this.contato = data.contato
-    }
-  }
-  class InclusaoRemocaoVaga {
-    id: string
-    codigo_vaga: string
-    cargo: string
-
-    constructor(data: { id: string; codigo_vaga: string; cargo: string }) {
-      this.id = data.id
-      this.codigo_vaga = data.codigo_vaga
-      this.cargo = data.cargo
     }
   }
   class Obra {
@@ -299,25 +236,18 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     cargos_especificos: [],
     equipe: []
   }
-  const acrescimo_inicial = {
-    id: 1,
+  const solicitacao_funcionario_inicial = {
+    id: '1',
+    incluir: false,
     sigla: '',
     quantidade_pedida: 1,
-    status: 'aberto'
-  }
-  const admissao_inicial = {
-    id: 1,
+    status: 'aberto',
     codigo_vaga: '',
     tipo_admissao: '',
     nome: '',
     rg: '',
     cpf: '',
-    contato: ''
-  }
-  const solicitacao_funcionario_inicial = {
-    id: 1,
-    sigla: '',
-    nome: '',
+    contato: '',
     cargo: '',
     novo_cargo: '',
     possiveis_promocoes: [],
@@ -351,6 +281,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     remocaoNoDesligamentoTransferencia,
     setRemocaoNoDesligamentoTransferencia
   ] = React.useState<boolean>(false)
+  const [aberturaNaTransferenciaPromocao, setAberturaNaTransferenciaPromocao] =
+    React.useState<boolean>(false)
   const [preNaturezaMovimentacao, setPreNaturezaMovimentacao] =
     React.useState<string>('')
   const [naturezaMovimentacao, setNaturezaMovimentacao] =
@@ -358,15 +290,15 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const [obrasCantaria, setObrasCantaria] = React.useState<Obra[]>([])
   const [obrasSantaBarbara, setObrasSantaBarbara] = React.useState<Obra[]>([])
   const [pedidoAcrescimoCargos, setPedidoAcrescimoCargos] = React.useState<
-    AcrescimoCargo[]
-  >([acrescimo_inicial])
+    SolicitacaoFuncionario[]
+  >([solicitacao_funcionario_inicial])
   const [inclusaoPedidosAdmissaoVaga, setInclusaoPedidosAdmissaoVagas] =
-    React.useState<InclusaoAdmissaoVaga[]>([])
+    React.useState<SolicitacaoFuncionario[]>([])
   const [inclusaoPedidosRemocaoVaga, setInclusaoPedidosRemocaoVagas] =
-    React.useState<InclusaoRemocaoVaga[]>([])
+    React.useState<SolicitacaoFuncionario[]>([])
   const [pedidosAdmissaoVaga, setPedidosAdmissaoVagas] = React.useState<
-    AdmissaoVaga[]
-  >([admissao_inicial])
+    SolicitacaoFuncionario[]
+  >([solicitacao_funcionario_inicial])
   const [pedidosFuncionarios, setPedidosFuncionarios] = React.useState<
     SolicitacaoFuncionario[]
   >([solicitacao_funcionario_inicial])
@@ -391,7 +323,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   ) => {
     if (pedidoAcrescimoCargos.length != 1) {
       SetMensagemErro('')
-      const id_elemento = parseInt(e.currentTarget.id)
+      const id_elemento = e.currentTarget.id
       const nova_lista = [...pedidoAcrescimoCargos]
       const lista_modificada = nova_lista.filter(
         (obj) => obj.id !== id_elemento
@@ -404,7 +336,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   ) => {
     if (pedidosAdmissaoVaga.length != 1) {
       SetMensagemErro('')
-      const id_elemento = parseInt(e.currentTarget.id)
+      const id_elemento = e.currentTarget.id
       const nova_lista = [...pedidosAdmissaoVaga]
       const lista_modificada = nova_lista.filter(
         (obj) => obj.id !== id_elemento
@@ -415,7 +347,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   const removerPedidoFunc = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    const id_elemento = parseInt(e.currentTarget.id)
+    const id_elemento = e.currentTarget.id
     function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
     }
@@ -637,8 +569,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     setAdmissaoNaABertura(false)
     const valor_elemento = e.currentTarget.value
     setNaturezaMovimentacao(valor_elemento)
-    setPedidosAdmissaoVagas([admissao_inicial])
-    setPedidoAcrescimoCargos([acrescimo_inicial])
+    setPedidosAdmissaoVagas([solicitacao_funcionario_inicial])
+    setPedidoAcrescimoCargos([solicitacao_funcionario_inicial])
     setObra(obraVazia)
     setInclusaoPedidosAdmissaoVagas([])
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
@@ -650,16 +582,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     } else {
       setFirstChangeNaturezaMov(false)
       setNaturezaMovimentacao(valor_elemento)
-      setPedidosAdmissaoVagas([admissao_inicial])
-      setPedidoAcrescimoCargos([acrescimo_inicial])
+      setPedidosAdmissaoVagas([solicitacao_funcionario_inicial])
+      setPedidoAcrescimoCargos([solicitacao_funcionario_inicial])
       setObra(obraVazia)
       setInclusaoPedidosAdmissaoVagas([])
       setPedidosFuncionarios([solicitacao_funcionario_inicial])
     }
     setFirstChangeObra(true)
     setNaturezaMovimentacao(valor_elemento)
-    setPedidosAdmissaoVagas([admissao_inicial])
-    setPedidoAcrescimoCargos([acrescimo_inicial])
+    setPedidosAdmissaoVagas([solicitacao_funcionario_inicial])
+    setPedidoAcrescimoCargos([solicitacao_funcionario_inicial])
     setObra(obraVazia)
     setInclusaoPedidosAdmissaoVagas([])
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
@@ -668,8 +600,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     SetMensagemErro('')
     setObservacaoGeral('')
     setAdmissaoNaABertura(false)
-    setPedidosAdmissaoVagas([admissao_inicial])
-    setPedidoAcrescimoCargos([acrescimo_inicial])
+    setPedidosAdmissaoVagas([solicitacao_funcionario_inicial])
+    setPedidoAcrescimoCargos([solicitacao_funcionario_inicial])
     setObra(obraVazia)
     setInclusaoPedidosAdmissaoVagas([])
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
@@ -693,8 +625,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidoAcrescimoCargos]
-    function isElement(pedido: AcrescimoCargo) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     console.log(valor_elemento)
@@ -744,16 +676,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       naturezaMovimentacao != 'Transferencia' &&
       firstChangeObra == false
     ) {
-      const admissao_inicial = {
-        id: 1,
-        codigo_vaga: '',
-        tipo_admissao: '',
-        nome: '',
-        rg: '',
-        cpf: '',
-        contato: ''
-      }
-      setPedidosAdmissaoVagas([admissao_inicial])
+      setPedidosAdmissaoVagas([solicitacao_funcionario_inicial])
       const inputVaga: any =
         e.currentTarget.parentElement?.nextSibling?.nextSibling?.nextSibling
           ?.firstChild?.lastChild
@@ -814,13 +737,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     console.log(vagasDisponiveis)
     const nova_lista = [...pedidoAcrescimoCargos]
     nova_lista.length = 0
-    const acrescimo_inicio = {
-      id: 1,
-      sigla: '',
-      quantidade_pedida: 1,
-      status: 'aberto'
-    }
-    nova_lista.push(acrescimo_inicio)
+    nova_lista.push(solicitacao_funcionario_inicial)
     setPedidoAcrescimoCargos(nova_lista)
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
     pedidosFuncionarios.map((pedido) => (pedido.novo_cargo = ''))
@@ -887,7 +804,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     console.log(valor_elemento)
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -932,7 +849,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const data_ptBr = dia_data + '/' + mes_data + '/' + ano_data
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -961,7 +878,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const data_ptBr = dia_data + '/' + mes_data + '/' + ano_data
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -976,7 +893,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1006,7 +923,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const data_ptBr = dia_data + '/' + mes_data + '/' + ano_data
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1025,7 +942,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1041,9 +958,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
-    function isVaga(vaga: InclusaoRemocaoVaga) {
+    function isVaga(vaga: SolicitacaoFuncionario) {
       return vaga.codigo_vaga == codigo_vaga_remocao
     }
     const indice_elemento = nova_lista.findIndex(isElement)
@@ -1053,7 +970,34 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       const pedidoRemocaoVaga = {
         id: contadorRemocao.toString(),
         codigo_vaga: elemento.id_pessoa,
-        cargo: elemento.cargo
+        cargo: elemento.cargo,
+        incluir: false,
+        sigla: '',
+        quantidade_pedida: 1,
+        status: 'aberto',
+        tipo_admissao: '',
+        nome: '',
+        rg: '',
+        cpf: '',
+        contato: '',
+        novo_cargo: '',
+        possiveis_promocoes: [],
+        id_pessoa: '',
+        obra_atual: '',
+        imediato: true,
+        data_transferencia: '',
+        data_inicio_ferias: '',
+        data_final_ferias: '',
+        data_desligamento: '',
+        data_falta_atual: '',
+        data_adicional_atual: '',
+        data_horas_extra_atual: '',
+        dia_horas_extra_atual: '',
+        horas_extra_data_atual: '',
+        faltas: [],
+        dias_adicionais: [],
+        dias_horas_extras: [],
+        remocaoNoDesligamentoTransferencia: false
       }
       const nova_lista_remocoes = [...inclusaoPedidosRemocaoVaga]
       nova_lista_remocoes.push(pedidoRemocaoVaga)
@@ -1102,7 +1046,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const data_ptBr = dia_data + '/' + mes_data + '/' + ano_data
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1131,7 +1075,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1146,8 +1090,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
-    function isElement(pedido: AdmissaoVaga) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1161,8 +1105,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
-    function isElement(pedido: AdmissaoVaga) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1176,8 +1120,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
-    function isElement(pedido: AdmissaoVaga) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1191,8 +1135,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
-    function isElement(pedido: AdmissaoVaga) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1206,8 +1150,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
-    function isElement(pedido: AdmissaoVaga) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1223,7 +1167,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
-    function isElement(pedido: InclusaoAdmissaoVaga) {
+    function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
@@ -1240,7 +1184,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
-    function isElement(pedido: InclusaoAdmissaoVaga) {
+    function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
@@ -1255,7 +1199,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
-    function isElement(pedido: InclusaoAdmissaoVaga) {
+    function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
@@ -1272,7 +1216,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
-    function isElement(pedido: InclusaoAdmissaoVaga) {
+    function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
@@ -1287,7 +1231,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
-    function isElement(pedido: InclusaoAdmissaoVaga) {
+    function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
@@ -1307,8 +1251,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const valor_elemento = e.currentTarget.value
     e.currentTarget.value = valor_elemento
     const nova_lista = [...pedidoAcrescimoCargos]
-    function isElement(pedido: AcrescimoCargo) {
-      return pedido.id == parseInt(id_elemento)
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1324,7 +1268,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1353,7 +1297,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     function isDataSelecionada(pedido: DiaHoraExtra) {
       return pedido.dia == elemento.data_horas_extra_atual
@@ -1407,7 +1351,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
@@ -1436,7 +1380,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id.split(';')[0]
     const data_dia = e.currentTarget.id.split(';')[1]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     if (pedidosFuncionarios.length != 1) {
       SetMensagemErro('')
@@ -1470,7 +1414,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id.split(';')[0]
     const data_dia = e.currentTarget.id.split(';')[1]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     if (pedidosFuncionarios.length != 1) {
       SetMensagemErro('')
@@ -1504,7 +1448,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const id_elemento = e.currentTarget.id.split(';')[0]
     const data_dia = e.currentTarget.id.split(';')[1]
     function isElement(pedido: SolicitacaoFuncionario) {
-      return pedido.id == parseInt(id_elemento)
+      return pedido.id == id_elemento
     }
     if (pedidosFuncionarios.length != 1) {
       SetMensagemErro('')
@@ -1540,10 +1484,36 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       novo_id = 1
     }
     const novo_acrescimo = {
-      id: novo_id,
+      id: novo_id.toString(),
+      incluir: false,
       sigla: '',
       quantidade_pedida: 1,
-      status: 'aberto'
+      status: '',
+      codigo_vaga: '',
+      tipo_admissao: '',
+      nome: '',
+      rg: '',
+      cpf: '',
+      contato: '',
+      cargo: '',
+      novo_cargo: '',
+      possiveis_promocoes: [],
+      id_pessoa: '',
+      obra_atual: '',
+      imediato: true,
+      data_transferencia: '',
+      data_inicio_ferias: '',
+      data_final_ferias: '',
+      data_desligamento: '',
+      data_falta_atual: '',
+      data_adicional_atual: '',
+      data_horas_extra_atual: '',
+      dia_horas_extra_atual: '',
+      horas_extra_data_atual: '',
+      faltas: [],
+      dias_adicionais: [],
+      dias_horas_extras: [],
+      remocaoNoDesligamentoTransferencia: false
     }
     nova_lista.push(novo_acrescimo)
     setPedidoAcrescimoCargos(nova_lista)
@@ -1560,13 +1530,36 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       novo_id = 1
     }
     const nova_admissao = {
-      id: novo_id,
+      id: novo_id.toString(),
+      incluir: false,
+      sigla: '',
+      quantidade_pedida: 1,
+      status: '',
       codigo_vaga: '',
       tipo_admissao: '',
       nome: '',
       rg: '',
       cpf: '',
-      contato: ''
+      contato: '',
+      cargo: '',
+      novo_cargo: '',
+      possiveis_promocoes: [],
+      id_pessoa: '',
+      obra_atual: '',
+      imediato: true,
+      data_transferencia: '',
+      data_inicio_ferias: '',
+      data_final_ferias: '',
+      data_desligamento: '',
+      data_falta_atual: '',
+      data_adicional_atual: '',
+      data_horas_extra_atual: '',
+      dia_horas_extra_atual: '',
+      horas_extra_data_atual: '',
+      faltas: [],
+      dias_adicionais: [],
+      dias_horas_extras: [],
+      remocaoNoDesligamentoTransferencia: false
     }
     nova_lista.push(nova_admissao)
     setPedidosAdmissaoVagas(nova_lista)
@@ -1583,9 +1576,17 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       novo_id = 1
     }
     const nova_admissao = {
-      id: novo_id,
+      id: novo_id.toString(),
+      incluir: false,
       sigla: '',
+      quantidade_pedida: 1,
+      status: '',
+      codigo_vaga: '',
+      tipo_admissao: '',
       nome: '',
+      rg: '',
+      cpf: '',
+      contato: '',
       cargo: '',
       novo_cargo: '',
       possiveis_promocoes: [],
@@ -1660,7 +1661,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         pedidosAdmissaoVaga.map((pedido) => {
           if (
             naturezaMovimentacao == 'Admissao' &&
-            pedido.codigo_vaga.slice(0, 2) == 'ES'
+            pedido.codigo_vaga.slice(2, 4) == 'ES'
           ) {
             pedido.tipo_admissao = 'estagiario'
           }
@@ -1971,8 +1972,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           SetMensagemErro('Há vagas repetidas no seu pedido de abertura!')
         }
         if (erro == '') {
-          const pedidosCargos: InclusaoAdmissaoVaga[] = []
-          pedidoAcrescimoCargos.map((pedido: AcrescimoCargo) => {
+          const pedidosCargos: SolicitacaoFuncionario[] = []
+          pedidoAcrescimoCargos.map((pedido: SolicitacaoFuncionario) => {
             {
               Array(pedido.quantidade_pedida)
                 .fill(0)
@@ -1985,7 +1986,29 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     nome: '',
                     rg: '',
                     cpf: '',
-                    contato: ''
+                    contato: '',
+                    sigla: '',
+                    quantidade_pedida: 1,
+                    status: '',
+                    cargo: '',
+                    novo_cargo: '',
+                    possiveis_promocoes: [],
+                    id_pessoa: '',
+                    obra_atual: '',
+                    imediato: true,
+                    data_transferencia: '',
+                    data_inicio_ferias: '',
+                    data_final_ferias: '',
+                    data_desligamento: '',
+                    data_falta_atual: '',
+                    data_adicional_atual: '',
+                    data_horas_extra_atual: '',
+                    dia_horas_extra_atual: '',
+                    horas_extra_data_atual: '',
+                    faltas: [],
+                    dias_adicionais: [],
+                    dias_horas_extras: [],
+                    remocaoNoDesligamentoTransferencia: false
                   }
                   pedidosCargos.push(pedidoCargo)
                 })
@@ -2034,7 +2057,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         }
       }
       if (pedido.incluir == true) {
-        grupoDePedidos.push(pedido.id)
+        grupoDePedidos.push(pedido.id.toString())
       }
     })
     if (grupoDePedidos.length == 0) {
@@ -2055,6 +2078,24 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const horaDataAgora = dataAgora.getHours()
     const minutosDataAgora = dataAgora.getMinutes()
     const horarioAgora = horaDataAgora + ':' + minutosDataAgora
+    let novoPedidoAbertura: SolicitacaoFuncionario[] = []
+    let novoPedidoSolicitacao: SolicitacaoFuncionario[] = []
+    let novoPedidoRemocoes: SolicitacaoFuncionario[] = []
+    if (naturezaMovimentacao == 'AberturaVaga') {
+      novoPedidoAbertura = pedidoAcrescimoCargos as SolicitacaoFuncionario[]
+      if (admissaoNaAbertura) {
+        novoPedidoSolicitacao = inclusaoPedidosAdmissaoVaga
+      }
+    } else if (naturezaMovimentacao == 'RemocaoVaga') {
+      novoPedidoRemocoes = pedidosAdmissaoVaga
+    } else if (naturezaMovimentacao == 'Admissao') {
+      novoPedidoSolicitacao = pedidosAdmissaoVaga
+    } else {
+      novoPedidoSolicitacao = pedidosFuncionarios
+      if (remocaoNoDesligamentoTransferencia) {
+        novoPedidoRemocoes = inclusaoPedidosRemocaoVaga
+      }
+    }
     const jsonSolicitacaoMP = {
       usuario: nomeusur,
       natureza_solicitacao: naturezaMovimentacao,
@@ -2063,19 +2104,23 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       empresa: empresaSelecionada,
       obra: obra,
       obra_destino: obraDestino,
-      pedido_abertura_vagas: pedidoAcrescimoCargos,
+      pedido_abertura_vagas: novoPedidoAbertura,
       pedido_abertura_inclui_admissao: admissaoNaAbertura,
-      pedido_admissao_vagas: pedidosAdmissaoVaga,
-      pedido_admissao_vagas_inclusao: inclusaoPedidosAdmissaoVaga,
-      pedidos_funcionarios: pedidosFuncionarios,
-      justificativa: JustificativaGeral,
+      pedidos_funcionarios: novoPedidoSolicitacao,
+      pedidos_remocao: novoPedidoRemocoes,
+      pedido_transferencia_promocao_inclui_abertura:
+        aberturaNaTransferenciaPromocao,
+      pedido_desligamento_transferencia_promocao_inclui_remocao:
+        remocaoNoDesligamentoTransferencia,
       observacao_geral: ObservacaoGeral,
       requisicao: 'criacaoSolicitMovPessoal',
       statusSolicitacao: 'aberto',
       isCardOpen: false,
       altura: 0,
-      podeDestrancar: true
+      podeDestrancar: true,
+      todosEntregues: ''
     }
+
     // const jsonCompra = {
     //   usuario: nomeusur,
     //   empresa: empresaSelecionada,
@@ -2157,7 +2202,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     setNaturezaMovimentacao('')
     setPedidoAcrescimoCargos([])
     setInclusaoPedidosAdmissaoVagas([])
-    setPedidosAdmissaoVagas([admissao_inicial])
+    setPedidosAdmissaoVagas([solicitacao_funcionario_inicial])
     setPedidosFuncionarios([solicitacao_funcionario_inicial])
     SetMensagemErro('')
     setObservacaoGeral('')
@@ -2515,7 +2560,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                           <DivEmpresa>
                             <label>Tipo de Admissão:</label>
                             {pedido.codigo_vaga != '' &&
-                              pedido.codigo_vaga.slice(0, 2) != 'ES' && (
+                              pedido.codigo_vaga.slice(2, 4) != 'ES' && (
                                 <select
                                   id={pedido.id.toString()}
                                   defaultValue={pedido.tipo_admissao}
@@ -2532,7 +2577,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                                 </select>
                               )}
                             {pedido.codigo_vaga != '' &&
-                              pedido.codigo_vaga.slice(0, 2) == 'ES' && (
+                              pedido.codigo_vaga.slice(2, 4) == 'ES' && (
                                 <TextoEstagio>ESTÁGIO</TextoEstagio>
                               )}
                           </DivEmpresa>
@@ -3903,7 +3948,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                           <GridItem>{pedido.codigo_vaga}</GridItem>
                           <GridItem>
                             {pedido.tipo_admissao == 'estagiario'
-                              ? '-'
+                              ? 'ESTÁGIO'
                               : pedido.tipo_admissao}
                           </GridItem>
                           <GridItem>{pedido.nome}</GridItem>
@@ -3921,7 +3966,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       <GridItem>{pedido.codigo_vaga}</GridItem>
                       <GridItem>
                         {pedido.tipo_admissao == 'estagiario'
-                          ? '-'
+                          ? 'ESTÁGIO'
                           : pedido.tipo_admissao}
                       </GridItem>
                       <GridItem>{pedido.nome}</GridItem>

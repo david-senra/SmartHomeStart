@@ -58,7 +58,7 @@ const Sistema = () => {
                 Solicitar Mov. de Pessoal
               </ItemMenuPrincipal>
             )}
-            {nivel_acesso_mp >= 3 && (
+            {nivel_acesso_mp >= 2 && (
               <ItemMenuPrincipal
                 onClick={() => setOpcao('exibir_movimentacao_pessoal')}
               >

@@ -60,7 +60,9 @@ import {
   DivRelatorioCompleto,
   MenuBotoesTipoSolicitacao,
   TextoEmEntrega,
-  TextoSituacaoCabecalho
+  TextoSituacaoCabecalho,
+  DivBotoesAprovacao,
+  DivTituloSecaoCard
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
 import FechaduraFechada from '../../assets/images/trancado.png'
@@ -82,6 +84,114 @@ const pusher = new Pusher('cbf75472b9e1dfb532eb', {
 let channel: Channel
 
 const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
+  class DiaHoraExtra {
+    id: number
+    dia: string
+    horas: string
+
+    constructor(data: { id: number; dia: string; horas: string }) {
+      this.id = data.id
+      this.dia = data.dia
+      this.horas = data.horas
+    }
+  }
+  class SolicitacaoFuncionario {
+    id: string
+    incluir: boolean
+    sigla: string
+    quantidade_pedida: number
+    status: string
+    codigo_vaga: string
+    tipo_admissao: string
+    nome: string
+    rg: string
+    cpf: string
+    contato: string
+    cargo: string
+    novo_cargo: string
+    possiveis_promocoes: string[]
+    id_pessoa: string
+    obra_atual: string
+    imediato: boolean
+    data_transferencia: string
+    data_inicio_ferias: string
+    data_final_ferias: string
+    data_desligamento: string
+    data_falta_atual: string
+    data_adicional_atual: string
+    data_horas_extra_atual: string
+    dia_horas_extra_atual: string
+    horas_extra_data_atual: string
+    faltas: string[]
+    dias_adicionais: string[]
+    dias_horas_extras: DiaHoraExtra[]
+    remocaoNoDesligamentoTransferencia: boolean
+
+    constructor(data: {
+      id: string
+      incluir: boolean
+      sigla: string
+      quantidade_pedida: number
+      status: string
+      codigo_vaga: string
+      tipo_admissao: string
+      nome: string
+      rg: string
+      cpf: string
+      contato: string
+      cargo: string
+      novo_cargo: string
+      possiveis_promocoes: string[]
+      id_pessoa: string
+      obra_atual: string
+      imediato: boolean
+      data_transferencia: string
+      data_inicio_ferias: string
+      data_final_ferias: string
+      data_desligamento: string
+      data_falta_atual: string
+      data_adicional_atual: string
+      data_horas_extra_atual: string
+      dia_horas_extra_atual: string
+      horas_extra_data_atual: string
+      faltas: string[]
+      dias_adicionais: string[]
+      dias_horas_extras: DiaHoraExtra[]
+      remocaoNoDesligamentoTransferencia: boolean
+    }) {
+      this.id = data.id
+      this.incluir = data.incluir
+      this.sigla = data.sigla
+      this.quantidade_pedida = data.quantidade_pedida
+      this.status = data.status
+      this.codigo_vaga = data.codigo_vaga
+      this.tipo_admissao = data.tipo_admissao
+      this.nome = data.nome
+      this.rg = data.rg
+      this.cpf = data.cpf
+      this.contato = data.contato
+      this.cargo = data.cargo
+      this.novo_cargo = data.novo_cargo
+      this.possiveis_promocoes = data.possiveis_promocoes
+      this.id_pessoa = data.id_pessoa
+      this.obra_atual = data.obra_atual
+      this.imediato = data.imediato
+      this.data_transferencia = data.data_transferencia
+      this.data_inicio_ferias = data.data_inicio_ferias
+      this.data_final_ferias = data.data_final_ferias
+      this.data_desligamento = data.data_desligamento
+      this.data_falta_atual = data.data_falta_atual
+      this.data_adicional_atual = data.data_adicional_atual
+      this.data_horas_extra_atual = data.data_horas_extra_atual
+      this.dia_horas_extra_atual = data.dia_horas_extra_atual
+      this.horas_extra_data_atual = data.horas_extra_data_atual
+      this.faltas = data.faltas
+      this.dias_adicionais = data.dias_adicionais
+      this.dias_horas_extras = data.dias_horas_extras
+      this.remocaoNoDesligamentoTransferencia =
+        data.remocaoNoDesligamentoTransferencia
+    }
+  }
   class Compra {
     id: number
     quantidade: number
@@ -231,10 +341,10 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     obra_destino: string
     pedido_abertura_vagas: AcrescimoCargo[]
     pedido_abertura_inclui_admissao: boolean
-    pedido_admissao_vagas: []
-    pedido_admissao_vagas_inclusao: []
-    pedidos_funcionarios: []
-    justificativa: string
+    pedidos_remocao: SolicitacaoFuncionario[]
+    pedidos_funcionarios: SolicitacaoFuncionario[]
+    pedido_transferencia_promocao_inclui_abertura: boolean
+    pedido_desligamento_transferencia_promocao_inclui_remocao: boolean
     observacao_geral: string
     status_solicitacao: string
     isCardOpen: boolean
@@ -256,10 +366,10 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       obra_destino: string
       pedido_abertura_vagas: []
       pedido_abertura_inclui_admissao: boolean
-      pedido_admissao_vagas: []
-      pedido_admissao_vagas_inclusao: []
+      pedidos_remocao: SolicitacaoFuncionario[]
       pedidos_funcionarios: []
-      justificativa: string
+      pedido_transferencia_promocao_inclui_abertura: boolean
+      pedido_desligamento_transferencia_promocao_inclui_remocao: boolean
       observacao_geral: string
       status_solicitacao: string
       isCardOpen: boolean
@@ -289,10 +399,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       this.pedido_abertura_vagas = data.pedido_abertura_vagas
       this.pedido_abertura_inclui_admissao =
         data.pedido_abertura_inclui_admissao
-      this.pedido_admissao_vagas = data.pedido_admissao_vagas
-      this.pedido_admissao_vagas_inclusao = data.pedido_admissao_vagas_inclusao
+      this.pedidos_remocao = data.pedidos_remocao
       this.pedidos_funcionarios = data.pedidos_funcionarios
-      this.justificativa = data.justificativa
+      this.pedido_transferencia_promocao_inclui_abertura =
+        data.pedido_transferencia_promocao_inclui_abertura
+      this.pedido_desligamento_transferencia_promocao_inclui_remocao =
+        data.pedido_desligamento_transferencia_promocao_inclui_remocao
       this.observacao_geral = data.observacao_geral
       this.status_solicitacao = data.status_solicitacao
     }
@@ -610,10 +722,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
           pedido_abertura_vagas: value.pedido_abertura_vagas,
           pedido_abertura_inclui_admissao:
             value.pedido_abertura_inclui_admissao,
-          pedido_admissao_vagas: value.pedido_admissao_vagas,
-          pedido_admissao_vagas_inclusao: value.pedido_admissao_vagas_inclusao,
           pedidos_funcionarios: value.pedidos_funcionarios,
-          justificativa: value.justificativa,
+          pedido_transferencia_promocao_inclui_abertura:
+            value.pedido_transferencia_promocao_inclui_abertura,
+          pedido_desligamento_transferencia_promocao_inclui_remocao:
+            value.pedido_desligamento_transferencia_promocao_inclui_remocao,
+          pedidos_remocao: value.pedidos_remocao,
           observacao_geral: value.observacao_geral,
           status_solicitacao: value.statusSolicitacao,
           isCardOpen: resposta,
@@ -623,7 +737,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
           podeDestrancar: value.podeDestrancar,
           requisicao: value.requisicao,
           todosEntregues: value.todosEntregues,
-          itens: value.itens
+          itens: []
         }
         let numeroItens = 0
         if (
@@ -633,16 +747,10 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
           numeroItens += solicitacao.pedido_abertura_vagas.length
         }
         if (
-          solicitacao.pedido_admissao_vagas != undefined &&
-          solicitacao.pedido_admissao_vagas.length > 0
+          solicitacao.pedidos_remocao != undefined &&
+          solicitacao.pedidos_remocao.length > 0
         ) {
-          numeroItens += solicitacao.pedido_admissao_vagas.length
-        }
-        if (
-          solicitacao.pedido_admissao_vagas_inclusao != undefined &&
-          solicitacao.pedido_admissao_vagas_inclusao.length > 0
-        ) {
-          numeroItens += solicitacao.pedido_admissao_vagas_inclusao.length
+          numeroItens += solicitacao.pedidos_remocao.length
         }
         if (
           solicitacao.pedidos_funcionarios != undefined &&
@@ -699,8 +807,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
   const gerarNomeTipoSolicitacao = (naturezaSolicitacao: string) => {
     if (naturezaSolicitacao == 'AberturaVaga') {
       return 'Abertura de Vagas'
+    } else if (naturezaSolicitacao == 'RemocaoVaga') {
+      return 'Remoção de Vagas'
     } else if (naturezaSolicitacao == 'Admissao') {
       return 'Admissão de Pessoal'
+    } else if (naturezaSolicitacao == 'Desligamento') {
+      return 'Desligamento'
     } else if (naturezaSolicitacao == 'Transferencia') {
       return 'Transferência de Obra'
     } else if (naturezaSolicitacao == 'Ferias') {
@@ -782,6 +894,13 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'CONCLUÍDO'
     } else if (situacao == 'cancelado') {
       return 'CANCELADO'
+    }
+  }
+  const textoTituloSecao = (situacao: string) => {
+    if (situacao == 'Desligamento') {
+      return 'Pedido de Desligamento:'
+    } else {
+      return 'TEXTO AQUI'
     }
   }
   const clickFechadura = async (
@@ -1798,7 +1917,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                   key={pedido.id}
                   tamanho={pedido.altura}
                   id={pedido.id}
-                  className={`${pedido.isCardOpen ? 'open' : 'closed'} ${pedido.obsFinal == '' && pedido.justificativa == '' ? 'noBoxes' : 'boxes'}`}
+                  className={`${pedido.isCardOpen ? 'open' : 'closed'} ${pedido.obsFinal == '' ? 'noBoxes' : 'boxes'}`}
                 >
                   <GridCabecalho
                     id={pedido.id}
@@ -1815,7 +1934,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                     </li>
                     <li onClick={(e) => toggleCard(e)}>
                       <p>
-                        {gerarNomeTipoSolicitacao(pedido.natureza_solicitacao)}
+                        {pedido.natureza_solicitacao == 'AberturaVaga' &&
+                        pedido.pedido_abertura_inclui_admissao
+                          ? 'Ab. Vag. c/ Admissão'
+                          : gerarNomeTipoSolicitacao(
+                              pedido.natureza_solicitacao
+                            )}
                       </p>
                     </li>
                     <li onClick={(e) => toggleCard(e)}>
@@ -1849,10 +1973,11 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 : pedido.statusSolicitacao == 'cancelado'
                                   ? 'cancelado'
                                   : 'aberto'
-                          } ${pedido.natureza_solicitacao == 'AberturaVaga' && nivelusur == 4 && pedido.usuario == nomeusur ? 'especialAdm' : ''}`}
+                          } ${pedido.natureza_solicitacao == 'AberturaVaga' && nivelusur == 4 && pedido.usuario == nomeusur ? 'especialAdm' : ''} ${pedido.usuario != nomeusur ? 'noSpecial' : ''}`}
                         ></TextoSituacaoCabecalho>
                         {((nivelusur == 3 &&
                           pedido.pedido_abertura_inclui_admissao != true &&
+                          pedido.natureza_solicitacao != 'AberturaVaga' &&
                           pedido.statusSolicitacao != 'finalizado' &&
                           pedido.podeDestrancar == true) ||
                           (nivelusur == 4 &&
@@ -1861,6 +1986,11 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             pedido.podeDestrancar == true)) && (
                           <IconeDiv>
                             <IconeTranca
+                              className={
+                                nomeusur == pedido.usuario
+                                  ? ''
+                                  : 'trancaSolitaria'
+                              }
                               id={pedido.id}
                               src={
                                 pedido.statusSolicitacao == 'aberto'
@@ -1884,73 +2014,365 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                       </b>
                     </ItemCabecalhoSituacao>
                   </GridCabecalho>
-
                   <DivGridCabecalho
                     id={pedido.id + 'class'}
                     tamanho={pedido.altura}
                     className={pedido.isCardOpen ? 'open' : 'closed'}
                   >
-                    <div>
-                      <br></br>
-                      <h3>Pedido de Abertura de Vagas:</h3>
-                    </div>
-                    <GridCabecalhoItemsPedido
-                      id={pedido.id}
-                      tipoSolicitacao={pedido.natureza_solicitacao}
-                    >
-                      <LinhaCabecalhoItems>
-                        {pedido.natureza_solicitacao == 'AberturaVaga' && (
-                          <b>Obra</b>
-                        )}
-                      </LinhaCabecalhoItems>
-                      <LinhaCabecalhoItems>
-                        {pedido.natureza_solicitacao == 'AberturaVaga' && (
-                          <b>Cargo</b>
-                        )}
-                      </LinhaCabecalhoItems>
-                      <LinhaCabecalhoItems
-                        className={`${pedido.natureza_solicitacao == 'AberturaVaga' ? 'ultimaLinha' : ''}`}
-                      >
-                        {pedido.natureza_solicitacao == 'AberturaVaga' && (
-                          <b>Quantidade</b>
-                        )}
-                      </LinhaCabecalhoItems>
-                      {/* <LinhaCabecalhoItems> */}
-                      {/* <TextoCabecalhoDescObs>Descrição</TextoCabecalhoDescObs> */}
-                      {/* </LinhaCabecalhoItems> */}
-                      {/* <LinhaCabecalhoItems> */}
-                      {/* <b>C. Custo</b> */}
-                      {/* </LinhaCabecalhoItems> */}
-                      {/* <LinhaCabecalhoItemsUltimo> */}
-                      {/* <TextoCabecalhoDescObs> */}
-                      {/* Observação */}
-                      {/* </TextoCabecalhoDescObs> */}
-                      {/* </LinhaCabecalhoItemsUltimo> */}
-                    </GridCabecalhoItemsPedido>
-                    {pedido.natureza_solicitacao == 'AberturaVaga' &&
-                      pedido.pedido_abertura_vagas.length > 0 &&
-                      pedido.pedido_abertura_vagas.map((item) => (
-                        <GridItemsPedido
-                          key={item.id}
+                    {(pedido.natureza_solicitacao == 'AberturaVaga' ||
+                      ((pedido.natureza_solicitacao == 'Transferencia' ||
+                        pedido.natureza_solicitacao == 'Promocao') &&
+                        pedido.pedido_transferencia_promocao_inclui_abertura)) && (
+                      <div>
+                        <DivTituloSecaoCard className="aberturaVagas">
+                          <h3>Pedido de Abertura de Vagas:</h3>
+                        </DivTituloSecaoCard>
+                        <GridCabecalhoItemsPedido
+                          id={pedido.id}
                           tipoSolicitacao={pedido.natureza_solicitacao}
-                          className={`classeItems ${
-                            pedido.statusSolicitacao != 'aberto' &&
-                            item.status == 'entregue' &&
-                            'boldText'
-                          }`}
                         >
-                          <li>
-                            <p>{pedido.obra.descricao_completa}</p>
-                          </li>
-                          <li>
-                            <p>{item.sigla}</p>
-                          </li>
-                          <li>
-                            <p>{item.quantidade_pedida}</p>
-                          </li>
-                        </GridItemsPedido>
-                      ))}
-                    {/* {pedido.itens != undefined &&
+                          <LinhaCabecalhoItems>
+                            <b>Obra</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>Cargo</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems className={'ultimaLinha'}>
+                            <b>Quantidade</b>
+                          </LinhaCabecalhoItems>
+                        </GridCabecalhoItemsPedido>
+                        {pedido.pedido_abertura_vagas.length > 0 &&
+                          pedido.pedido_abertura_vagas.map((item) => (
+                            <GridItemsPedido
+                              key={item.id}
+                              tipoSolicitacao={pedido.natureza_solicitacao}
+                              className={`classeItems ${
+                                pedido.statusSolicitacao != 'aberto' &&
+                                item.status == 'entregue' &&
+                                'boldText'
+                              }`}
+                            >
+                              <li>
+                                <p>{pedido.obra.descricao_completa}</p>
+                              </li>
+                              <li>
+                                <p>{item.sigla}</p>
+                              </li>
+                              <li>
+                                <p>{item.quantidade_pedida}</p>
+                              </li>
+                            </GridItemsPedido>
+                          ))}
+                        {pedido.obsFinal != '' &&
+                          pedido.natureza_solicitacao == 'AberturaVaga' && (
+                            <DivSugestFornecedoresObs>
+                              <div>
+                                <b>
+                                  {pedido.natureza_solicitacao == 'AberturaVaga'
+                                    ? 'Justificativa/Obs:'
+                                    : 'Observações:'}
+                                </b>
+                              </div>
+                              <BoxTextoSugest>
+                                {pedido.obsFinal}
+                                {pedido.statusSolicitacao == 'aberto' &&
+                                  pedido.usuario == nomeusur &&
+                                  pedido.obsFinal != '' && (
+                                    <IconeLapisDiv>
+                                      <IconeLapisImg
+                                        id={pedido.id}
+                                        src={IconeLapisEditar}
+                                        className="ObsSugForn"
+                                      ></IconeLapisImg>
+                                    </IconeLapisDiv>
+                                  )}
+                              </BoxTextoSugest>
+                            </DivSugestFornecedoresObs>
+                          )}
+                        {nivelusur == 4 &&
+                          pedido.statusSolicitacao == 'pendenteAbertura' && (
+                            <DivBotoesAprovacao>
+                              <button className="rejeitar">Rejeitar</button>
+                              <button className="aprovar">Aprovar</button>
+                            </DivBotoesAprovacao>
+                          )}
+                        {nivelusur < 4 &&
+                          pedido.statusSolicitacao == 'pendenteAbertura' && (
+                            <DivBotoesAprovacao>
+                              <h3>PENDENTE</h3>
+                            </DivBotoesAprovacao>
+                          )}
+                        {pedido.statusSolicitacao != 'pendenteAbertura' &&
+                          pedido.pedido_abertura_inclui_admissao && (
+                            <DivBotoesAprovacao></DivBotoesAprovacao>
+                          )}
+                      </div>
+                    )}
+                    {(pedido.natureza_solicitacao == 'Admissao' ||
+                      (pedido.natureza_solicitacao == 'AberturaVaga' &&
+                        pedido.pedido_abertura_inclui_admissao)) && (
+                      <div>
+                        <DivTituloSecaoCard
+                          className={
+                            pedido.natureza_solicitacao == 'Admissao'
+                              ? 'aberturaVagas'
+                              : ''
+                          }
+                        >
+                          <h3>Pedido de Admissão:</h3>
+                        </DivTituloSecaoCard>
+                        <GridCabecalhoItemsPedido
+                          id={pedido.id}
+                          tipoSolicitacao={pedido.natureza_solicitacao}
+                          className="admissao"
+                        >
+                          <LinhaCabecalhoItems>
+                            <b>Obra</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>Vaga</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>Regime</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>Nome</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>RG</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>CPF</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems className={'ultimaLinha'}>
+                            <b>Contato</b>
+                          </LinhaCabecalhoItems>
+                        </GridCabecalhoItemsPedido>
+                        {pedido.pedidos_funcionarios.length > 0 &&
+                          pedido.pedidos_funcionarios
+                            .filter((pedido_filtrado) =>
+                              pedido.natureza_solicitacao == 'AberturaVaga'
+                                ? pedido_filtrado.incluir == true
+                                : !pedido_filtrado.incluir
+                            )
+                            .map((item) => (
+                              <GridItemsPedido
+                                key={item.id}
+                                tipoSolicitacao={pedido.natureza_solicitacao}
+                                className={`classeItems ${
+                                  pedido.statusSolicitacao != 'aberto' &&
+                                  item.status == 'entregue' &&
+                                  'boldText'
+                                } admissao`}
+                              >
+                                <li>
+                                  <p>{pedido.obra.descricao_completa}</p>
+                                </li>
+                                <li>
+                                  <p>{item.codigo_vaga}</p>
+                                </li>
+                                <li>
+                                  <p>
+                                    {item.tipo_admissao == 'estagiario'
+                                      ? 'EST'
+                                      : item.tipo_admissao}
+                                  </p>
+                                </li>
+                                <li>
+                                  <p>{item.nome}</p>
+                                </li>
+                                <li>
+                                  <p>{item.rg}</p>
+                                </li>
+                                <li>
+                                  <p>{item.cpf}</p>
+                                </li>
+                                <li>
+                                  <p>{item.contato}</p>
+                                </li>
+                              </GridItemsPedido>
+                            ))}
+                        {nivelusur == 3 &&
+                          pedido.statusSolicitacao == 'andamento' && (
+                            <DivBotoesAprovacao>
+                              <button className="aprovar">Finalizar</button>
+                            </DivBotoesAprovacao>
+                          )}
+                        {nivelusur != 3 &&
+                          pedido.statusSolicitacao == 'andamento' && (
+                            <DivBotoesAprovacao>
+                              <h3>EM ANDAMENTO</h3>
+                            </DivBotoesAprovacao>
+                          )}
+                        {pedido.statusSolicitacao != 'andamento' && <br></br>}
+                      </div>
+                    )}
+                    {pedido.natureza_solicitacao != 'Admissao' &&
+                      pedido.natureza_solicitacao != 'AberturaVaga' &&
+                      pedido.natureza_solicitacao != 'RemocaoVaga' && (
+                        <div>
+                          <DivTituloSecaoCard
+                            className={
+                              pedido.pedido_transferencia_promocao_inclui_abertura ==
+                              false
+                                ? 'aberturaVagas'
+                                : ''
+                            }
+                          >
+                            <h3>
+                              {textoTituloSecao(pedido.natureza_solicitacao)}
+                            </h3>
+                          </DivTituloSecaoCard>
+                          <GridCabecalhoItemsPedido
+                            id={pedido.id}
+                            tipoSolicitacao={pedido.natureza_solicitacao}
+                          >
+                            <LinhaCabecalhoItems>
+                              <b>Obra</b>
+                            </LinhaCabecalhoItems>
+                            <LinhaCabecalhoItems>
+                              <b>Vaga</b>
+                            </LinhaCabecalhoItems>
+                            <LinhaCabecalhoItems>
+                              <b>Nome</b>
+                            </LinhaCabecalhoItems>
+                            <LinhaCabecalhoItems>
+                              <b>Cargo</b>
+                            </LinhaCabecalhoItems>
+                            <LinhaCabecalhoItems className={'ultimaLinha'}>
+                              <b>Data do Desl.</b>
+                            </LinhaCabecalhoItems>
+                          </GridCabecalhoItemsPedido>
+                          {pedido.pedidos_funcionarios.length > 0 &&
+                            pedido.pedidos_funcionarios.map((item) => (
+                              <GridItemsPedido
+                                key={item.id}
+                                tipoSolicitacao={pedido.natureza_solicitacao}
+                                className={`classeItems ${
+                                  pedido.statusSolicitacao != 'aberto' &&
+                                  item.status == 'entregue' &&
+                                  'boldText'
+                                }`}
+                              >
+                                <li>
+                                  <p>{pedido.obra.descricao_completa}</p>
+                                </li>
+                                <li>
+                                  <p>{item.id_pessoa}</p>
+                                </li>
+                                <li>
+                                  <p>{item.nome}</p>
+                                </li>
+                                <li>
+                                  <p>{item.cargo}</p>
+                                </li>
+                                <li>
+                                  <p>
+                                    {item.imediato
+                                      ? 'IMEDIATO'
+                                      : item.data_desligamento}
+                                  </p>
+                                </li>
+                              </GridItemsPedido>
+                            ))}
+                          {nivelusur == 3 &&
+                            pedido.statusSolicitacao == 'andamento' && (
+                              <DivBotoesAprovacao>
+                                <button className="aprovar">Concluir</button>
+                              </DivBotoesAprovacao>
+                            )}
+                          {nivelusur != 3 &&
+                            pedido.statusSolicitacao == 'andamento' && (
+                              <DivBotoesAprovacao>
+                                <h3>EM ANDAMENTO</h3>
+                              </DivBotoesAprovacao>
+                            )}
+                          {pedido.statusSolicitacao != 'andamento' &&
+                            pedido.pedido_desligamento_transferencia_promocao_inclui_remocao && (
+                              <DivBotoesAprovacao></DivBotoesAprovacao>
+                            )}
+                          {pedido.statusSolicitacao != 'andamento' &&
+                            pedido.pedido_desligamento_transferencia_promocao_inclui_remocao ==
+                              false && <br></br>}
+                        </div>
+                      )}
+                    {(pedido.natureza_solicitacao == 'RemocaoVaga' ||
+                      ((pedido.natureza_solicitacao == 'Desligamento' ||
+                        pedido.natureza_solicitacao == 'Promocao' ||
+                        pedido.natureza_solicitacao == 'Transferencia') &&
+                        pedido.pedido_desligamento_transferencia_promocao_inclui_remocao)) && (
+                      <div>
+                        <DivTituloSecaoCard
+                          className={
+                            pedido.natureza_solicitacao == 'RemocaoVaga'
+                              ? 'aberturaVagas'
+                              : ''
+                          }
+                        >
+                          <h3>Pedido de Remoção de Vagas:</h3>
+                        </DivTituloSecaoCard>
+                        <GridCabecalhoItemsPedido
+                          id={pedido.id}
+                          tipoSolicitacao={pedido.natureza_solicitacao}
+                          className="remocaoVagas"
+                        >
+                          <LinhaCabecalhoItems>
+                            <b>Obra</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems>
+                            <b>Cód. da Vaga</b>
+                          </LinhaCabecalhoItems>
+                          <LinhaCabecalhoItems className={'ultimaLinha'}>
+                            <b>Cargo</b>
+                          </LinhaCabecalhoItems>
+                          {/* <LinhaCabecalhoItems> */}
+                          {/* <TextoCabecalhoDescObs>Descrição</TextoCabecalhoDescObs> */}
+                          {/* </LinhaCabecalhoItems> */}
+                          {/* <LinhaCabecalhoItems> */}
+                          {/* <b>C. Custo</b> */}
+                          {/* </LinhaCabecalhoItems> */}
+                          {/* <LinhaCabecalhoItemsUltimo> */}
+                          {/* <TextoCabecalhoDescObs> */}
+                          {/* Observação */}
+                          {/* </TextoCabecalhoDescObs> */}
+                          {/* </LinhaCabecalhoItemsUltimo> */}
+                        </GridCabecalhoItemsPedido>
+                        {pedido.pedidos_remocao.length > 0 &&
+                          pedido.pedidos_remocao.map((item) => (
+                            <GridItemsPedido
+                              key={item.id}
+                              tipoSolicitacao={pedido.natureza_solicitacao}
+                              className={`classeItems ${
+                                pedido.statusSolicitacao != 'aberto' &&
+                                item.status == 'entregue' &&
+                                'boldText'
+                              } remocaoVagas`}
+                            >
+                              <li>
+                                <p>{pedido.obra.descricao_completa}</p>
+                              </li>
+                              <li>
+                                <p>
+                                  {pedido.natureza_solicitacao == 'RemocaoVaga'
+                                    ? item.codigo_vaga.split(' - ')[0]
+                                    : item.codigo_vaga}
+                                </p>
+                              </li>
+                              <li>
+                                <p>
+                                  {pedido.natureza_solicitacao != 'RemocaoVaga'
+                                    ? item.cargo
+                                    : item.codigo_vaga.split(' - ')[2] !=
+                                        undefined
+                                      ? item.codigo_vaga.split(' - ')[1] +
+                                        ' - ' +
+                                        item.codigo_vaga.split(' - ')[2]
+                                      : item.codigo_vaga.split(' - ')[1]}
+                                </p>
+                              </li>
+                            </GridItemsPedido>
+                          ))}
+                        {/* {pedido.itens != undefined &&
                       pedido.itens.length > 0 &&
                       pedido.itens.map((item) => (
                         <GridItemsPedido
@@ -2578,33 +3000,26 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             )}
                         </GridItemsPedido>
                       ))} */}
-                    {/* <GridItemsPedido
+                        {/* <GridItemsPedido
                       className={`gridFake ${pedido.obsFinal != '' && 'obsOrSugest'}`}
                     ></GridItemsPedido> */}
-                    {pedido.obsFinal != '' && (
-                      <DivSugestFornecedoresObs>
-                        <div>
-                          <b>
-                            {pedido.natureza_solicitacao == 'AberturaVaga'
-                              ? 'Justificativa/Obs:'
-                              : 'Observações:'}
-                          </b>
-                        </div>
-                        <BoxTextoSugest>
-                          {pedido.obsFinal}
-                          {pedido.statusSolicitacao == 'aberto' &&
-                            pedido.usuario == nomeusur &&
-                            pedido.obsFinal != '' && (
-                              <IconeLapisDiv>
-                                <IconeLapisImg
-                                  id={pedido.id}
-                                  src={IconeLapisEditar}
-                                  className="ObsSugForn"
-                                ></IconeLapisImg>
-                              </IconeLapisDiv>
-                            )}
-                        </BoxTextoSugest>
-                      </DivSugestFornecedoresObs>
+                        {nivelusur == 4 &&
+                          pedido.statusSolicitacao == 'pendenteRemocao' && (
+                            <DivBotoesAprovacao>
+                              <button className="rejeitar">Rejeitar</button>
+                              <button className="aprovar">Aprovar</button>
+                            </DivBotoesAprovacao>
+                          )}
+                        {nivelusur < 4 &&
+                          pedido.statusSolicitacao == 'pendenteRemocao' && (
+                            <DivBotoesAprovacao>
+                              <h3>PENDENTE</h3>
+                            </DivBotoesAprovacao>
+                          )}
+                        {pedido.statusSolicitacao != 'pendenteRemocao' && (
+                          <br></br>
+                        )}
+                      </div>
                     )}
                   </DivGridCabecalho>
                 </CardSolicitacao>
