@@ -624,6 +624,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     SetMensagemErro('')
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
+    const valor_cargo_elemento = e.currentTarget.value.split(';')[0]
+    const valor_sigla_elemento = e.currentTarget.value.split(';')[1]
     const nova_lista = [...pedidoAcrescimoCargos]
     function isElement(pedido: SolicitacaoFuncionario) {
       return pedido.id == id_elemento
@@ -637,6 +639,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     } else {
       elemento.sigla = valor_elemento.split(' - ')[1]
     }
+    elemento.cargo = valor_cargo_elemento
+    elemento.codigo_vaga = valor_sigla_elemento
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidoAcrescimoCargos(nova_lista)
@@ -1981,16 +1985,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                   const pedidoCargo = {
                     id: pedido.sigla + i.toString(),
                     incluir: false,
-                    codigo_vaga: `${pedido.sigla} #${i + 1}`,
+                    codigo_vaga: `${pedido.sigla.split(';')[0]} #${i + 1}`,
                     tipo_admissao: '',
                     nome: '',
                     rg: '',
                     cpf: '',
                     contato: '',
-                    sigla: '',
+                    sigla: pedido.sigla.split(';')[1],
                     quantidade_pedida: 1,
                     status: '',
-                    cargo: '',
+                    cargo: pedido.sigla.split(';')[0],
                     novo_cargo: '',
                     possiveis_promocoes: [],
                     id_pessoa: '',
@@ -2399,7 +2403,10 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                             style={{ display: 'none' }}
                           ></option>
                           {cargosPossiveis.map((cargo) => (
-                            <option key={cargo.sigla} value={cargo.completo}>
+                            <option
+                              key={cargo.sigla}
+                              value={cargo.completo + ';' + cargo.sigla}
+                            >
                               {cargo.completo}
                             </option>
                           ))}
@@ -3714,10 +3721,14 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       <GridItem>{obra.descricao_completa}</GridItem>
                       <GridItem>
                         {pedido_acrescimo.sigla.split(' - ')[1] != undefined
-                          ? pedido_acrescimo.sigla.split(' - ')[0] +
-                            ' - ' +
-                            pedido_acrescimo.sigla.split(' - ')[1]
-                          : pedido_acrescimo.sigla.split(' - ')[0]}
+                          ? (
+                              pedido_acrescimo.sigla.split(' - ')[0] +
+                              ' - ' +
+                              pedido_acrescimo.sigla.split(' - ')[1]
+                            ).split(';')[0]
+                          : pedido_acrescimo.sigla
+                              .split(' - ')[0]
+                              .split(';')[0]}
                       </GridItem>
                       <GridItemUltimo>
                         {pedido_acrescimo.quantidade_pedida}
@@ -4137,7 +4148,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       {naturezaMovimentacao == 'AberturaVaga'
                         ? 'Justificativa/Observações:'
                         : 'Observações:'}
-                      :
                     </b>{' '}
                     {ObservacaoGeral.indexOf('\n') == -1 &&
                     ObservacaoGeral.length < 91

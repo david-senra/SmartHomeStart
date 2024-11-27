@@ -2141,6 +2141,7 @@ const ListaSolicitacao = ({ nomeusur = '', nivelusur = 0 }) => {
                             <option value="Kg">Kg</option>
                             <option value="L">L</option>
                             <option value="scs">scs</option>
+                            <option value="cdrs">cdrs</option>
                             <option value="cm">cm</option>
                             <option value="m">m</option>
                             <option value="m²">m²</option>

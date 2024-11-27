@@ -62,6 +62,8 @@ import {
   TextoEmEntrega,
   TextoSituacaoCabecalho,
   DivBotoesAprovacao,
+  LiFaltas,
+  TextoObservacaoAberturaRemocao,
   DivTituloSecaoCard
 } from './styles'
 import FechaduraAberta from '../../assets/images/destrancado.png'
@@ -338,7 +340,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     data_solicitacao: string
     empresa: string
     obra: Obra
-    obra_destino: string
+    obra_destino: Obra
     pedido_abertura_vagas: AcrescimoCargo[]
     pedido_abertura_inclui_admissao: boolean
     pedidos_remocao: SolicitacaoFuncionario[]
@@ -363,7 +365,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       data_solicitacao: string
       empresa: string
       obra: Obra
-      obra_destino: string
+      obra_destino: Obra
       pedido_abertura_vagas: []
       pedido_abertura_inclui_admissao: boolean
       pedidos_remocao: SolicitacaoFuncionario[]
@@ -513,7 +515,33 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     // const buffer = await blob.arrayBuffer()
   }
   const atualizarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
-    solicitacao.requisicao = `atualizacaoSolicitacao;${nivelusur}`
+    solicitacao.requisicao = `atualizacaoSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const criarVagasNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `abrirVagasSolMov;${nivelusur}`
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -625,8 +653,30 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro'
     }
   }
+  const concluirSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `fecharSolMov`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('finalizacao_realizada')) {
+      return 'ok'
+    } else {
+      return 'erro'
+    }
+  }
   const fecharSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
-    solicitacao.requisicao = `fecharSolicitacao`
+    solicitacao.requisicao = `fecharSolicitacaoMov`
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -670,7 +720,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     }
   }
   const trancarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
-    solicitacao.requisicao = 'trancarSolicitacao'
+    solicitacao.requisicao = 'trancarSolicitacaoMov'
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -758,6 +808,22 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
         ) {
           numeroItens += solicitacao.pedidos_funcionarios.length
         }
+        if (
+          solicitacao.pedidos_remocao != undefined &&
+          solicitacao.pedidos_remocao.length > 0
+        ) {
+          numeroItens += solicitacao.pedidos_remocao.length
+        }
+        if (
+          solicitacao.natureza_solicitacao == 'HorasExtras' &&
+          solicitacao.pedidos_funcionarios != undefined &&
+          solicitacao.pedidos_funcionarios.length > 0
+        ) {
+          solicitacao.pedidos_funcionarios.map(
+            (pedido: { dias_horas_extras: string | any[] }) =>
+              (numeroItens += pedido.dias_horas_extras.length)
+          )
+        }
         let linhasobs = 0
         console.log('numeroItens')
         console.log(numeroItens)
@@ -767,12 +833,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
             solicitacao.obsFinal.indexOf('\n') == -1 &&
             solicitacao.obsFinal.length < 91
           ) {
-            linhasobs = 1
+            linhasobs = 2
           } else {
             const textos_isolados: string[] =
               solicitacao.obsFinal.split(/\r\n|\r|\n/)
             const numero_quebras = textos_isolados.length
-            let numero_linhas_corridas_obs = 0
+            let numero_linhas_corridas_obs = 2
             textos_isolados.forEach((texto) => {
               texto.length >= 91 && (numero_linhas_corridas_obs += 1)
             })
@@ -815,12 +881,18 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'Desligamento'
     } else if (naturezaSolicitacao == 'Transferencia') {
       return 'Transferência de Obra'
+    } else if (naturezaSolicitacao == 'Promocao') {
+      return 'Promoção'
     } else if (naturezaSolicitacao == 'Ferias') {
       return 'Pedido de Férias'
     } else if (naturezaSolicitacao == 'Faltas') {
-      return 'Indic. de Faltas'
+      return 'Assinalar Faltas'
     } else if (naturezaSolicitacao == 'Adicional') {
-      return 'Indicar Horas Extras'
+      return 'Assinalar Dias Adic.'
+    } else if (naturezaSolicitacao == 'HorasExtras') {
+      return 'Horas Extras'
+    } else {
+      return 'TEXTO AQUI'
     }
   }
   const getMinimumDate = () => {
@@ -890,7 +962,11 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       } else if (todosEntregues == 'nao') {
         return 'ANDAMENTO'
       }
-    } else if (situacao == 'entregue') {
+    } else if (situacao == 'pendenteAbertura') {
+      return 'PENDENTE'
+    } else if (situacao == 'pendenteRemocao') {
+      return 'PENDENTE'
+    } else if (situacao == 'concluido') {
       return 'CONCLUÍDO'
     } else if (situacao == 'cancelado') {
       return 'CANCELADO'
@@ -899,6 +975,18 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
   const textoTituloSecao = (situacao: string) => {
     if (situacao == 'Desligamento') {
       return 'Pedido de Desligamento:'
+    } else if (situacao == 'Transferencia') {
+      return 'Pedido de Transferência:'
+    } else if (situacao == 'Promocao') {
+      return 'Pedido de Promoção:'
+    } else if (situacao == 'Ferias') {
+      return 'Pedido de Férias:'
+    } else if (situacao == 'Faltas') {
+      return 'Faltas Indicadas para Assinalar:'
+    } else if (situacao == 'Adicional') {
+      return 'Dia(s) Adicional(is) para Assinalar:'
+    } else if (situacao == 'HorasExtras') {
+      return 'Horas Extras para Assinalar:'
     } else {
       return 'TEXTO AQUI'
     }
@@ -906,7 +994,6 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
   const clickFechadura = async (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
-    console.log(listaCardsOpen)
     const id_elemento = e.currentTarget.id
     const nova_lista = [...ListaPedidos]
     function isElement(solicitacao: Solicitacao) {
@@ -953,6 +1040,126 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       } else {
         console.log('Erro!')
       }
+    }
+  }
+  const aprovarPedidoAbertura = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    if (
+      novoElemento.natureza_solicitacao == 'AberturaVaga' &&
+      novoElemento.pedido_abertura_inclui_admissao == false
+    ) {
+      novoElemento.statusSolicitacao = 'concluido'
+      novoElemento.podeDestrancar = false
+    } else {
+      novoElemento.statusSolicitacao = 'andamento'
+      novoElemento.podeDestrancar = false
+    }
+    if (novoElemento.statusSolicitacao == 'andamento') {
+      const resposta_servidor = criarVagasNoServidor(novoElemento)
+      const resposta_recebida = await resposta_servidor
+      if (resposta_recebida == 'ok') {
+        elemento.statusSolicitacao = 'andamento'
+        elemento.podeDestrancar = false
+        nova_lista.splice(indice_elemento, 1)
+        nova_lista.splice(indice_elemento, 0, elemento)
+        SetListaPedidos(nova_lista)
+      } else if (resposta_recebida == 'solicitacao_trancada') {
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
+      } else if (resposta_recebida == 'solicitacao_aberta') {
+        console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
+      } else {
+        console.log('Erro!')
+      }
+    } else {
+      const resposta_servidor = criarVagasNoServidor(novoElemento)
+      const resposta_recebida = await resposta_servidor
+      if (resposta_recebida == 'ok') {
+        elemento.statusSolicitacao = 'concluido'
+        elemento.podeDestrancar = false
+        nova_lista.splice(indice_elemento, 1)
+        nova_lista.splice(indice_elemento, 0, elemento)
+        SetListaPedidos(nova_lista)
+      } else if (resposta_recebida == 'erro') {
+        SetPopupOpen(true)
+        setPopupType('solicitacao_trancada')
+        setPopupConfirmationPedido(id_elemento)
+        document.body.style.overflowY = 'hidden'
+      } else {
+        console.log('Erro!')
+      }
+    }
+  }
+  const rejeitarPedidoAbertura = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'aberturaRejeitada'
+    const resposta_servidor = atualizarSolicitacaoNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'aberturaRejeitada'
+      elemento.itens.forEach((item) => (item.status = 'rejeitado'))
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_trancada') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_trancada')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const rejeitarPedidoRemocao = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'remocaoRejeitada'
+    const resposta_servidor = atualizarSolicitacaoNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'remocaoRejeitada'
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_trancada') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_trancada')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
+    } else {
+      console.log('Erro!')
     }
   }
   const definirPedidoEntregueSistema = async (id_pedido: string) => {
@@ -1914,10 +2121,9 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                 usuario={nivelusur == 2 ? 'restrito' : 'completo'}
               >
                 <CardSolicitacao
-                  key={pedido.id}
                   tamanho={pedido.altura}
                   id={pedido.id}
-                  className={`${pedido.isCardOpen ? 'open' : 'closed'} ${pedido.obsFinal == '' ? 'noBoxes' : 'boxes'}`}
+                  className={`${pedido.isCardOpen ? 'open' : 'closed'} ${pedido.obsFinal == '' ? 'boxes' : 'boxes'}`}
                 >
                   <GridCabecalho
                     id={pedido.id}
@@ -1947,20 +2153,32 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                     </li>
                     <ItemCabecalhoSituacao
                       className={
-                        (pedido.statusSolicitacao == 'andamento' &&
-                          nivelusur == 3) ||
-                        (pedido.statusSolicitacao == 'aberto' &&
-                          pedido.usuario == nomeusur)
+                        ((pedido.natureza_solicitacao == 'AberturaVaga' ||
+                          pedido.natureza_solicitacao == 'RemocaoVaga') &&
+                          nivelusur == 4 &&
+                          pedido.statusSolicitacao != 'concluido') ||
+                        (pedido.natureza_solicitacao != 'AberturaVaga' &&
+                          pedido.natureza_solicitacao != 'RemocaoVaga' &&
+                          nivelusur == 3 &&
+                          pedido.statusSolicitacao != 'concluido') ||
+                        (pedido.usuario == nomeusur && pedido.podeDestrancar)
                           ? 'noPointer'
                           : ''
                       }
                       onClick={(e) =>
-                        !(
-                          (pedido.statusSolicitacao == 'andamento' &&
-                            nivelusur == 3) ||
+                        (((pedido.natureza_solicitacao == 'AberturaVaga' ||
+                          pedido.natureza_solicitacao == 'RemocaoVaga') &&
+                          nivelusur == 3) ||
+                          (nivelusur == 3 && pedido.podeDestrancar == false) ||
+                          (nivelusur == 4 &&
+                            pedido.natureza_solicitacao != 'AberturaVaga' &&
+                            pedido.natureza_solicitacao != 'RemocaoVaga') ||
+                          pedido.statusSolicitacao == 'concluido' ||
                           (pedido.statusSolicitacao == 'aberto' &&
-                            pedido.usuario == nomeusur)
-                        ) && toggleCard(e)
+                            nivelusur != 3 &&
+                            nivelusur != 4 &&
+                            pedido.usuario != nomeusur)) &&
+                        toggleCard(e)
                       }
                     >
                       <b>
@@ -1968,21 +2186,27 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                           className={`${
                             pedido.statusSolicitacao == 'andamento'
                               ? 'andamento'
-                              : pedido.statusSolicitacao == 'finalizado'
-                                ? 'finalizado'
-                                : pedido.statusSolicitacao == 'cancelado'
-                                  ? 'cancelado'
-                                  : 'aberto'
+                              : pedido.statusSolicitacao ==
+                                    'pendenteAbertura' ||
+                                  pedido.statusSolicitacao == 'pendenteRemocao'
+                                ? 'pendente'
+                                : pedido.statusSolicitacao == 'concluido'
+                                  ? 'concluido'
+                                  : pedido.statusSolicitacao == 'cancelado'
+                                    ? 'cancelado'
+                                    : 'aberto'
                           } ${pedido.natureza_solicitacao == 'AberturaVaga' && nivelusur == 4 && pedido.usuario == nomeusur ? 'especialAdm' : ''} ${pedido.usuario != nomeusur ? 'noSpecial' : ''}`}
                         ></TextoSituacaoCabecalho>
                         {((nivelusur == 3 &&
                           pedido.pedido_abertura_inclui_admissao != true &&
                           pedido.natureza_solicitacao != 'AberturaVaga' &&
-                          pedido.statusSolicitacao != 'finalizado' &&
+                          pedido.natureza_solicitacao != 'RemocaoVaga' &&
+                          pedido.statusSolicitacao != 'concluido' &&
                           pedido.podeDestrancar == true) ||
                           (nivelusur == 4 &&
-                            pedido.natureza_solicitacao == 'AberturaVaga' &&
-                            pedido.statusSolicitacao != 'finalizado' &&
+                            (pedido.natureza_solicitacao == 'AberturaVaga' ||
+                              pedido.natureza_solicitacao == 'RemocaoVaga') &&
+                            pedido.statusSolicitacao != 'concluido' &&
                             pedido.podeDestrancar == true)) && (
                           <IconeDiv>
                             <IconeTranca
@@ -2051,12 +2275,13 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 item.status == 'entregue' &&
                                 'boldText'
                               }`}
+                              numeroFaltasAdicionalHoras={0}
                             >
                               <li>
                                 <p>{pedido.obra.descricao_completa}</p>
                               </li>
                               <li>
-                                <p>{item.sigla}</p>
+                                <p>{item.sigla.split(';')[0]}</p>
                               </li>
                               <li>
                                 <p>{item.quantidade_pedida}</p>
@@ -2089,20 +2314,86 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               </BoxTextoSugest>
                             </DivSugestFornecedoresObs>
                           )}
+                        {pedido.natureza_solicitacao != 'AberturaVaga' && (
+                          <h3>
+                            <b>Obs:</b> Abertura de vaga necessária para
+                            efetivar a{' '}
+                            {pedido.natureza_solicitacao == 'Transferencia'
+                              ? 'transferência!'
+                              : 'promoção!'}
+                          </h3>
+                        )}
                         {nivelusur == 4 &&
                           pedido.statusSolicitacao == 'pendenteAbertura' && (
-                            <DivBotoesAprovacao>
-                              <button className="rejeitar">Rejeitar</button>
-                              <button className="aprovar">Aprovar</button>
-                            </DivBotoesAprovacao>
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.natureza_solicitacao ==
+                                    'AberturaVaga' &&
+                                  pedido.pedido_abertura_inclui_admissao ==
+                                    false
+                                    ? 'remocaoVaga'
+                                    : ''
+                                }
+                              >
+                                <button
+                                  id={pedido.id}
+                                  className="rejeitar"
+                                  onClick={(e) => rejeitarPedidoAbertura(e)}
+                                >
+                                  Rejeitar
+                                </button>
+                                <button
+                                  id={pedido.id}
+                                  className="aprovar"
+                                  onClick={(e) => aprovarPedidoAbertura(e)}
+                                >
+                                  Aprovar
+                                </button>
+                              </DivBotoesAprovacao>
+                              <br></br>
+                            </>
                           )}
-                        {nivelusur < 4 &&
+                        {nivelusur != 4 &&
                           pedido.statusSolicitacao == 'pendenteAbertura' && (
-                            <DivBotoesAprovacao>
-                              <h3>PENDENTE</h3>
-                            </DivBotoesAprovacao>
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.natureza_solicitacao ==
+                                    'AberturaVaga' &&
+                                  pedido.pedido_abertura_inclui_admissao ==
+                                    false
+                                    ? 'remocaoVaga'
+                                    : ''
+                                }
+                              >
+                                <h3>PENDENTE</h3>
+                              </DivBotoesAprovacao>
+                              <br></br>
+                            </>
                           )}
+                        {(pedido.statusSolicitacao == 'concluido' ||
+                          pedido.statusSolicitacao == 'andamento') && (
+                          <>
+                            <br></br>
+                            <DivBotoesAprovacao
+                              className={
+                                pedido.natureza_solicitacao == 'AberturaVaga' &&
+                                pedido.pedido_abertura_inclui_admissao == false
+                                  ? 'remocaoVaga'
+                                  : ''
+                              }
+                            >
+                              <h3 className="aprovado">APROVADO</h3>
+                            </DivBotoesAprovacao>
+                            <br></br>
+                          </>
+                        )}
                         {pedido.statusSolicitacao != 'pendenteAbertura' &&
+                          pedido.statusSolicitacao != 'concluido' &&
+                          pedido.status_solicitacao != 'andamento' &&
                           pedido.pedido_abertura_inclui_admissao && (
                             <DivBotoesAprovacao></DivBotoesAprovacao>
                           )}
@@ -2164,6 +2455,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                   item.status == 'entregue' &&
                                   'boldText'
                                 } admissao`}
+                                numeroFaltasAdicionalHoras={0}
                               >
                                 <li>
                                   <p>{pedido.obra.descricao_completa}</p>
@@ -2228,8 +2520,17 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             tipoSolicitacao={pedido.natureza_solicitacao}
                           >
                             <LinhaCabecalhoItems>
-                              <b>Obra</b>
+                              <b>
+                                {pedido.natureza_solicitacao == 'Transferencia'
+                                  ? 'Obra de Origem'
+                                  : 'Obra'}
+                              </b>
                             </LinhaCabecalhoItems>
+                            {pedido.natureza_solicitacao == 'Transferencia' && (
+                              <LinhaCabecalhoItems>
+                                <b>Obra de Destino</b>
+                              </LinhaCabecalhoItems>
+                            )}
                             <LinhaCabecalhoItems>
                               <b>Vaga</b>
                             </LinhaCabecalhoItems>
@@ -2237,26 +2538,77 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               <b>Nome</b>
                             </LinhaCabecalhoItems>
                             <LinhaCabecalhoItems>
-                              <b>Cargo</b>
+                              <b>
+                                {pedido.natureza_solicitacao == 'Promocao'
+                                  ? 'Cargo Atual'
+                                  : 'Cargo'}
+                              </b>
                             </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems className={'ultimaLinha'}>
-                              <b>Data do Desl.</b>
-                            </LinhaCabecalhoItems>
+                            {pedido.natureza_solicitacao == 'Promocao' && (
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Novo Cargo</b>
+                              </LinhaCabecalhoItems>
+                            )}
+                            {(pedido.natureza_solicitacao == 'Transferencia' ||
+                              pedido.natureza_solicitacao ==
+                                'Desligamento') && (
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>
+                                  {pedido.natureza_solicitacao ==
+                                  'Transferencia'
+                                    ? 'Data da Transf.'
+                                    : 'Data do Deslig.'}
+                                </b>
+                              </LinhaCabecalhoItems>
+                            )}
+                            {pedido.natureza_solicitacao == 'Ferias' && (
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Data das Férias</b>
+                              </LinhaCabecalhoItems>
+                            )}
+                            {(pedido.natureza_solicitacao == 'Faltas' ||
+                              pedido.natureza_solicitacao == 'Adicional' ||
+                              pedido.natureza_solicitacao == 'HorasExtras') && (
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>
+                                  {pedido.natureza_solicitacao == 'Faltas'
+                                    ? 'Faltas'
+                                    : pedido.natureza_solicitacao == 'Adicional'
+                                      ? 'Dia(s) Adicional(is)'
+                                      : 'Horas Extras'}
+                                </b>
+                              </LinhaCabecalhoItems>
+                            )}
                           </GridCabecalhoItemsPedido>
                           {pedido.pedidos_funcionarios.length > 0 &&
                             pedido.pedidos_funcionarios.map((item) => (
                               <GridItemsPedido
                                 key={item.id}
                                 tipoSolicitacao={pedido.natureza_solicitacao}
+                                numeroFaltasAdicionalHoras={
+                                  pedido.natureza_solicitacao == 'Faltas'
+                                    ? item.faltas.length
+                                    : pedido.natureza_solicitacao == 'Adicional'
+                                      ? item.dias_adicionais.length
+                                      : item.dias_horas_extras.length
+                                }
                                 className={`classeItems ${
                                   pedido.statusSolicitacao != 'aberto' &&
                                   item.status == 'entregue' &&
                                   'boldText'
-                                }`}
+                                } ${pedido.natureza_solicitacao == 'Faltas' || pedido.natureza_solicitacao == 'Adicional' || pedido.natureza_solicitacao == 'HorasExtras' ? 'linhaVariavel' : ''}`}
                               >
                                 <li>
                                   <p>{pedido.obra.descricao_completa}</p>
                                 </li>
+                                {pedido.natureza_solicitacao ==
+                                  'Transferencia' && (
+                                  <li>
+                                    <p>
+                                      {pedido.obra_destino.descricao_completa}
+                                    </p>
+                                  </li>
+                                )}
                                 <li>
                                   <p>{item.id_pessoa}</p>
                                 </li>
@@ -2266,19 +2618,112 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 <li>
                                   <p>{item.cargo}</p>
                                 </li>
-                                <li>
-                                  <p>
-                                    {item.imediato
-                                      ? 'IMEDIATO'
-                                      : item.data_desligamento}
-                                  </p>
-                                </li>
+                                {pedido.natureza_solicitacao == 'Promocao' && (
+                                  <li>
+                                    <p>{item.novo_cargo}</p>
+                                  </li>
+                                )}
+                                {(pedido.natureza_solicitacao ==
+                                  'Transferencia' ||
+                                  pedido.natureza_solicitacao ==
+                                    'Desligamento') && (
+                                  <li>
+                                    <p>
+                                      {item.imediato
+                                        ? 'IMEDIATO'
+                                        : pedido.natureza_solicitacao ==
+                                            'Transferencia'
+                                          ? item.data_transferencia
+                                          : item.data_desligamento}
+                                    </p>
+                                  </li>
+                                )}
+                                {pedido.natureza_solicitacao == 'Ferias' && (
+                                  <li>
+                                    <p>
+                                      {item.data_inicio_ferias +
+                                        ' - ' +
+                                        item.data_final_ferias}
+                                    </p>
+                                  </li>
+                                )}
+                                {(pedido.natureza_solicitacao == 'Faltas' ||
+                                  pedido.natureza_solicitacao == 'Adicional' ||
+                                  pedido.natureza_solicitacao ==
+                                    'HorasExtras') && (
+                                  <LiFaltas
+                                    numeroFaltas={
+                                      pedido.natureza_solicitacao == 'Faltas'
+                                        ? item.faltas.length
+                                        : item.dias_adicionais.length
+                                    }
+                                  >
+                                    {(pedido.natureza_solicitacao == 'Faltas' ||
+                                      pedido.natureza_solicitacao ==
+                                        'Adicional') && (
+                                      <p>
+                                        <li className="LiFaltas">
+                                          {pedido.natureza_solicitacao ==
+                                          'Faltas'
+                                            ? item.faltas.map((falta) => (
+                                                <p key={falta}>{falta}</p>
+                                              ))
+                                            : item.dias_adicionais.map(
+                                                (dia) => <p key={dia}>{dia}</p>
+                                              )}
+                                        </li>
+                                      </p>
+                                    )}
+                                    {pedido.natureza_solicitacao ==
+                                      'HorasExtras' && (
+                                      <p>
+                                        <li className="LiHoras">
+                                          {item.dias_horas_extras.map((dia) => (
+                                            <p key={dia.id}>
+                                              {dia.dia} - {dia.horas} horas
+                                            </p>
+                                          ))}
+                                        </li>
+                                      </p>
+                                    )}
+                                  </LiFaltas>
+                                )}
                               </GridItemsPedido>
                             ))}
+                          {pedido.obsFinal != '' && (
+                            <>
+                              <br></br>
+                              <DivSugestFornecedoresObs>
+                                <div>
+                                  <b>Observações:</b>
+                                </div>
+                                <BoxTextoSugest>
+                                  {pedido.obsFinal}
+                                  {pedido.statusSolicitacao == 'aberto' &&
+                                    pedido.usuario == nomeusur &&
+                                    pedido.obsFinal != '' && (
+                                      <IconeLapisDiv>
+                                        <IconeLapisImg
+                                          id={pedido.id}
+                                          src={IconeLapisEditar}
+                                          className="ObsSugForn"
+                                        ></IconeLapisImg>
+                                      </IconeLapisDiv>
+                                    )}
+                                </BoxTextoSugest>
+                              </DivSugestFornecedoresObs>
+                            </>
+                          )}
                           {nivelusur == 3 &&
                             pedido.statusSolicitacao == 'andamento' && (
-                              <DivBotoesAprovacao>
-                                <button className="aprovar">Concluir</button>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.pedido_desligamento_transferencia_promocao_inclui_remocao
+                                    ? ''
+                                    : 'remocaoVaga'
+                                }
+                              >
+                                <button className="aprovar">Finalizar</button>
                               </DivBotoesAprovacao>
                             )}
                           {nivelusur != 3 &&
@@ -2347,6 +2792,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 item.status == 'entregue' &&
                                 'boldText'
                               } remocaoVagas`}
+                              numeroFaltasAdicionalHoras={0}
                             >
                               <li>
                                 <p>{pedido.obra.descricao_completa}</p>
@@ -3003,22 +3449,62 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                         {/* <GridItemsPedido
                       className={`gridFake ${pedido.obsFinal != '' && 'obsOrSugest'}`}
                     ></GridItemsPedido> */}
+                        {pedido.obsFinal != '' &&
+                          pedido.natureza_solicitacao == 'RemocaoVaga' && (
+                            <>
+                              <br></br>
+                              <DivSugestFornecedoresObs>
+                                <div>
+                                  <b>Justificativa/Obs:</b>
+                                </div>
+                                <BoxTextoSugest>
+                                  {pedido.obsFinal}
+                                  {pedido.statusSolicitacao == 'aberto' &&
+                                    pedido.usuario == nomeusur &&
+                                    pedido.obsFinal != '' && (
+                                      <IconeLapisDiv>
+                                        <IconeLapisImg
+                                          id={pedido.id}
+                                          src={IconeLapisEditar}
+                                          className="ObsSugForn"
+                                        ></IconeLapisImg>
+                                      </IconeLapisDiv>
+                                    )}
+                                </BoxTextoSugest>
+                              </DivSugestFornecedoresObs>
+                            </>
+                          )}
+                        {pedido.natureza_solicitacao != 'RemocaoVaga' && (
+                          <TextoObservacaoAberturaRemocao>
+                            <b>Obs:</b> Remoção incluída na Solicitação para
+                            vagas que ficariam disponíveis{' '}
+                            {pedido.natureza_solicitacao == 'Desligamento'
+                              ? 'com o(s) desligamento(s).'
+                              : pedido.natureza_solicitacao == 'Promocao'
+                                ? 'com a(s) promoção(ões).'
+                                : 'com a(s) transferência(s).'}
+                          </TextoObservacaoAberturaRemocao>
+                        )}
                         {nivelusur == 4 &&
                           pedido.statusSolicitacao == 'pendenteRemocao' && (
-                            <DivBotoesAprovacao>
-                              <button className="rejeitar">Rejeitar</button>
-                              <button className="aprovar">Aprovar</button>
-                            </DivBotoesAprovacao>
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao className={'remocaoVaga'}>
+                                <button className="rejeitar">Rejeitar</button>
+                                <button className="aprovar">Aprovar</button>
+                              </DivBotoesAprovacao>
+                            </>
                           )}
-                        {nivelusur < 4 &&
+                        {nivelusur != 4 &&
                           pedido.statusSolicitacao == 'pendenteRemocao' && (
-                            <DivBotoesAprovacao>
-                              <h3>PENDENTE</h3>
-                            </DivBotoesAprovacao>
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao className={'remocaoVaga'}>
+                                <h3>PENDENTE</h3>
+                              </DivBotoesAprovacao>
+                            </>
                           )}
-                        {pedido.statusSolicitacao != 'pendenteRemocao' && (
-                          <br></br>
-                        )}
+                        <br></br>
                       </div>
                     )}
                   </DivGridCabecalho>

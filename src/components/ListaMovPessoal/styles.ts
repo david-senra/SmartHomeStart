@@ -3,9 +3,13 @@ import styled from 'styled-components'
 function pegarCorCard(situacao: string) {
   if (situacao == 'aberto') {
     return '#ededed'
+  } else if (situacao == 'pendenteAbertura') {
+    return '#FFBF00'
+  } else if (situacao == 'pendenteRemocao') {
+    return '#FFBF00'
   } else if (situacao == 'andamento') {
     return 'lightyellow'
-  } else if (situacao == 'entregue') {
+  } else if (situacao == 'concluido') {
     return 'lightgreen'
   } else if (situacao == 'cancelado') {
     return '#FFCCCB'
@@ -69,7 +73,7 @@ export const ListaSolicitacoes = styled.ul`
 `
 
 export const CardSolicitacao = styled.ul<{ tamanho: number }>`
-  max-height: ${(props) => (180 + props.tamanho * 60).toString()}px;
+  max-height: ${(props) => (230 + props.tamanho * 60).toString()}px;
   overflow-x: visible;
   position: relative;
   display: grid;
@@ -269,6 +273,18 @@ export const GridCabecalhoItemsPedido = styled.ul<{
       return '20vw 15vw 15vw'
     } else if (tipoPedido == 'Desligamento') {
       return '17vw 8vw 15vw 15vw 8vw'
+    } else if (tipoPedido == 'Transferencia') {
+      return '17vw 15vw 6vw 12vw 12vw 6.5vw'
+    } else if (tipoPedido == 'Promocao') {
+      return '17vw 8vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'Ferias') {
+      return '17vw 6vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'Faltas') {
+      return '17vw 6vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'Adicional') {
+      return '17vw 6vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'HorasExtras') {
+      return '17vw 6vw 15vw 15vw 15vw'
     } else if (tipoPedido == 'Admissao') {
       return '1fr 1fr'
     }
@@ -306,6 +322,7 @@ export const GridCabecalhoItemsPedido = styled.ul<{
 
 export const GridItemsPedido = styled.ul<{
   tipoSolicitacao: string
+  numeroFaltasAdicionalHoras: number
 }>`
   display: grid;
   grid-template-columns: ${(props) => {
@@ -314,6 +331,18 @@ export const GridItemsPedido = styled.ul<{
       return '20vw 15vw 15vw'
     } else if (tipoPedido == 'Desligamento') {
       return '17vw 8vw 15vw 15vw 8vw'
+    } else if (tipoPedido == 'Transferencia') {
+      return '17vw 15vw 6vw 12vw 12vw 6.5vw'
+    } else if (tipoPedido == 'Promocao') {
+      return '17vw 8vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'Ferias') {
+      return '17vw 6vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'Faltas') {
+      return '17vw 6vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'Adicional') {
+      return '17vw 6vw 15vw 15vw 15vw'
+    } else if (tipoPedido == 'HorasExtras') {
+      return '17vw 6vw 15vw 15vw 15vw'
     } else if (tipoPedido == 'Admissao') {
       return '1fr 1fr'
     }
@@ -378,6 +407,38 @@ export const GridItemsPedido = styled.ul<{
   }
   &.remocaoVagas {
     grid-template-columns: 15vw 8vw 15vw;
+  }
+  &.linhaVariavel {
+    height: ${(props) =>
+      props.tipoSolicitacao == 'HorasExtras'
+        ? props.numeroFaltasAdicionalHoras * 33 + 'px'
+        : (props.numeroFaltasAdicionalHoras / 2) * 33 + 'px'};
+    border-bottom: none;
+    li {
+      height: ${(props) =>
+        props.tipoSolicitacao == 'HorasExtras'
+          ? props.numeroFaltasAdicionalHoras * 33 + 'px'
+          : (props.numeroFaltasAdicionalHoras / 2) * 33 + 'px'};
+      &.LiFaltas {
+        justify-content: center;
+        justify-items: center;
+        margin: auto;
+        width: 200px;
+        border-bottom: none;
+        flex-direction: row;
+        row-gap: 0px;
+        column-gap: 10px;
+        flex-wrap: wrap;
+        padding-top: ${(props) =>
+          (props.numeroFaltasAdicionalHoras <= 2 ? 4 : 0) + 'px'};
+      }
+      &.LiHoras {
+        justify-content: center;
+        justify-items: center;
+        border-bottom: none;
+        flex-direction: column;
+      }
+    }
   }
   @media only screen and (max-width: 768px) {
     display: grid;
@@ -1977,6 +2038,132 @@ export const TextoSituacaoCabecalho = styled.p`
       right: 5.2%;
       transform: translate(-5.5%, -5.5%);
     }
+    &.especialAdm {
+      &::after {
+        content: 'ANDAMENTO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &.noSpecial {
+      &::after {
+        content: 'ANDAMENTO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &::after {
+      content: 'ANDAMENTO';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 5px;
+      right: 5.5%;
+      transform: translate(-5.5%, -5.5%);
+    }
+  }
+  &.pendente {
+    &::after {
+      content: 'PENDENTE';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 2px;
+      right: 5.2%;
+      transform: translate(-5.5%, -5.5%);
+    }
+    &.especialAdm {
+      &::after {
+        content: 'PENDENTE';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &.noSpecial {
+      &::after {
+        content: 'PENDENTE';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &::after {
+      content: 'PENDENTE';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 5px;
+      right: 5.5%;
+      transform: translate(-5.5%, -5.5%);
+    }
+  }
+  &.concluido {
+    &::after {
+      content: 'CONCLUÍDO';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 2px;
+      right: 5.2%;
+      transform: translate(-5.5%, -5.5%);
+    }
+    &.especialAdm {
+      &::after {
+        content: 'CONCLUÍDO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &.noSpecial {
+      &::after {
+        content: 'CONCLUÍDO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &::after {
+      content: 'CONCLUÍDO';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 5px;
+      right: 5.5%;
+      transform: translate(-5.5%, -5.5%);
+    }
   }
   @media only screen and (max-width: 768px) {
     &.aberto {
@@ -2080,6 +2267,19 @@ export const DivBotoesAprovacao = styled.div`
     border: 1px solid black;
     font-size: 16px;
     border-radius: 5px;
+    &.aprovado {
+      background-color: white;
+      color: green;
+      border: none;
+      margin-bottom: 0px;
+      padding-bottom: 0px;
+      border-bottom: 0px;
+    }
+  }
+  &.remocaoVaga {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    border-bottom: 0px;
   }
   @media only screen and (max-width: 768px) {
     display: block;
@@ -2091,4 +2291,19 @@ export const DivTituloSecaoCard = styled.div`
   &.aberturaVagas {
     margin-top: 20px;
   }
+`
+
+export const LiFaltas = styled.li<{
+  numeroFaltas: number
+}>`
+  display: flex;
+  flex-direction: row;
+  border-bottom: none;
+`
+
+export const TextoObservacaoAberturaRemocao = styled.h3`
+  margin-top: 20px;
+  color: red;
+  font-size: 15px;
+  margin-bottom: 20px;
 `
