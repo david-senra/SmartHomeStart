@@ -2280,6 +2280,8 @@ export const DivBotoesAprovacao = styled.div`
     margin-bottom: 0px;
     padding-bottom: 0px;
     border-bottom: 0px;
+    h3 {
+    }
   }
   @media only screen and (max-width: 768px) {
     display: block;

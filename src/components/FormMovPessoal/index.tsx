@@ -971,6 +971,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const elemento = nova_lista.filter(isElement)[0]
     if (valor_elemento == 'sim') {
       elemento.remocaoNoDesligamentoTransferencia = true
+      setRemocaoNoDesligamentoTransferencia(true)
       const pedidoRemocaoVaga = {
         id: contadorRemocao.toString(),
         codigo_vaga: elemento.id_pessoa,
@@ -1024,7 +1025,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         setRemocaoNoDesligamentoTransferencia(false)
       }
     }
-    remocaoNoDesligamentoTransferencia
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosFuncionarios(nova_lista)
@@ -2100,6 +2100,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         novoPedidoRemocoes = inclusaoPedidosRemocaoVaga
       }
     }
+    const grupoVazio: string[] = []
     const jsonSolicitacaoMP = {
       usuario: nomeusur,
       natureza_solicitacao: naturezaMovimentacao,
@@ -2122,7 +2123,84 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       isCardOpen: false,
       altura: 0,
       podeDestrancar: true,
-      todosEntregues: ''
+      todosEntregues: '',
+      vagasReservar: grupoVazio
+    }
+    if (
+      naturezaMovimentacao == 'Transferencia' ||
+      naturezaMovimentacao == 'Promocao'
+    ) {
+      let obra_destino: Obra
+      const vagasParaReservar: string[] = []
+      const cargosAdicionar: SolicitacaoFuncionario[] = []
+      const siglasAdicionar: string[] = []
+      let contador = 0
+      jsonSolicitacaoMP.pedido_transferencia_promocao_inclui_abertura = false
+      if (naturezaMovimentacao == 'Transferencia') {
+        obra_destino = obraDestino
+      } else {
+        obra_destino = obra
+      }
+      pedidosFuncionarios.map((pedido) => {
+        let sigla_cargo_destino: string
+        let descricao_cargo_destino: string
+        if (naturezaMovimentacao == 'Transferencia') {
+          sigla_cargo_destino = pedido.id_pessoa.slice(2, 4)
+          descricao_cargo_destino = pedido.cargo
+        } else {
+          sigla_cargo_destino = pedido.novo_cargo.slice(0, 2)
+          if (pedido.novo_cargo.split(' - ')[2] != undefined) {
+            descricao_cargo_destino =
+              pedido.novo_cargo.split(' - ')[1] +
+              ' - ' +
+              pedido.novo_cargo.split(' - ')[2]
+          } else {
+            descricao_cargo_destino = pedido.novo_cargo.split(' - ')[1]
+          }
+        }
+        let vaga_id_found = false
+        obra_destino.equipe.map((vaga) => {
+          if (
+            vaga.sigla_cargo == sigla_cargo_destino &&
+            vaga.situacao == 'disponivel' &&
+            !vagasParaReservar.includes(vaga.id)
+          ) {
+            vagasParaReservar.push(vaga.id)
+            vaga_id_found = true
+          }
+        })
+        if (vaga_id_found == false) {
+          if (siglasAdicionar.includes(sigla_cargo_destino)) {
+            cargosAdicionar.forEach((adicao) => {
+              if (adicao.codigo_vaga == sigla_cargo_destino) {
+                adicao.quantidade_pedida += 1
+              }
+            })
+          } else {
+            siglasAdicionar.push(sigla_cargo_destino)
+            jsonSolicitacaoMP.pedido_transferencia_promocao_inclui_abertura =
+              true
+            const solicitacao_funcionario = solicitacao_funcionario_inicial
+            solicitacao_funcionario.cargo =
+              sigla_cargo_destino + ' - ' + descricao_cargo_destino
+            solicitacao_funcionario.codigo_vaga = sigla_cargo_destino
+            solicitacao_funcionario.imediato = true
+            solicitacao_funcionario.quantidade_pedida = 1
+            solicitacao_funcionario.id = (contador + 1).toString()
+            solicitacao_funcionario.sigla =
+              descricao_cargo_destino + ';' + sigla_cargo_destino
+            solicitacao_funcionario.status = 'aberto'
+            contador += 1
+            cargosAdicionar.push(solicitacao_funcionario)
+          }
+        }
+      })
+      if (cargosAdicionar.length > 0) {
+        jsonSolicitacaoMP.pedido_abertura_vagas = cargosAdicionar
+      }
+      if (vagasParaReservar.length > 0) {
+        jsonSolicitacaoMP.vagasReservar = vagasParaReservar
+      }
     }
 
     // const jsonCompra = {
@@ -2212,7 +2290,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     setObservacaoGeral('')
     SetSituacaoPedido('solicitando')
     SetResetPedido('off')
-    setCargosPossiveis([])
     setEquipeDisponivel([])
     setVagasDisponiveis([])
     setFirstChangeEmpresa(true)

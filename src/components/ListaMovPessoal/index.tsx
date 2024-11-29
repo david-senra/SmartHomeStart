@@ -540,8 +540,138 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro'
     }
   }
+  const admitirNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `admissaoSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const desligarNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `desligSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const transferirNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `transfSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const promoverNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `promSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
   const criarVagasNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `abrirVagasSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const removerVagasNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `removerVagasSolMov;${nivelusur}`
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -824,6 +954,21 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
               (numeroItens += pedido.dias_horas_extras.length)
           )
         }
+        if (
+          (solicitacao.natureza_solicitacao == 'Desligamento' ||
+            solicitacao.natureza_solicitacao == 'Transferencia' ||
+            solicitacao.natureza_solicitacao == 'Promocao') &&
+          solicitacao.pedido_desligamento_transferencia_promocao_inclui_remocao
+        ) {
+          numeroItens += 3
+        }
+        if (
+          (solicitacao.natureza_solicitacao == 'Transferencia' ||
+            solicitacao.natureza_solicitacao == 'Promocao') &&
+          solicitacao.pedido_transferencia_promocao_inclui_abertura
+        ) {
+          numeroItens += 3
+        }
         let linhasobs = 0
         console.log('numeroItens')
         console.log(numeroItens)
@@ -1042,6 +1187,160 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       }
     }
   }
+  const aprovarPedidoAdmissao = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'concluido'
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = admitirNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'concluido'
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_trancada') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_trancada')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const finalizarPedidoDesligamento = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    if (
+      novoElemento.natureza_solicitacao == 'Desligamento' &&
+      novoElemento.pedido_desligamento_transferencia_promocao_inclui_remocao
+    ) {
+      novoElemento.statusSolicitacao = 'pendenteRemocao'
+      novoElemento.podeDestrancar = false
+    } else {
+      novoElemento.statusSolicitacao = 'concluido'
+      novoElemento.podeDestrancar = false
+    }
+    const resposta_servidor = desligarNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      if (novoElemento.statusSolicitacao == 'pendenteRemocao') {
+        elemento.statusSolicitacao = 'pendenteRemocao'
+      } else {
+        elemento.statusSolicitacao = 'concluido'
+      }
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const finalizarPedidoTransferencia = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    if (
+      novoElemento.pedido_desligamento_transferencia_promocao_inclui_remocao
+    ) {
+      novoElemento.statusSolicitacao = 'pendenteRemocao'
+    } else {
+      novoElemento.statusSolicitacao = 'concluido'
+    }
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = transferirNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      if (novoElemento.statusSolicitacao == 'pendenteRemocao') {
+        elemento.statusSolicitacao = 'pendenteRemocao'
+      } else {
+        elemento.statusSolicitacao = 'concluido'
+      }
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const finalizarPedidoPromocao = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    if (
+      novoElemento.pedido_desligamento_transferencia_promocao_inclui_remocao
+    ) {
+      novoElemento.statusSolicitacao = 'pendenteRemocao'
+    } else {
+      novoElemento.statusSolicitacao = 'concluido'
+    }
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = promoverNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      if (novoElemento.statusSolicitacao == 'pendenteRemocao') {
+        elemento.statusSolicitacao = 'pendenteRemocao'
+      } else {
+        elemento.statusSolicitacao = 'concluido'
+      }
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
   const aprovarPedidoAbertura = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -1128,6 +1427,36 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       document.body.style.overflowY = 'hidden'
     } else if (resposta_recebida == 'solicitacao_aberta') {
       console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const aprovarPedidoRemocao = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'concluido'
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = removerVagasNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'concluido'
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_abert')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
     } else {
       console.log('Erro!')
     }
@@ -2154,31 +2483,45 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                     <ItemCabecalhoSituacao
                       className={
                         ((pedido.natureza_solicitacao == 'AberturaVaga' ||
-                          pedido.natureza_solicitacao == 'RemocaoVaga') &&
+                          pedido.natureza_solicitacao == 'RemocaoVaga' ||
+                          ((pedido.natureza_solicitacao == 'Transferencia' ||
+                            pedido.natureza_solicitacao == 'Promocao') &&
+                            pedido.pedido_transferencia_promocao_inclui_abertura)) &&
                           nivelusur == 4 &&
                           pedido.statusSolicitacao != 'concluido') ||
                         (pedido.natureza_solicitacao != 'AberturaVaga' &&
                           pedido.natureza_solicitacao != 'RemocaoVaga' &&
                           nivelusur == 3 &&
+                          !(
+                            (pedido.natureza_solicitacao == 'Transferencia' ||
+                              pedido.natureza_solicitacao == 'Promocao') &&
+                            pedido.pedido_transferencia_promocao_inclui_abertura
+                          ) &&
                           pedido.statusSolicitacao != 'concluido') ||
                         (pedido.usuario == nomeusur && pedido.podeDestrancar)
                           ? 'noPointer'
                           : ''
                       }
                       onClick={(e) =>
-                        (((pedido.natureza_solicitacao == 'AberturaVaga' ||
-                          pedido.natureza_solicitacao == 'RemocaoVaga') &&
-                          nivelusur == 3) ||
-                          (nivelusur == 3 && pedido.podeDestrancar == false) ||
-                          (nivelusur == 4 &&
-                            pedido.natureza_solicitacao != 'AberturaVaga' &&
-                            pedido.natureza_solicitacao != 'RemocaoVaga') ||
-                          pedido.statusSolicitacao == 'concluido' ||
-                          (pedido.statusSolicitacao == 'aberto' &&
-                            nivelusur != 3 &&
-                            nivelusur != 4 &&
-                            pedido.usuario != nomeusur)) &&
-                        toggleCard(e)
+                        !(
+                          ((pedido.natureza_solicitacao == 'AberturaVaga' ||
+                            pedido.natureza_solicitacao == 'RemocaoVaga' ||
+                            ((pedido.natureza_solicitacao == 'Transferencia' ||
+                              pedido.natureza_solicitacao == 'Promocao') &&
+                              pedido.pedido_transferencia_promocao_inclui_abertura)) &&
+                            nivelusur == 4 &&
+                            pedido.statusSolicitacao != 'concluido') ||
+                          (pedido.natureza_solicitacao != 'AberturaVaga' &&
+                            pedido.natureza_solicitacao != 'RemocaoVaga' &&
+                            nivelusur == 3 &&
+                            !(
+                              (pedido.natureza_solicitacao == 'Transferencia' ||
+                                pedido.natureza_solicitacao == 'Promocao') &&
+                              pedido.pedido_transferencia_promocao_inclui_abertura
+                            ) &&
+                            pedido.statusSolicitacao != 'concluido') ||
+                          (pedido.usuario == nomeusur && pedido.podeDestrancar)
+                        ) && toggleCard(e)
                       }
                     >
                       <b>
@@ -2201,11 +2544,20 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                           pedido.pedido_abertura_inclui_admissao != true &&
                           pedido.natureza_solicitacao != 'AberturaVaga' &&
                           pedido.natureza_solicitacao != 'RemocaoVaga' &&
+                          !(
+                            (pedido.natureza_solicitacao == 'Transferencia' ||
+                              pedido.natureza_solicitacao == 'Promocao') &&
+                            pedido.pedido_transferencia_promocao_inclui_abertura
+                          ) &&
                           pedido.statusSolicitacao != 'concluido' &&
                           pedido.podeDestrancar == true) ||
                           (nivelusur == 4 &&
                             (pedido.natureza_solicitacao == 'AberturaVaga' ||
-                              pedido.natureza_solicitacao == 'RemocaoVaga') &&
+                              pedido.natureza_solicitacao == 'RemocaoVaga' ||
+                              ((pedido.natureza_solicitacao ==
+                                'Transferencia' ||
+                                pedido.natureza_solicitacao == 'Promocao') &&
+                                pedido.pedido_transferencia_promocao_inclui_abertura)) &&
                             pedido.statusSolicitacao != 'concluido' &&
                             pedido.podeDestrancar == true)) && (
                           <IconeDiv>
@@ -2253,7 +2605,13 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                         </DivTituloSecaoCard>
                         <GridCabecalhoItemsPedido
                           id={pedido.id}
-                          tipoSolicitacao={pedido.natureza_solicitacao}
+                          tipoSolicitacao={
+                            (pedido.natureza_solicitacao == 'Transferencia' ||
+                              pedido.natureza_solicitacao == 'Promocao') &&
+                            pedido.pedido_transferencia_promocao_inclui_abertura
+                              ? 'AberturaVaga'
+                              : pedido.natureza_solicitacao
+                          }
                         >
                           <LinhaCabecalhoItems>
                             <b>Obra</b>
@@ -2269,7 +2627,14 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                           pedido.pedido_abertura_vagas.map((item) => (
                             <GridItemsPedido
                               key={item.id}
-                              tipoSolicitacao={pedido.natureza_solicitacao}
+                              tipoSolicitacao={
+                                (pedido.natureza_solicitacao ==
+                                  'Transferencia' ||
+                                  pedido.natureza_solicitacao == 'Promocao') &&
+                                pedido.pedido_transferencia_promocao_inclui_abertura
+                                  ? 'AberturaVaga'
+                                  : pedido.natureza_solicitacao
+                              }
                               className={`classeItems ${
                                 pedido.statusSolicitacao != 'aberto' &&
                                 item.status == 'entregue' &&
@@ -2278,7 +2643,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               numeroFaltasAdicionalHoras={0}
                             >
                               <li>
-                                <p>{pedido.obra.descricao_completa}</p>
+                                <p>
+                                  {pedido.natureza_solicitacao ==
+                                  'Transferencia'
+                                    ? pedido.obra_destino.descricao_completa
+                                    : pedido.obra.descricao_completa}
+                                </p>
                               </li>
                               <li>
                                 <p>{item.sigla.split(';')[0]}</p>
@@ -2315,13 +2685,13 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             </DivSugestFornecedoresObs>
                           )}
                         {pedido.natureza_solicitacao != 'AberturaVaga' && (
-                          <h3>
-                            <b>Obs:</b> Abertura de vaga necessária para
-                            efetivar a{' '}
+                          <TextoObservacaoAberturaRemocao>
+                            <b>Obs:</b> Abertura de vaga(s) necessária para
+                            efetivar a(s){' '}
                             {pedido.natureza_solicitacao == 'Transferencia'
-                              ? 'transferência!'
-                              : 'promoção!'}
-                          </h3>
+                              ? 'transferência(s)!'
+                              : 'promoção(ões)!'}
+                          </TextoObservacaoAberturaRemocao>
                         )}
                         {nivelusur == 4 &&
                           pedido.statusSolicitacao == 'pendenteAbertura' && (
@@ -2375,7 +2745,8 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             </>
                           )}
                         {(pedido.statusSolicitacao == 'concluido' ||
-                          pedido.statusSolicitacao == 'andamento') && (
+                          pedido.statusSolicitacao == 'andamento' ||
+                          pedido.statusSolicitacao == 'pendenteRemocao') && (
                           <>
                             <br></br>
                             <DivBotoesAprovacao
@@ -2392,9 +2763,11 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                           </>
                         )}
                         {pedido.statusSolicitacao != 'pendenteAbertura' &&
+                          pedido.statusSolicitacao != 'pendenteRemocao' &&
                           pedido.statusSolicitacao != 'concluido' &&
                           pedido.status_solicitacao != 'andamento' &&
-                          pedido.pedido_abertura_inclui_admissao && (
+                          (pedido.pedido_abertura_inclui_admissao ||
+                            pedido.pedido_transferencia_promocao_inclui_abertura) && (
                             <DivBotoesAprovacao></DivBotoesAprovacao>
                           )}
                       </div>
@@ -2486,16 +2859,31 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             ))}
                         {nivelusur == 3 &&
                           pedido.statusSolicitacao == 'andamento' && (
-                            <DivBotoesAprovacao>
-                              <button className="aprovar">Finalizar</button>
+                            <DivBotoesAprovacao className="remocaoVaga">
+                              <button
+                                id={pedido.id}
+                                className="aprovar"
+                                onClick={(e) => aprovarPedidoAdmissao(e)}
+                              >
+                                Finalizar
+                              </button>
                             </DivBotoesAprovacao>
                           )}
                         {nivelusur != 3 &&
                           pedido.statusSolicitacao == 'andamento' && (
-                            <DivBotoesAprovacao>
-                              <h3>EM ANDAMENTO</h3>
+                            <DivBotoesAprovacao className="remocaoVaga">
+                              <h3 className={'hello'}>EM ANDAMENTO</h3>
                             </DivBotoesAprovacao>
                           )}
+                        {pedido.statusSolicitacao == 'concluido' && (
+                          <>
+                            <br></br>
+                            <DivBotoesAprovacao className={'remocaoVaga'}>
+                              <h3 className="aprovado">FINALIZADO</h3>
+                            </DivBotoesAprovacao>
+                            <br></br>
+                          </>
+                        )}
                         {pedido.statusSolicitacao != 'andamento' && <br></br>}
                       </div>
                     )}
@@ -2620,7 +3008,14 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 </li>
                                 {pedido.natureza_solicitacao == 'Promocao' && (
                                   <li>
-                                    <p>{item.novo_cargo}</p>
+                                    <p>
+                                      {item.novo_cargo.split(' - ')[2] !=
+                                      undefined
+                                        ? item.novo_cargo.split(' - ')[1] +
+                                          ' - ' +
+                                          item.novo_cargo.split(' - ')[2]
+                                        : item.novo_cargo.split(' - ')[1]}
+                                    </p>
                                   </li>
                                 )}
                                 {(pedido.natureza_solicitacao ==
@@ -2723,22 +3118,80 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                     : 'remocaoVaga'
                                 }
                               >
-                                <button className="aprovar">Finalizar</button>
+                                <button
+                                  id={pedido.id}
+                                  className="aprovar"
+                                  onClick={(e) => {
+                                    if (
+                                      pedido.natureza_solicitacao ==
+                                      'Desligamento'
+                                    ) {
+                                      finalizarPedidoDesligamento(e)
+                                    } else if (
+                                      pedido.natureza_solicitacao ==
+                                      'Transferencia'
+                                    ) {
+                                      finalizarPedidoTransferencia(e)
+                                    } else if (
+                                      pedido.natureza_solicitacao == 'Promocao'
+                                    ) {
+                                      finalizarPedidoPromocao(e)
+                                    }
+                                  }}
+                                >
+                                  Finalizar
+                                </button>
                               </DivBotoesAprovacao>
                             )}
                           {nivelusur != 3 &&
                             pedido.statusSolicitacao == 'andamento' && (
-                              <DivBotoesAprovacao>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.pedido_desligamento_transferencia_promocao_inclui_remocao ==
+                                  false
+                                    ? 'remocaoVaga'
+                                    : ''
+                                }
+                              >
                                 <h3>EM ANDAMENTO</h3>
                               </DivBotoesAprovacao>
                             )}
+                          {(pedido.statusSolicitacao == 'concluido' ||
+                            pedido.statusSolicitacao == 'pendenteRemocao') && (
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.pedido_desligamento_transferencia_promocao_inclui_remocao ==
+                                  false
+                                    ? 'remocaoVaga'
+                                    : ''
+                                }
+                              >
+                                <h3 className="aprovado">FINALIZADO</h3>
+                              </DivBotoesAprovacao>
+                              <br></br>
+                            </>
+                          )}
                           {pedido.statusSolicitacao != 'andamento' &&
-                            pedido.pedido_desligamento_transferencia_promocao_inclui_remocao && (
-                              <DivBotoesAprovacao></DivBotoesAprovacao>
+                            pedido.statusSolicitacao != 'concluido' &&
+                            pedido.statusSolicitacao != 'pendenteRemocao' &&
+                            pedido.pedido_desligamento_transferencia_promocao_inclui_remocao ==
+                              true && (
+                              <>
+                                <DivBotoesAprovacao
+                                  className={
+                                    pedido.pedido_desligamento_transferencia_promocao_inclui_remocao
+                                      ? ''
+                                      : 'remocaoVaga'
+                                  }
+                                ></DivBotoesAprovacao>
+                              </>
                             )}
                           {pedido.statusSolicitacao != 'andamento' &&
+                            pedido.statusSolicitacao != 'concluido' &&
                             pedido.pedido_desligamento_transferencia_promocao_inclui_remocao ==
-                              false && <br></br>}
+                              true && <br></br>}
                         </div>
                       )}
                     {(pedido.natureza_solicitacao == 'RemocaoVaga' ||
@@ -3490,8 +3943,20 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             <>
                               <br></br>
                               <DivBotoesAprovacao className={'remocaoVaga'}>
-                                <button className="rejeitar">Rejeitar</button>
-                                <button className="aprovar">Aprovar</button>
+                                <button
+                                  id={pedido.id}
+                                  className="rejeitar"
+                                  onClick={(e) => rejeitarPedidoRemocao(e)}
+                                >
+                                  Rejeitar
+                                </button>
+                                <button
+                                  id={pedido.id}
+                                  className="aprovar"
+                                  onClick={(e) => aprovarPedidoRemocao(e)}
+                                >
+                                  Aprovar
+                                </button>
                               </DivBotoesAprovacao>
                             </>
                           )}
@@ -3504,7 +3969,16 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               </DivBotoesAprovacao>
                             </>
                           )}
-                        <br></br>
+                        {(pedido.statusSolicitacao == 'concluido' ||
+                          (pedido.statusSolicitacao == 'andamento' &&
+                            pedido.natureza_solicitacao == 'RemocaoVaga')) && (
+                          <>
+                            <br></br>
+                            <DivBotoesAprovacao className={'remocaoVaga'}>
+                              <h3 className="aprovado">APROVADO</h3>
+                            </DivBotoesAprovacao>
+                          </>
+                        )}
                       </div>
                     )}
                   </DivGridCabecalho>
