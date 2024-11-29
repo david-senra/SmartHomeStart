@@ -421,7 +421,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         return 'Abertura de Vagas'
       }
     } else if (texto == 'RemocaoVaga') {
-      return 'Remoção de Vagas'
+      return 'Desativar Vagas'
     } else if (texto == 'Admissao') {
       return 'Admissão de Pessoal'
     } else if (texto == 'Transferencia') {
@@ -959,6 +959,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     SetMensagemErro('')
     const id_elemento = e.currentTarget.id.split(';')[0]
     const codigo_vaga_remocao = e.currentTarget.id.split(';')[1]
+    const cargo_vaga_remocao = e.currentTarget.id.split(';')[2]
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosFuncionarios]
     function isElement(pedido: SolicitacaoFuncionario) {
@@ -974,8 +975,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       setRemocaoNoDesligamentoTransferencia(true)
       const pedidoRemocaoVaga = {
         id: contadorRemocao.toString(),
-        codigo_vaga: elemento.id_pessoa,
-        cargo: elemento.cargo,
+        codigo_vaga: codigo_vaga_remocao,
+        cargo: cargo_vaga_remocao,
         incluir: false,
         sigla: '',
         quantidade_pedida: 1,
@@ -1028,6 +1029,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosFuncionarios(nova_lista)
+    console.log(e.currentTarget.id)
   }
   const changeDataFaltasAdicional = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -2369,7 +2371,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                         style={{ display: 'none' }}
                       ></option>
                       <option value="AberturaVaga">Abertura de Vagas</option>
-                      <option value="RemocaoVaga">Remoção de Vagas</option>
+                      <option value="RemocaoVaga">Desativar Vagas</option>
                       <option value="Admissao">Admissão</option>
                       <option value="Desligamento">Desligamento</option>
                     </select>
@@ -3035,7 +3037,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                           naturezaMovimentacao == 'Desligamento') && (
                           <DivEmpresa className="noTopMargin">
                             <label className="noBreak">
-                              {pedido.imediato ? 'Remover Vaga?' : 'Rem. Vaga?'}
+                              {pedido.imediato
+                                ? 'Desativar Vaga?'
+                                : 'Des. Vaga?'}
                             </label>
                             <select
                               id={
@@ -3370,7 +3374,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                           pedido.id_pessoa != '' &&
                           pedido.possiveis_promocoes.length > 0 && (
                             <DivEmpresa className="noTopMargin">
-                              <label>Remover Cargo Atual?</label>
+                              <label>Desativar Vaga Atual?</label>
                               <select
                                 id={
                                   pedido.id.toString() +
@@ -4072,8 +4076,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       inclusaoPedidosAdmissaoVaga.filter(
                         (pedido) => pedido.incluir
                       ).length == 1)
-                      ? 'REMOÇÃO DE VAGA SOLICITADA:'
-                      : 'REMOÇÕES DE VAGA SOLICITADAS:'}
+                      ? 'SOLICITAÇÃO PARA DESATIVAR VAGA:'
+                      : 'SOLICITAÇÃO PARA DESATIVAR VAGAS:'}
                   </b>
                 </li>
               )}
