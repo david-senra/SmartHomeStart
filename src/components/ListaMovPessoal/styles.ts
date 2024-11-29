@@ -2165,6 +2165,52 @@ export const TextoSituacaoCabecalho = styled.p`
       transform: translate(-5.5%, -5.5%);
     }
   }
+  &.cancelado {
+    &::after {
+      content: 'CANCELADO';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 2px;
+      right: 5.2%;
+      transform: translate(-5.5%, -5.5%);
+    }
+    &.especialAdm {
+      &::after {
+        content: 'CANCELADO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &.noSpecial {
+      &::after {
+        content: 'CANCELADO';
+        visibility: visible;
+        display: block;
+        position: absolute;
+        padding: 5px;
+        top: 5px;
+        right: 5.5%;
+        transform: translate(-5.5%, -5.5%);
+      }
+    }
+    &::after {
+      content: 'CANCELADO';
+      visibility: visible;
+      display: block;
+      position: absolute;
+      padding: 5px;
+      top: 5px;
+      right: 5.5%;
+      transform: translate(-5.5%, -5.5%);
+    }
+  }
   @media only screen and (max-width: 768px) {
     &.aberto {
       &::after {

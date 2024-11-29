@@ -2126,7 +2126,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       altura: 0,
       podeDestrancar: true,
       todosEntregues: '',
-      vagasReservar: grupoVazio
+      vagasReservar: grupoVazio,
+      data_cancelamento: ''
     }
     if (
       naturezaMovimentacao == 'Transferencia' ||
@@ -4106,7 +4107,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     </GridLista>
                   </li>
                 ))}
-
               {naturezaMovimentacao == 'Promocao' && (
                 <li>
                   <GridListaCabecalho className="Promocao">

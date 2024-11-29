@@ -356,6 +356,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     podeDestrancar: boolean
     requisicao: string
     todosEntregues: boolean
+    data_cancelamento: string
     itens: Compra[]
 
     constructor(data: {
@@ -381,6 +382,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       podeDestrancar: boolean
       requisicao: string
       todosEntregues: boolean
+      data_cancelamento: string
       itens: Compra[]
     }) {
       this.id = data.id
@@ -397,6 +399,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       this.podeDestrancar = data.podeDestrancar
       this.requisicao = data.requisicao
       this.todosEntregues = data.todosEntregues
+      this.data_cancelamento = data.data_cancelamento
       this.obra_destino = data.obra_destino
       this.pedido_abertura_vagas = data.pedido_abertura_vagas
       this.pedido_abertura_inclui_admissao =
@@ -854,7 +857,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     }
   }
   const cancelarSolicitacaoNoServidor = async (solicitacao: Solicitacao) => {
-    solicitacao.requisicao = `cancelarSolicitacao`
+    solicitacao.requisicao = `cancelarSolMov`
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -943,7 +946,8 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
           podeDestrancar: value.podeDestrancar,
           requisicao: value.requisicao,
           todosEntregues: value.todosEntregues,
-          itens: []
+          itens: [],
+          data_cancelamento: value.data_cancelamento
         }
         let numeroItens = 0
         if (
@@ -1045,7 +1049,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     if (naturezaSolicitacao == 'AberturaVaga') {
       return 'Abertura de Vagas'
     } else if (naturezaSolicitacao == 'RemocaoVaga') {
-      return 'Remoção de Vagas'
+      return 'Desativar Vagas'
     } else if (naturezaSolicitacao == 'Admissao') {
       return 'Admissão de Pessoal'
     } else if (naturezaSolicitacao == 'Desligamento') {
@@ -1591,10 +1595,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     elemento.statusSolicitacao = 'cancelado'
     const dataAgora = new Date()
     const dataAgoraBrasil = dataAgora.toLocaleDateString('pt-Br')
-    elemento.itens.forEach((item) => {
-      item.dataFinalizado == '' && (item.dataFinalizado = dataAgoraBrasil)
-      item.status = 'cancelado'
-    })
+    elemento.data_cancelamento = dataAgoraBrasil
     const resposta_atualizacao_servidor =
       cancelarSolicitacaoNoServidor(elemento)
     const resposta_recebida = await resposta_atualizacao_servidor
@@ -3274,7 +3275,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               : ''
                           }
                         >
-                          <h3>Pedido de Remoção de Vagas:</h3>
+                          <h3>Pedido p/ Desativar Vagas:</h3>
                         </DivTituloSecaoCard>
                         <GridCabecalhoItemsPedido
                           id={pedido.id}
@@ -3996,7 +3997,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                         {pedido.natureza_solicitacao != 'RemocaoVaga' && (
                           <TextoObservacaoAberturaRemocao>
-                            <b>Obs:</b> Remoção incluída na Solicitação para
+                            <b>Obs:</b> Pedido de desativação incluído para
                             vagas que ficariam disponíveis{' '}
                             {pedido.natureza_solicitacao == 'Desligamento'
                               ? 'com o(s) desligamento(s).'
