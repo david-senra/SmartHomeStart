@@ -108,6 +108,9 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     nome: string
     rg: string
     cpf: string
+    cnpj: string
+    telefone: string
+    email: string
     contato: string
     cargo: string
     novo_cargo: string
@@ -140,6 +143,9 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       nome: string
       rg: string
       cpf: string
+      cnpj: string
+      telefone: string
+      email: string
       contato: string
       cargo: string
       novo_cargo: string
@@ -171,6 +177,9 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       this.nome = data.nome
       this.rg = data.rg
       this.cpf = data.cpf
+      this.cnpj = data.cnpj
+      this.telefone = data.telefone
+      this.email = data.email
       this.contato = data.contato
       this.cargo = data.cargo
       this.novo_cargo = data.novo_cargo
@@ -339,8 +348,8 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     natureza_solicitacao: string
     data_solicitacao: string
     empresa: string
-    obra: Obra
-    obra_destino: Obra
+    obra: string
+    obra_destino: string
     pedido_abertura_vagas: AcrescimoCargo[]
     pedido_abertura_inclui_admissao: boolean
     pedidos_remocao: SolicitacaoFuncionario[]
@@ -365,8 +374,8 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       natureza_solicitacao: string
       data_solicitacao: string
       empresa: string
-      obra: Obra
-      obra_destino: Obra
+      obra: string
+      obra_destino: string
       pedido_abertura_vagas: []
       pedido_abertura_inclui_admissao: boolean
       pedidos_remocao: SolicitacaoFuncionario[]
@@ -2705,8 +2714,8 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 <p>
                                   {pedido.natureza_solicitacao ==
                                   'Transferencia'
-                                    ? pedido.obra_destino.descricao_completa
-                                    : pedido.obra.descricao_completa}
+                                    ? pedido.obra_destino
+                                    : pedido.obra}
                                 </p>
                               </li>
                               <li>
@@ -2890,7 +2899,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 numeroFaltasAdicionalHoras={0}
                               >
                                 <li>
-                                  <p>{pedido.obra.descricao_completa}</p>
+                                  <p>{pedido.obra}</p>
                                 </li>
                                 <li>
                                   <p>{item.codigo_vaga}</p>
@@ -3046,14 +3055,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 } ${pedido.natureza_solicitacao == 'Faltas' || pedido.natureza_solicitacao == 'Adicional' || pedido.natureza_solicitacao == 'HorasExtras' ? 'linhaVariavel' : ''}`}
                               >
                                 <li>
-                                  <p>{pedido.obra.descricao_completa}</p>
+                                  <p>{pedido.obra}</p>
                                 </li>
                                 {pedido.natureza_solicitacao ==
                                   'Transferencia' && (
                                   <li>
-                                    <p>
-                                      {pedido.obra_destino.descricao_completa}
-                                    </p>
+                                    <p>{pedido.obra_destino}</p>
                                   </li>
                                 )}
                                 <li>
@@ -3316,7 +3323,7 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               numeroFaltasAdicionalHoras={0}
                             >
                               <li>
-                                <p>{pedido.obra.descricao_completa}</p>
+                                <p>{pedido.obra}</p>
                               </li>
                               <li>
                                 <p>

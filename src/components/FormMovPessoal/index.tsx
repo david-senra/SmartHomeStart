@@ -118,6 +118,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nome: string
     rg: string
     cpf: string
+    cnpj: string
+    telefone: string
+    email: string
     contato: string
     cargo: string
     novo_cargo: string
@@ -150,6 +153,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: string
       rg: string
       cpf: string
+      cnpj: string
+      telefone: string
+      email: string
       contato: string
       cargo: string
       novo_cargo: string
@@ -181,6 +187,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.nome = data.nome
       this.rg = data.rg
       this.cpf = data.cpf
+      this.cnpj = data.cnpj
+      this.telefone = data.telefone
+      this.email = data.email
       this.contato = data.contato
       this.cargo = data.cargo
       this.novo_cargo = data.novo_cargo
@@ -247,6 +256,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nome: '',
     rg: '',
     cpf: '',
+    cnpj: '',
+    telefone: '',
+    email: '',
     contato: '',
     cargo: '',
     novo_cargo: '',
@@ -985,6 +997,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         nome: '',
         rg: '',
         cpf: '',
+        cnpj: '',
+        telefone: '',
+        email: '',
         contato: '',
         novo_cargo: '',
         possiveis_promocoes: [],
@@ -1166,6 +1181,51 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosAdmissaoVagas(nova_lista)
   }
+  const changeCNPJAdmissao = (e: React.ChangeEvent<HTMLInputElement>) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.cnpj = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosAdmissaoVagas(nova_lista)
+  }
+  const changeTelAdmissao = (e: React.ChangeEvent<HTMLInputElement>) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.telefone = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosAdmissaoVagas(nova_lista)
+  }
+  const changeEmailAdmissao = (e: React.ChangeEvent<HTMLInputElement>) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.email = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosAdmissaoVagas(nova_lista)
+  }
   const changeTipoAdmissaoInclusao = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -1182,6 +1242,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setInclusaoPedidosAdmissaoVagas(nova_lista)
+    console.log(elemento.codigo_vaga)
   }
   const changeNomeAdmissaoInclusao = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -1232,6 +1293,57 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 0, elemento)
     setInclusaoPedidosAdmissaoVagas(nova_lista)
   }
+  const changeCNPJAdmissaoInclusao = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMensagemErroInclusao('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...inclusaoPedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.cnpj = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setInclusaoPedidosAdmissaoVagas(nova_lista)
+  }
+  const changeTelAdmissaoInclusao = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMensagemErroInclusao('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...inclusaoPedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.telefone = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setInclusaoPedidosAdmissaoVagas(nova_lista)
+  }
+  const changeEmailAdmissaoInclusao = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMensagemErroInclusao('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...inclusaoPedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.email = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setInclusaoPedidosAdmissaoVagas(nova_lista)
+  }
   const changeInclusaoAdmissao = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMensagemErroInclusao('')
     const id_elemento = e.currentTarget.id
@@ -1250,6 +1362,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 1)
     nova_lista.splice(indice_elemento, 0, elemento)
     setInclusaoPedidosAdmissaoVagas(nova_lista)
+    console.log(elemento.codigo_vaga)
   }
   const changeQuantidadeVaga = (e: React.ChangeEvent<HTMLInputElement>) => {
     SetMensagemErro('')
@@ -1500,6 +1613,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: '',
       rg: '',
       cpf: '',
+      cnpj: '',
+      telefone: '',
+      email: '',
       contato: '',
       cargo: '',
       novo_cargo: '',
@@ -1546,6 +1662,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: '',
       rg: '',
       cpf: '',
+      cnpj: '',
+      telefone: '',
+      email: '',
       contato: '',
       cargo: '',
       novo_cargo: '',
@@ -1592,6 +1711,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: '',
       rg: '',
       cpf: '',
+      cnpj: '',
+      telefone: '',
+      email: '',
       contato: '',
       cargo: '',
       novo_cargo: '',
@@ -1992,6 +2114,9 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     nome: '',
                     rg: '',
                     cpf: '',
+                    cnpj: '',
+                    telefone: '',
+                    email: '',
                     contato: '',
                     sigla: pedido.sigla.split(';')[1],
                     quantidade_pedida: 1,
@@ -2109,8 +2234,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       data_solicitacao: dataAgoraBrasil,
       horarioSolicitacao: horarioAgora,
       empresa: empresaSelecionada,
-      obra: obra,
-      obra_destino: obraDestino,
+      obra: obra.descricao_completa,
+      obra_destino: obraDestino.descricao_completa,
       pedido_abertura_vagas: novoPedidoAbertura,
       pedido_abertura_inclui_admissao: admissaoNaAbertura,
       pedidos_funcionarios: novoPedidoSolicitacao,
@@ -2647,6 +2772,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                           <DivEmpresa>
                             <label>Tipo de Admissão:</label>
                             {pedido.codigo_vaga != '' &&
+                              naturezaMovimentacao == 'Admissao' &&
                               pedido.codigo_vaga.slice(2, 4) != 'ES' && (
                                 <select
                                   id={pedido.id.toString()}
@@ -2702,6 +2828,42 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                               required
                               autoComplete="off"
                               onChange={(e) => changeCPFAdmissao(e)}
+                            ></input>
+                          </DivNomeVaga>
+                          <DivNomeVaga className="DadosNome">
+                            <label>CNPJ:</label>
+                            <input
+                              id={pedido.id.toString()}
+                              name="item"
+                              type="text"
+                              defaultValue={pedido.cnpj}
+                              required
+                              autoComplete="off"
+                              onChange={(e) => changeCNPJAdmissao(e)}
+                            ></input>
+                          </DivNomeVaga>
+                          <DivNomeVaga className="DadosPessoais">
+                            <label>Telefone:</label>
+                            <input
+                              id={pedido.id.toString()}
+                              name="item"
+                              type="text"
+                              defaultValue={pedido.telefone}
+                              required
+                              autoComplete="off"
+                              onChange={(e) => changeTelAdmissao(e)}
+                            ></input>
+                          </DivNomeVaga>
+                          <DivNomeVaga className="DadosNome">
+                            <label>E-mail:</label>
+                            <input
+                              id={pedido.id.toString()}
+                              name="item"
+                              type="text"
+                              defaultValue={pedido.email}
+                              required
+                              autoComplete="off"
+                              onChange={(e) => changeEmailAdmissao(e)}
                             ></input>
                           </DivNomeVaga>
                         </CardAdmissao>
@@ -3673,7 +3835,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                 <DivEmpresa>
                   <label>Tipo de Admissão:</label>
                   {pedido.codigo_vaga != '' &&
-                    pedido.codigo_vaga.split(' #')[0] != 'Estagiário' && (
+                    pedido.codigo_vaga.slice(0, 10) != 'Estagiário' && (
                       <select
                         id={pedido.id.toString()}
                         defaultValue={pedido.tipo_admissao}
@@ -3690,7 +3852,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       </select>
                     )}
                   {pedido.codigo_vaga != '' &&
-                    pedido.codigo_vaga.split(' #')[0] == 'Estagiário' && (
+                    pedido.codigo_vaga.slice(0, 10) == 'Estagiário' && (
                       <TextoEstagio>ESTÁGIO</TextoEstagio>
                     )}
                 </DivEmpresa>
@@ -3734,6 +3896,48 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     required
                     autoComplete="off"
                     onChange={(e) => changeCPFAdmissaoInclusao(e)}
+                  ></input>
+                </DivNomeVaga>
+              )}
+              {pedido.incluir == true && (
+                <DivNomeVaga className="DadosNome">
+                  <label>CNPJ:</label>
+                  <input
+                    id={pedido.id.toString()}
+                    name="item"
+                    type="text"
+                    defaultValue={pedido.cnpj}
+                    required
+                    autoComplete="off"
+                    onChange={(e) => changeCNPJAdmissaoInclusao(e)}
+                  ></input>
+                </DivNomeVaga>
+              )}
+              {pedido.incluir == true && (
+                <DivNomeVaga className="DadosPessoais">
+                  <label>Telefone:</label>
+                  <input
+                    id={pedido.id.toString()}
+                    name="item"
+                    type="text"
+                    defaultValue={pedido.telefone}
+                    required
+                    autoComplete="off"
+                    onChange={(e) => changeTelAdmissaoInclusao(e)}
+                  ></input>
+                </DivNomeVaga>
+              )}
+              {pedido.incluir == true && (
+                <DivNomeVaga className="DadosNome">
+                  <label>E-mail:</label>
+                  <input
+                    id={pedido.id.toString()}
+                    name="item"
+                    type="text"
+                    defaultValue={pedido.email}
+                    required
+                    autoComplete="off"
+                    onChange={(e) => changeEmailAdmissaoInclusao(e)}
                   ></input>
                 </DivNomeVaga>
               )}
