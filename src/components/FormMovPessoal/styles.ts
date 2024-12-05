@@ -946,8 +946,11 @@ export const DivButtonRemoverItem = styled.div`
     &.removerCard {
       position: absolute;
       right: 27%;
-      margin-top: -170px;
+      margin-top: -215px;
       transform: translate(-27%, -27%);
+      &.cardMei {
+        margin-top: -240px;
+      }
     }
     &.remocaoVagas {
       margin-left: 26vw;
