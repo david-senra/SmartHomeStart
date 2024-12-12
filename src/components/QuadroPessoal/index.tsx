@@ -2991,7 +2991,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                             ))}
                         </DivGridCabecalho>
                       </CardObra>
-                      {!popUpOpen && (
+                      {/* {!popUpOpen && (
                         <IconeExcelDiv>
                           <IconeExcelImg
                             id={obra.id}
@@ -3008,7 +3008,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                             onClick={(e) => baixarPDFPedido(e)}
                           ></IconePDFImg>
                         </IconePDFDiv>
-                      )}
+                      )} */}
                     </LinhaDiv>
                   ))}
                 </ListaObras>
