@@ -44,7 +44,7 @@ export const DivGeral = styled.div`
   }
 `
 
-export const ListaSolicitacoes = styled.ul`
+export const ListaObras = styled.ul`
   padding-top: 20px;
   padding-bottom: 100px;
   display: flex;
@@ -74,8 +74,7 @@ export const ListaSolicitacoes = styled.ul`
   }
 `
 
-export const CardSolicitacao = styled.ul<{ tamanho: number }>`
-  max-height: ${(props) => (350 + props.tamanho * 60).toString()}px;
+export const CardObra = styled.ul<{ tamanho: number }>`
   overflow-x: visible;
   position: relative;
   display: grid;
@@ -91,6 +90,7 @@ export const CardSolicitacao = styled.ul<{ tamanho: number }>`
     padding-bottom: 0px;
   }
   &.open {
+    max-height: ${(props) => (350 + props.tamanho * 60).toString()}px;
   }
   &.closed {
     max-height: 37px;
@@ -149,7 +149,7 @@ export const GridCabecalho = styled.ul<{
   width: 79.7vw;
   border-radius: 5px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-auto-rows: 34px;
   gap: 3px;
   border-bottom: solid 2px black;
@@ -234,7 +234,7 @@ export const GridCabecalho = styled.ul<{
 export const GridCabecalhoSolto = styled.ul`
   width: 79.7vw;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 3px;
   margin-bottom: 5px;
   margin-right: 24px;
@@ -272,23 +272,7 @@ export const GridCabecalhoItemsPedido = styled.ul<{
   grid-template-columns: ${(props) => {
     const tipoPedido = props.tipoSolicitacao
     if (tipoPedido == 'AberturaVaga') {
-      return '20vw 15vw 15vw'
-    } else if (tipoPedido == 'Desligamento') {
-      return '17vw 8vw 15vw 15vw 8vw'
-    } else if (tipoPedido == 'Transferencia') {
-      return '17vw 15vw 6vw 12vw 12vw 6.5vw'
-    } else if (tipoPedido == 'Promocao') {
-      return '17vw 8vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Ferias') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Faltas') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Adicional') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'HorasExtras') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Admissao') {
-      return '1fr 1fr'
+      return '17vw 17vw 8vw 5vw 10vw'
     }
   }};
   justify-content: center;
@@ -330,23 +314,7 @@ export const GridItemsPedido = styled.ul<{
   grid-template-columns: ${(props) => {
     const tipoPedido = props.tipoSolicitacao
     if (tipoPedido == 'AberturaVaga') {
-      return '20vw 15vw 15vw'
-    } else if (tipoPedido == 'Desligamento') {
-      return '17vw 8vw 15vw 15vw 8vw'
-    } else if (tipoPedido == 'Transferencia') {
-      return '17vw 15vw 6vw 12vw 12vw 6.5vw'
-    } else if (tipoPedido == 'Promocao') {
-      return '17vw 8vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Ferias') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Faltas') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Adicional') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'HorasExtras') {
-      return '17vw 6vw 15vw 15vw 15vw'
-    } else if (tipoPedido == 'Admissao') {
-      return '1fr 1fr'
+      return '17vw 17vw 8vw 5vw 10vw'
     }
   }};
   grid-template-rows: 25px;
@@ -1987,276 +1955,132 @@ export const TextoSituacaoCabecalho = styled.p`
     &::after {
       content: 'ABERTO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 2px;
-      right: 5.2%;
-      transform: translate(-5.5%, -5.5%);
     }
     &.especialAdm {
       &::after {
         content: 'ABERTO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &.noSpecial {
       &::after {
         content: 'ABERTO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &::after {
       content: 'ABERTO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 5px;
-      right: 5.5%;
-      transform: translate(-5.5%, -5.5%);
     }
   }
   &.andamento {
     &::after {
       content: 'ANDAMENTO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 2px;
-      right: 5.2%;
-      transform: translate(-5.5%, -5.5%);
     }
     &.especialAdm {
       &::after {
         content: 'ANDAMENTO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &.noSpecial {
       &::after {
         content: 'ANDAMENTO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &::after {
       content: 'ANDAMENTO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 5px;
-      right: 5.5%;
-      transform: translate(-5.5%, -5.5%);
     }
   }
   &.pendente {
     &::after {
       content: 'PENDENTE';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 2px;
-      right: 5.2%;
-      transform: translate(-5.5%, -5.5%);
     }
     &.especialAdm {
       &::after {
         content: 'PENDENTE';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &.noSpecial {
       &::after {
         content: 'PENDENTE';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &::after {
       content: 'PENDENTE';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 5px;
-      right: 5.5%;
-      transform: translate(-5.5%, -5.5%);
     }
   }
   &.concluido {
     &::after {
       content: 'CONCLUÍDO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 2px;
-      right: 5.2%;
-      transform: translate(-5.5%, -5.5%);
     }
     &.especialAdm {
       &::after {
         content: 'CONCLUÍDO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &.noSpecial {
       &::after {
         content: 'CONCLUÍDO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &::after {
       content: 'CONCLUÍDO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 5px;
-      right: 5.5%;
-      transform: translate(-5.5%, -5.5%);
     }
   }
   &.cancelado {
     &::after {
       content: 'CANCELADO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 2px;
-      right: 5.2%;
-      transform: translate(-5.5%, -5.5%);
     }
     &.especialAdm {
       &::after {
         content: 'CANCELADO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &.noSpecial {
       &::after {
         content: 'CANCELADO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &::after {
       content: 'CANCELADO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 5px;
-      right: 5.5%;
-      transform: translate(-5.5%, -5.5%);
     }
   }
   &.rejeitado {
     &::after {
       content: 'REJEITADO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 2px;
-      right: 5.2%;
-      transform: translate(-5.5%, -5.5%);
     }
     &.especialAdm {
       &::after {
         content: 'REJEITADO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &.noSpecial {
       &::after {
         content: 'REJEITADO';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 5px;
-        right: 5.5%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
     &::after {
       content: 'REJEITADO';
       visibility: visible;
-      display: block;
-      position: absolute;
-      padding: 5px;
-      top: 5px;
-      right: 5.5%;
-      transform: translate(-5.5%, -5.5%);
     }
   }
   @media only screen and (max-width: 768px) {
@@ -2264,23 +2088,11 @@ export const TextoSituacaoCabecalho = styled.p`
       &::after {
         content: 'ABERT';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 7px;
-        right: 2.5%;
-        transform: translate(-2.5%, -2.5%);
       }
       &.especialAdm {
         &::after {
           content: 'ABERTO';
           visibility: visible;
-          display: block;
-          position: absolute;
-          padding: 5px;
-          top: 8px;
-          right: 4%;
-          transform: translate(-4%, -4%);
         }
       }
     }
@@ -2288,12 +2100,6 @@ export const TextoSituacaoCabecalho = styled.p`
       &::after {
         content: 'AND';
         visibility: visible;
-        display: block;
-        position: absolute;
-        padding: 5px;
-        top: 2px;
-        right: 5.2%;
-        transform: translate(-5.5%, -5.5%);
       }
     }
   }

@@ -367,6 +367,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     todosEntregues: boolean
     data_cancelamento: string
     itens: Compra[]
+    admissao_desligamento_cancelados: boolean
+    transferencia_promocao_cancelados: boolean
+    ferias_faltas_horas_extra_cancelados: boolean
+    remocao_rejeitada: boolean
+    abertura_rejeitada: boolean
+    vagasReservar: string[]
 
     constructor(data: {
       id: string
@@ -393,6 +399,12 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       todosEntregues: boolean
       data_cancelamento: string
       itens: Compra[]
+      admissao_desligamento_cancelados: boolean
+      transferencia_promocao_cancelados: boolean
+      ferias_faltas_horas_extra_cancelados: boolean
+      remocao_rejeitada: boolean
+      abertura_rejeitada: boolean
+      vagasReservar: string[]
     }) {
       this.id = data.id
       this.usuario = data.usuario
@@ -421,6 +433,15 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
         data.pedido_desligamento_transferencia_promocao_inclui_remocao
       this.observacao_geral = data.observacao_geral
       this.status_solicitacao = data.status_solicitacao
+      this.admissao_desligamento_cancelados =
+        data.admissao_desligamento_cancelados
+      this.transferencia_promocao_cancelados =
+        data.transferencia_promocao_cancelados
+      this.ferias_faltas_horas_extra_cancelados =
+        data.ferias_faltas_horas_extra_cancelados
+      this.remocao_rejeitada = data.remocao_rejeitada
+      this.abertura_rejeitada = data.abertura_rejeitada
+      this.vagasReservar = data.vagasReservar
     }
   }
   const listaCentrosCusto = [
@@ -578,8 +599,140 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro'
     }
   }
+  const cancelarAdmissaoNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `cancelarAdmissaoSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
   const desligarNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `desligSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const cancelarDesligNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `cancelarDesligSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const cancelarTransfNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `cancelarTransfSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const cancelarPromNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `cancelarPromSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const cancelarFaltFeriasHorasNoServidor = async (
+    solicitacao: Solicitacao
+  ) => {
+    solicitacao.requisicao = `cancelarFaFeHoSolMov;${nivelusur}`
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -708,8 +861,60 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       return 'erro'
     }
   }
+  const rejeitarAberturaVagasNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `rejeitarAbertVagasSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
   const removerVagasNoServidor = async (solicitacao: Solicitacao) => {
     solicitacao.requisicao = `removerVagasSolMov;${nivelusur}`
+    const respostaEnvio = await fetch(
+      'https://davidsenra.pythonanywhere.com/',
+      {
+        method: 'POST',
+        headers: {
+          // eslint-disable-next-line prettier/prettier
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(solicitacao)
+      }
+    )
+    const corpo_resposta = respostaEnvio.text()
+    const resposta = (await corpo_resposta).toString()
+    if (resposta.includes('atualizacao_realizada')) {
+      return 'ok'
+    } else if (resposta.includes('solicitacao_trancada')) {
+      return 'solicitacao_trancada'
+    } else if (resposta.includes('solicitacao_aberta')) {
+      return 'solicitacao_aberta'
+    } else {
+      return 'erro'
+    }
+  }
+  const rejeitarRemocaoVagasNoServidor = async (solicitacao: Solicitacao) => {
+    solicitacao.requisicao = `rejeitarRemocaoVagasSolMov;${nivelusur}`
     const respostaEnvio = await fetch(
       'https://davidsenra.pythonanywhere.com/',
       {
@@ -956,7 +1161,16 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
           requisicao: value.requisicao,
           todosEntregues: value.todosEntregues,
           itens: [],
-          data_cancelamento: value.data_cancelamento
+          data_cancelamento: value.data_cancelamento,
+          admissao_desligamento_cancelados:
+            value.admissao_desligamento_cancelados,
+          transferencia_promocao_cancelados:
+            value.transferencia_promocao_cancelados,
+          ferias_faltas_horas_extra_cancelados:
+            value.ferias_faltas_horas_extra_cancelados,
+          remocao_rejeitada: value.remocao_rejeitada,
+          abertura_rejeitada: value.abertura_rejeitada,
+          vagasReservar: value.vagasReservar
         }
         let numeroItens = 0
         if (
@@ -1258,6 +1472,48 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       console.log('Erro!')
     }
   }
+  const cancelarPedidoAdmissao = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    if (novoElemento.pedido_abertura_inclui_admissao == true) {
+      novoElemento.statusSolicitacao = 'concluido'
+      novoElemento.admissao_desligamento_cancelados = true
+    } else {
+      novoElemento.statusSolicitacao = 'cancelado'
+    }
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = cancelarAdmissaoNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      if (elemento.pedido_abertura_inclui_admissao == true) {
+        elemento.statusSolicitacao = 'concluido'
+        elemento.admissao_desligamento_cancelados = true
+      } else {
+        elemento.statusSolicitacao = 'cancelado'
+      }
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_trancada') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_trancada')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
+    } else {
+      console.log('Erro!')
+    }
+  }
   const finalizarPedidoDesligamento = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -1287,6 +1543,134 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
       } else {
         elemento.statusSolicitacao = 'concluido'
       }
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const cancelarPedidoDesligamento = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'cancelado'
+    novoElemento.admissao_desligamento_cancelados = true
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = cancelarDesligNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'cancelado'
+      elemento.admissao_desligamento_cancelados = true
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const cancelarPedidoTransferencia = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'cancelado'
+    novoElemento.transferencia_promocao_cancelados = true
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = cancelarTransfNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'cancelado'
+      elemento.transferencia_promocao_cancelados = true
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const cancelarPedidoPromocao = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'cancelado'
+    novoElemento.transferencia_promocao_cancelados = true
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = cancelarPromNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'cancelado'
+      elemento.transferencia_promocao_cancelados = true
+      elemento.podeDestrancar = false
+      nova_lista.splice(indice_elemento, 1)
+      nova_lista.splice(indice_elemento, 0, elemento)
+      SetListaPedidos(nova_lista)
+    } else if (resposta_recebida == 'solicitacao_aberta') {
+      SetPopupOpen(true)
+      setPopupType('solicitacao_aberta')
+      setPopupConfirmationPedido(id_elemento)
+      document.body.style.overflowY = 'hidden'
+    } else {
+      console.log('Erro!')
+    }
+  }
+  const cancelarPedidoFaltasFeriasHoras = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const id_elemento = e.currentTarget.id
+    const nova_lista = [...ListaPedidos]
+    function isElement(solicitacao: Solicitacao) {
+      return solicitacao.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    const novoElemento = elemento
+    novoElemento.statusSolicitacao = 'cancelado'
+    novoElemento.ferias_faltas_horas_extra_cancelados = true
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = cancelarFaltFeriasHorasNoServidor(novoElemento)
+    const resposta_recebida = await resposta_servidor
+    if (resposta_recebida == 'ok') {
+      elemento.statusSolicitacao = 'cancelado'
+      elemento.ferias_faltas_horas_extra_cancelados = true
       elemento.podeDestrancar = false
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
@@ -1482,12 +1866,15 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
     const novoElemento = elemento
-    novoElemento.statusSolicitacao = 'aberturaRejeitada'
-    const resposta_servidor = atualizarSolicitacaoNoServidor(novoElemento)
+    novoElemento.statusSolicitacao = 'rejeitado'
+    novoElemento.abertura_rejeitada = true
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = rejeitarAberturaVagasNoServidor(novoElemento)
     const resposta_recebida = await resposta_servidor
     if (resposta_recebida == 'ok') {
-      elemento.statusSolicitacao = 'aberturaRejeitada'
-      elemento.itens.forEach((item) => (item.status = 'rejeitado'))
+      elemento.statusSolicitacao = 'rejeitado'
+      elemento.abertura_rejeitada = true
+      elemento.podeDestrancar = false
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
@@ -1543,21 +1930,31 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
     const indice_elemento = nova_lista.findIndex(isElement)
     const elemento = nova_lista.filter(isElement)[0]
     const novoElemento = elemento
-    novoElemento.statusSolicitacao = 'remocaoRejeitada'
-    const resposta_servidor = atualizarSolicitacaoNoServidor(novoElemento)
+    if (novoElemento.natureza_solicitacao != 'RemocaoVaga') {
+      novoElemento.statusSolicitacao = 'concluido'
+    } else {
+      novoElemento.statusSolicitacao = 'rejeitado'
+    }
+    novoElemento.remocao_rejeitada = true
+    novoElemento.podeDestrancar = false
+    const resposta_servidor = rejeitarRemocaoVagasNoServidor(novoElemento)
     const resposta_recebida = await resposta_servidor
     if (resposta_recebida == 'ok') {
-      elemento.statusSolicitacao = 'remocaoRejeitada'
+      if (elemento.natureza_solicitacao != 'RemocaoVaga') {
+        elemento.statusSolicitacao = 'concluido'
+      } else {
+        elemento.statusSolicitacao = 'rejeitado'
+      }
+      elemento.remocao_rejeitada = true
+      elemento.podeDestrancar = false
       nova_lista.splice(indice_elemento, 1)
       nova_lista.splice(indice_elemento, 0, elemento)
       SetListaPedidos(nova_lista)
-    } else if (resposta_recebida == 'solicitacao_trancada') {
+    } else if (resposta_recebida == 'solicitacao_aberta') {
       SetPopupOpen(true)
-      setPopupType('solicitacao_trancada')
+      setPopupType('solicitacao_abert')
       setPopupConfirmationPedido(id_elemento)
       document.body.style.overflowY = 'hidden'
-    } else if (resposta_recebida == 'solicitacao_aberta') {
-      console.log('Erro! Esse pedido ainda não está em andamento no sistema!')
     } else {
       console.log('Erro!')
     }
@@ -2603,9 +3000,11 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 ? 'pendente'
                                 : pedido.statusSolicitacao == 'concluido'
                                   ? 'concluido'
-                                  : pedido.statusSolicitacao == 'cancelado'
-                                    ? 'cancelado'
-                                    : 'aberto'
+                                  : pedido.statusSolicitacao == 'rejeitado'
+                                    ? 'rejeitado'
+                                    : pedido.statusSolicitacao == 'cancelado'
+                                      ? 'cancelado'
+                                      : 'aberto'
                           } ${pedido.natureza_solicitacao == 'AberturaVaga' && nivelusur == 4 && pedido.usuario == nomeusur ? 'especialAdm' : ''} ${pedido.usuario != nomeusur ? 'noSpecial' : ''}`}
                         ></TextoSituacaoCabecalho>
                         {((nivelusur == 3 &&
@@ -2813,8 +3212,57 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             </>
                           )}
                         {(pedido.statusSolicitacao == 'concluido' ||
+                          (pedido.statusSolicitacao == 'cancelado' &&
+                            pedido.natureza_solicitacao == 'Transferencia' &&
+                            pedido.transferencia_promocao_cancelados == true) ||
+                          (pedido.statusSolicitacao == 'cancelado' &&
+                            pedido.natureza_solicitacao == 'Promocao' &&
+                            pedido.transferencia_promocao_cancelados == true) ||
                           pedido.statusSolicitacao == 'andamento' ||
                           pedido.statusSolicitacao == 'pendenteRemocao') && (
+                          <>
+                            <br></br>
+                            <DivBotoesAprovacao
+                              className={
+                                (pedido.natureza_solicitacao ==
+                                  'AberturaVaga' &&
+                                  pedido.pedido_abertura_inclui_admissao ==
+                                    false) ||
+                                ((pedido.natureza_solicitacao ==
+                                  'Transferencia' ||
+                                  pedido.natureza_solicitacao == 'Promocao') &&
+                                  pedido.transferencia_promocao_cancelados ==
+                                    true)
+                                  ? 'remocaoVaga'
+                                  : ''
+                              }
+                            >
+                              <h3 className="aprovado">APROVADO</h3>
+                            </DivBotoesAprovacao>
+                            <br></br>
+                          </>
+                        )}
+                        {pedido.natureza_solicitacao == 'AberturaVaga' &&
+                          pedido.statusSolicitacao == 'cancelado' &&
+                          pedido.admissao_desligamento_cancelados == false && (
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.natureza_solicitacao ==
+                                    'AberturaVaga' &&
+                                  pedido.pedido_abertura_inclui_admissao ==
+                                    false
+                                    ? 'remocaoVaga'
+                                    : 'remocaoVaga'
+                                }
+                              >
+                                <h3 className="aprovado">CANCELADO</h3>
+                              </DivBotoesAprovacao>
+                              <br></br>
+                            </>
+                          )}
+                        {pedido.statusSolicitacao == 'rejeitado' && (
                           <>
                             <br></br>
                             <DivBotoesAprovacao
@@ -2822,10 +3270,10 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 pedido.natureza_solicitacao == 'AberturaVaga' &&
                                 pedido.pedido_abertura_inclui_admissao == false
                                   ? 'remocaoVaga'
-                                  : ''
+                                  : 'remocaoVaga'
                               }
                             >
-                              <h3 className="aprovado">APROVADO</h3>
+                              <h3 className="rejeitado">REJEITADO</h3>
                             </DivBotoesAprovacao>
                             <br></br>
                           </>
@@ -2930,6 +3378,13 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                             <DivBotoesAprovacao className="remocaoVaga">
                               <button
                                 id={pedido.id}
+                                className="rejeitar"
+                                onClick={(e) => cancelarPedidoAdmissao(e)}
+                              >
+                                Cancelar
+                              </button>
+                              <button
+                                id={pedido.id}
                                 className="aprovar"
                                 onClick={(e) => aprovarPedidoAdmissao(e)}
                               >
@@ -2943,11 +3398,25 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               <h3 className={'hello'}>EM ANDAMENTO</h3>
                             </DivBotoesAprovacao>
                           )}
-                        {pedido.statusSolicitacao == 'concluido' && (
+                        {pedido.statusSolicitacao == 'concluido' &&
+                          pedido.admissao_desligamento_cancelados == false && (
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao className={'remocaoVaga'}>
+                                <h3 className="aprovado">FINALIZADO</h3>
+                              </DivBotoesAprovacao>
+                              <br></br>
+                            </>
+                          )}
+                        {(pedido.statusSolicitacao == 'cancelado' ||
+                          pedido.statusSolicitacao == 'rejeitado' ||
+                          (pedido.statusSolicitacao == 'concluido' &&
+                            pedido.admissao_desligamento_cancelados ==
+                              true)) && (
                           <>
                             <br></br>
                             <DivBotoesAprovacao className={'remocaoVaga'}>
-                              <h3 className="aprovado">FINALIZADO</h3>
+                              <h3 className="rejeitado">CANCELADO</h3>
                             </DivBotoesAprovacao>
                             <br></br>
                           </>
@@ -3186,6 +3655,38 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               >
                                 <button
                                   id={pedido.id}
+                                  className="rejeitar"
+                                  onClick={(e) => {
+                                    if (
+                                      pedido.natureza_solicitacao ==
+                                      'Desligamento'
+                                    ) {
+                                      cancelarPedidoDesligamento(e)
+                                    } else if (
+                                      pedido.natureza_solicitacao ==
+                                      'Transferencia'
+                                    ) {
+                                      cancelarPedidoTransferencia(e)
+                                    } else if (
+                                      pedido.natureza_solicitacao == 'Promocao'
+                                    ) {
+                                      cancelarPedidoPromocao(e)
+                                    } else if (
+                                      pedido.natureza_solicitacao == 'Ferias' ||
+                                      pedido.natureza_solicitacao ==
+                                        'Adicional' ||
+                                      pedido.natureza_solicitacao == 'Faltas' ||
+                                      pedido.natureza_solicitacao ==
+                                        'HorasExtras'
+                                    ) {
+                                      cancelarPedidoFaltasFeriasHoras(e)
+                                    }
+                                  }}
+                                >
+                                  Cancelar
+                                </button>
+                                <button
+                                  id={pedido.id}
                                   className="aprovar"
                                   onClick={(e) => {
                                     if (
@@ -3246,6 +3747,40 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                                 <h3 className="aprovado">FINALIZADO</h3>
                               </DivBotoesAprovacao>
                               <br></br>
+                            </>
+                          )}
+                          {((pedido.natureza_solicitacao == 'Desligamento' &&
+                            pedido.admissao_desligamento_cancelados == true) ||
+                            (pedido.natureza_solicitacao == 'Transferencia' &&
+                              pedido.transferencia_promocao_cancelados ==
+                                true) ||
+                            (pedido.natureza_solicitacao == 'Ferias' &&
+                              pedido.ferias_faltas_horas_extra_cancelados ==
+                                true) ||
+                            (pedido.natureza_solicitacao == 'Faltas' &&
+                              pedido.ferias_faltas_horas_extra_cancelados ==
+                                true) ||
+                            (pedido.natureza_solicitacao == 'Adicional' &&
+                              pedido.ferias_faltas_horas_extra_cancelados ==
+                                true) ||
+                            (pedido.natureza_solicitacao == 'HorasExtras' &&
+                              pedido.ferias_faltas_horas_extra_cancelados ==
+                                true) ||
+                            (pedido.natureza_solicitacao == 'Promocao' &&
+                              pedido.transferencia_promocao_cancelados ==
+                                true)) && (
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao
+                                className={
+                                  pedido.pedido_desligamento_transferencia_promocao_inclui_remocao ==
+                                  true
+                                    ? 'remocaoVaga'
+                                    : 'remocaoVaga'
+                                }
+                              >
+                                <h3 className="rejeitado">CANCELADO</h3>
+                              </DivBotoesAprovacao>
                             </>
                           )}
                           {pedido.statusSolicitacao != 'andamento' &&
@@ -4002,17 +4537,18 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                               </DivSugestFornecedoresObs>
                             </>
                           )}
-                        {pedido.natureza_solicitacao != 'RemocaoVaga' && (
-                          <TextoObservacaoAberturaRemocao>
-                            <b>Obs:</b> Pedido de desativação incluído para
-                            vagas que ficariam disponíveis{' '}
-                            {pedido.natureza_solicitacao == 'Desligamento'
-                              ? 'com o(s) desligamento(s).'
-                              : pedido.natureza_solicitacao == 'Promocao'
-                                ? 'com a(s) promoção(ões).'
-                                : 'com a(s) transferência(s).'}
-                          </TextoObservacaoAberturaRemocao>
-                        )}
+                        {pedido.natureza_solicitacao != 'RemocaoVaga' &&
+                          pedido.statusSolicitacao != 'cancelado' && (
+                            <TextoObservacaoAberturaRemocao>
+                              <b>Obs:</b> Pedido de desativação incluído para
+                              vagas que ficariam disponíveis{' '}
+                              {pedido.natureza_solicitacao == 'Desligamento'
+                                ? 'com o(s) desligamento(s).'
+                                : pedido.natureza_solicitacao == 'Promocao'
+                                  ? 'com a(s) promoção(ões).'
+                                  : 'com a(s) transferência(s).'}
+                            </TextoObservacaoAberturaRemocao>
+                          )}
                         {nivelusur == 4 &&
                           pedido.statusSolicitacao == 'pendenteRemocao' && (
                             <>
@@ -4046,11 +4582,29 @@ const ListaSolicitacaoMP = ({ nomeusur = '', nivelusur = 0 }) => {
                           )}
                         {(pedido.statusSolicitacao == 'concluido' ||
                           (pedido.statusSolicitacao == 'andamento' &&
-                            pedido.natureza_solicitacao == 'RemocaoVaga')) && (
+                            pedido.natureza_solicitacao == 'RemocaoVaga')) &&
+                          pedido.remocao_rejeitada == false && (
+                            <>
+                              <br></br>
+                              <DivBotoesAprovacao className={'remocaoVaga'}>
+                                <h3 className="aprovado">APROVADO</h3>
+                              </DivBotoesAprovacao>
+                            </>
+                          )}
+                        {(pedido.statusSolicitacao == 'rejeitado' ||
+                          pedido.remocao_rejeitada == true) && (
                           <>
                             <br></br>
                             <DivBotoesAprovacao className={'remocaoVaga'}>
-                              <h3 className="aprovado">APROVADO</h3>
+                              <h3 className="rejeitado">REJEITADO</h3>
+                            </DivBotoesAprovacao>
+                          </>
+                        )}
+                        {pedido.statusSolicitacao == 'cancelado' && (
+                          <>
+                            <br></br>
+                            <DivBotoesAprovacao className={'remocaoVaga'}>
+                              <h3 className="rejeitado">CANCELADO</h3>
                             </DivBotoesAprovacao>
                           </>
                         )}

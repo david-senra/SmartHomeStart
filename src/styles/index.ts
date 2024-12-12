@@ -32,6 +32,10 @@ export const MenuPrincipal = styled.ul`
     justify-content: space-around;
     gap: 20px;
   }
+  &.comTraco {
+    border-bottom: 1px solid black;
+    padding-bottom: 15px;
+  }
 `
 
 export const ItemMenuPrincipal = styled.button`
@@ -41,6 +45,13 @@ export const ItemMenuPrincipal = styled.button`
   text-align: center;
   &:hover {
     cursor: pointer;
+  }
+  &.ativo {
+    background-color: orange;
+    &:hover {
+      cursor: default;
+      background-color: orange;
+    }
   }
 `
 

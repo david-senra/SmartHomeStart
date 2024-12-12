@@ -32,7 +32,7 @@ import {
   SetDataBotaoRemover
 } from './styles'
 
-const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
+const FormMovimentacaoPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
   class Vaga {
     id: string
     sigla_cargo: string
@@ -119,6 +119,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     rg: string
     cpf: string
     cnpj: string
+    razao_social: string
     telefone: string
     email: string
     contato: string
@@ -141,6 +142,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     dias_adicionais: string[]
     dias_horas_extras: DiaHoraExtra[]
     remocaoNoDesligamentoTransferencia: boolean
+    futura_vaga_atrelada: string
 
     constructor(data: {
       id: string
@@ -153,6 +155,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       nome: string
       rg: string
       cpf: string
+      razao_social: string
       cnpj: string
       telefone: string
       email: string
@@ -176,6 +179,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       dias_adicionais: string[]
       dias_horas_extras: DiaHoraExtra[]
       remocaoNoDesligamentoTransferencia: boolean
+      futura_vaga_atrelada: string
     }) {
       this.id = data.id
       this.incluir = data.incluir
@@ -188,6 +192,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.rg = data.rg
       this.cpf = data.cpf
       this.cnpj = data.cnpj
+      this.razao_social = data.razao_social
       this.telefone = data.telefone
       this.email = data.email
       this.contato = data.contato
@@ -211,6 +216,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       this.dias_horas_extras = data.dias_horas_extras
       this.remocaoNoDesligamentoTransferencia =
         data.remocaoNoDesligamentoTransferencia
+      this.futura_vaga_atrelada = data.futura_vaga_atrelada
     }
   }
   class Obra {
@@ -257,6 +263,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     rg: '',
     cpf: '',
     cnpj: '',
+    razao_social: '',
     telefone: '',
     email: '',
     contato: '',
@@ -278,7 +285,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     faltas: [],
     dias_adicionais: [],
     dias_horas_extras: [],
-    remocaoNoDesligamentoTransferencia: false
+    remocaoNoDesligamentoTransferencia: false,
+    futura_vaga_atrelada: ''
   }
 
   const [firstLoad, setFirstLoad] = React.useState<boolean>(true)
@@ -424,6 +432,44 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     const finalDate = yyyy + '-' + mm + '-' + dd
     console.log(finalDate)
     return finalDate
+  }
+  const maskCPF = (event: React.FormEvent<HTMLInputElement>) => {
+    event.currentTarget.maxLength = 15
+    const { value } = event.currentTarget
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1')
+  }
+  const maskPhone = (event: React.FormEvent<HTMLInputElement>) => {
+    event.currentTarget.maxLength = 15
+    const { value } = event.currentTarget
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d{4})/, '$1-$2')
+  }
+  const maskCNPJ = (event: React.FormEvent<HTMLInputElement>) => {
+    event.currentTarget.maxLength = 18
+    const { value } = event.currentTarget
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})/, '$1/$2')
+      .replace(/(\d{4})(\d{1,2})/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1')
+  }
+  const validateEmail = (valor: string) => {
+    const meuInput = document.createElement('input')
+    meuInput.type = 'email'
+    meuInput.value = valor
+
+    return typeof meuInput.checkValidity === 'function'
+      ? meuInput.checkValidity()
+      : /\S+@\S+\.\S+/.test(valor)
   }
   const textoNatureza = (texto: string) => {
     if (texto == 'AberturaVaga') {
@@ -998,6 +1044,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         rg: '',
         cpf: '',
         cnpj: '',
+        razao_social: '',
         telefone: '',
         email: '',
         contato: '',
@@ -1018,7 +1065,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         faltas: [],
         dias_adicionais: [],
         dias_horas_extras: [],
-        remocaoNoDesligamentoTransferencia: false
+        remocaoNoDesligamentoTransferencia: false,
+        futura_vaga_atrelada: ''
       }
       const nova_lista_remocoes = [...inclusaoPedidosRemocaoVaga]
       nova_lista_remocoes.push(pedidoRemocaoVaga)
@@ -1218,6 +1266,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const changeCPFAdmissao = (e: React.ChangeEvent<HTMLInputElement>) => {
     SetMensagemErro('')
+    e.currentTarget.value = maskCPF(e)
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
@@ -1233,6 +1282,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
   }
   const changeCNPJAdmissao = (e: React.ChangeEvent<HTMLInputElement>) => {
     SetMensagemErro('')
+    e.currentTarget.value = maskCNPJ(e)
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
@@ -1246,8 +1296,26 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 0, elemento)
     setPedidosAdmissaoVagas(nova_lista)
   }
+  const changeRazaoSocialAdmissao = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    SetMensagemErro('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...pedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.razao_social = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setPedidosAdmissaoVagas(nova_lista)
+  }
   const changeTelAdmissao = (e: React.ChangeEvent<HTMLInputElement>) => {
     SetMensagemErro('')
+    e.currentTarget.value = maskPhone(e)
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...pedidosAdmissaoVaga]
@@ -1333,6 +1401,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setMensagemErroInclusao('')
+    e.currentTarget.value = maskCPF(e)
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
@@ -1350,6 +1419,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setMensagemErroInclusao('')
+    e.currentTarget.value = maskCNPJ(e)
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
@@ -1363,10 +1433,28 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     nova_lista.splice(indice_elemento, 0, elemento)
     setInclusaoPedidosAdmissaoVagas(nova_lista)
   }
+  const changeRazaoSocialAdmissaoInclusao = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMensagemErroInclusao('')
+    const id_elemento = e.currentTarget.id
+    const valor_elemento = e.currentTarget.value
+    const nova_lista = [...inclusaoPedidosAdmissaoVaga]
+    function isElement(pedido: SolicitacaoFuncionario) {
+      return pedido.id == id_elemento
+    }
+    const indice_elemento = nova_lista.findIndex(isElement)
+    const elemento = nova_lista.filter(isElement)[0]
+    elemento.razao_social = valor_elemento
+    nova_lista.splice(indice_elemento, 1)
+    nova_lista.splice(indice_elemento, 0, elemento)
+    setInclusaoPedidosAdmissaoVagas(nova_lista)
+  }
   const changeTelAdmissaoInclusao = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setMensagemErroInclusao('')
+    e.currentTarget.value = maskPhone(e)
     const id_elemento = e.currentTarget.id
     const valor_elemento = e.currentTarget.value
     const nova_lista = [...inclusaoPedidosAdmissaoVaga]
@@ -1667,6 +1755,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       rg: '',
       cpf: '',
       cnpj: '',
+      razao_social: '',
       telefone: '',
       email: '',
       contato: '',
@@ -1688,7 +1777,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       faltas: [],
       dias_adicionais: [],
       dias_horas_extras: [],
-      remocaoNoDesligamentoTransferencia: false
+      remocaoNoDesligamentoTransferencia: false,
+      futura_vaga_atrelada: ''
     }
     nova_lista.push(novo_acrescimo)
     setPedidoAcrescimoCargos(nova_lista)
@@ -1716,6 +1806,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       rg: '',
       cpf: '',
       cnpj: '',
+      razao_social: '',
       telefone: '',
       email: '',
       contato: '',
@@ -1737,7 +1828,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       faltas: [],
       dias_adicionais: [],
       dias_horas_extras: [],
-      remocaoNoDesligamentoTransferencia: false
+      remocaoNoDesligamentoTransferencia: false,
+      futura_vaga_atrelada: ''
     }
     nova_lista.push(nova_admissao)
     setPedidosAdmissaoVagas(nova_lista)
@@ -1765,6 +1857,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       rg: '',
       cpf: '',
       cnpj: '',
+      razao_social: '',
       telefone: '',
       email: '',
       contato: '',
@@ -1786,7 +1879,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       faltas: [],
       dias_adicionais: [],
       dias_horas_extras: [],
-      remocaoNoDesligamentoTransferencia: false
+      remocaoNoDesligamentoTransferencia: false,
+      futura_vaga_atrelada: ''
     }
     nova_lista.push(nova_admissao)
     setPedidosFuncionarios(nova_lista)
@@ -1826,7 +1920,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
             SetMensagemErro('Há vagas repetidas no seu pedido de abertura!')
           }
         })
-
         if (erro == '') {
           SetMensagemErro('')
           SetSituacaoPedido('confirmando')
@@ -1835,9 +1928,6 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
         naturezaMovimentacao == 'Admissao' ||
         naturezaMovimentacao == 'RemocaoVaga'
       ) {
-        console.log('hi')
-        console.log(pedidosAdmissaoVaga)
-        console.log(equipeDisponivel)
         const valores_vagas: string[] = []
         pedidosAdmissaoVaga.map((pedido) => {
           if (
@@ -1877,10 +1967,69 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
             SetMensagemErro(
               'É preciso indicar um RG para todas as admissões pedidas!'
             )
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.telefone == ''
+          ) {
+            erro = 'yes'
+            SetMensagemErro(
+              'É preciso indicar um número de telefone para todas as admissões pedidas!'
+            )
           } else if (naturezaMovimentacao == 'Admissao' && pedido.cpf == '') {
             erro = 'yes'
             SetMensagemErro(
               'É preciso indicar um CPF para todas as admissões pedidas!'
+            )
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.cpf != '' &&
+            pedido.cpf.length < 14
+          ) {
+            erro = 'yes'
+            SetMensagemErro('Todo número de CPF inserido deve ser válido!')
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.cnpj != '' &&
+            pedido.cnpj.length < 15
+          ) {
+            erro = 'yes'
+            SetMensagemErro('Todo número de CNPJ inserido deve ser válido!')
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.cnpj != '' &&
+            (pedido.cnpj.toString()[11] != '0' ||
+              pedido.cnpj.toString()[12] != '0' ||
+              pedido.cnpj.toString()[13] != '0' ||
+              pedido.cnpj.toString()[14] != '1')
+          ) {
+            erro = 'yes'
+            SetMensagemErro('Todo número de CNPJ inserido deve ser válido!')
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.tipo_admissao == 'MEI' &&
+            pedido.razao_social == ''
+          ) {
+            erro = 'yes'
+            SetMensagemErro(
+              'A Razão Social é obrigatória para todas admissões de PJ-MEI!'
+            )
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.telefone != '' &&
+            pedido.telefone.length < 15
+          ) {
+            erro = 'yes'
+            SetMensagemErro(
+              'Todos os campos de telefone precisam ser preenchidos com um número válido!'
+            )
+          } else if (
+            naturezaMovimentacao == 'Admissao' &&
+            pedido.email != '' &&
+            validateEmail(pedido.email) == false
+          ) {
+            erro = 'yes'
+            SetMensagemErro(
+              'Há um campo de e-mail preenchido de forma inválida!'
             )
           }
           valores_vagas.push(pedido.codigo_vaga)
@@ -2168,6 +2317,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     rg: '',
                     cpf: '',
                     cnpj: '',
+                    razao_social: '',
                     telefone: '',
                     email: '',
                     contato: '',
@@ -2192,7 +2342,8 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                     faltas: [],
                     dias_adicionais: [],
                     dias_horas_extras: [],
-                    remocaoNoDesligamentoTransferencia: false
+                    remocaoNoDesligamentoTransferencia: false,
+                    futura_vaga_atrelada: ''
                   }
                   pedidosCargos.push(pedidoCargo)
                 })
@@ -2238,6 +2389,39 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
           erroInclusao = true
           mensagemErro =
             'É preciso que todos os pedidos selecionados tenham o CPF preenchido.'
+        } else if (pedido.cpf != '' && pedido.cpf.length < 14) {
+          erroInclusao = true
+          mensagemErro = 'Há um campo de CPF preenchido de forma incorreta.'
+        } else if (pedido.cnpj != '' && pedido.cnpj.length < 15) {
+          erroInclusao = true
+          mensagemErro = 'Há um campo de CNPJ preenchido de forma incorreta.'
+        } else if (
+          pedido.cnpj != '' &&
+          (pedido.cnpj.toString()[11] != '0' ||
+            pedido.cnpj.toString()[12] != '0' ||
+            pedido.cnpj.toString()[13] != '0' ||
+            pedido.cnpj.toString()[14] != '1')
+        ) {
+          erroInclusao = true
+          mensagemErro = 'Número de CNPJ inválido inserido.'
+        } else if (pedido.tipo_admissao == 'MEI' && pedido.cnpj == '') {
+          erroInclusao = true
+          mensagemErro = 'Para todas as admissões em MEI, o CNPJ é obrigatório.'
+        } else if (pedido.tipo_admissao == 'MEI' && pedido.razao_social == '') {
+          erroInclusao = true
+          mensagemErro =
+            'Para todas as admissões em MEI, a Razão Social é obrigatória.'
+        } else if (pedido.telefone == '') {
+          erroInclusao = true
+          mensagemErro =
+            'É preciso inserir um número de telefone para todos os pedidos selecionados.'
+        } else if (pedido.telefone != '' && pedido.telefone.length < 15) {
+          erroInclusao = true
+          mensagemErro =
+            'Há um campo de telefone preenchido de forma incorreta.'
+        } else if (pedido.email != '' && validateEmail(pedido.email) == false) {
+          erroInclusao = true
+          mensagemErro = 'Há um campo de e-mail preenchido de forma incorreta.'
         }
       }
       if (pedido.incluir == true) {
@@ -2305,7 +2489,12 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
       podeDestrancar: true,
       todosEntregues: '',
       vagasReservar: grupoVazio,
-      data_cancelamento: ''
+      data_cancelamento: '',
+      admissao_desligamento_cancelados: false,
+      transferencia_promocao_cancelados: false,
+      ferias_faltas_horas_extra_cancelados: false,
+      remocao_rejeitada: false,
+      abertura_rejeitada: false
     }
     if (
       naturezaMovimentacao == 'Transferencia' ||
@@ -2483,6 +2672,7 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
     SetMensagemErro('')
     setObservacaoGeral('')
     setJustificativaGeral('')
+    requisitarInformacoesMP()
   }
   return (
     <>
@@ -2522,12 +2712,16 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       value=""
                       style={{ display: 'none' }}
                     ></option>
-                    <option value="AberturaRemocaoVagas">
-                      Vagas, Contratação e Desligamento
-                    </option>
-                    <option value="TransferenciaPromocao">
-                      Transferência ou Promoção
-                    </option>
+                    {nivelusur != 1 && (
+                      <option value="AberturaRemocaoVagas">
+                        Vagas, Contratação e Desligamento
+                      </option>
+                    )}
+                    {nivelusur != 1 && (
+                      <option value="TransferenciaPromocao">
+                        Transferência ou Promoção
+                      </option>
+                    )}
                     <option value="FeriasFaltasHorasExtra">
                       Férias, Faltas e Horas Extra
                     </option>
@@ -2895,6 +3089,21 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                                   required
                                   autoComplete="off"
                                   onChange={(e) => changeCNPJAdmissao(e)}
+                                ></input>
+                              </DivNomeVaga>
+                            )}
+                          {pedido.tipo_admissao != '' &&
+                            pedido.tipo_admissao == 'MEI' && (
+                              <DivNomeVaga className="DadosNome">
+                                <label>Razão Social:</label>
+                                <input
+                                  id={pedido.id.toString()}
+                                  name="item"
+                                  type="text"
+                                  defaultValue={pedido.cnpj}
+                                  required
+                                  autoComplete="off"
+                                  onChange={(e) => changeRazaoSocialAdmissao(e)}
                                 ></input>
                               </DivNomeVaga>
                             )}
@@ -3968,6 +4177,22 @@ const FormMovimentacaoPessoal = ({ nomeusur = '' }) => {
                       required
                       autoComplete="off"
                       onChange={(e) => changeCNPJAdmissaoInclusao(e)}
+                    ></input>
+                  </DivNomeVaga>
+                )}
+              {pedido.incluir == true &&
+                pedido.tipo_admissao != '' &&
+                pedido.tipo_admissao == 'MEI' && (
+                  <DivNomeVaga className="DadosNome">
+                    <label>Razão Social:</label>
+                    <input
+                      id={pedido.id.toString()}
+                      name="item"
+                      type="text"
+                      defaultValue={pedido.razao_social}
+                      required
+                      autoComplete="off"
+                      onChange={(e) => changeRazaoSocialAdmissaoInclusao(e)}
                     ></input>
                   </DivNomeVaga>
                 )}
