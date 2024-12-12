@@ -1902,8 +1902,8 @@ export const MenuBotoesTipoSolicitacao = styled.ul`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 8px;
-  width: 400px;
+  gap: 20px;
+  width: 450px;
   margin: auto;
   margin-top: 20px;
   margin-bottom: 40px;
@@ -1915,7 +1915,7 @@ export const MenuBotoesTipoSolicitacao = styled.ul`
       font-weight: bold;
       padding-left: 4px;
       padding-right: 4px;
-      width: 90px;
+      width: 110px;
       height: 30px;
       border-radius: 5px;
       background-color: #ffef80;

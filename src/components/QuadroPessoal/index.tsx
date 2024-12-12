@@ -2821,7 +2821,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                 className={TipoSolicitacao == 'abertas' ? 'selected' : ''}
                 type="button"
               >
-                Abertas
+                Andamento
               </button>
             </li>
             <li>
@@ -2831,7 +2831,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                 className={TipoSolicitacao == 'fechadas' ? 'selected' : ''}
                 type="button"
               >
-                Fechadas
+                Encerradas
               </button>
             </li>
             <li>
