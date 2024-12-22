@@ -395,6 +395,21 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
       this.quantidade_ocupada = data.quantidade_ocupada
     }
   }
+  class Qtd_Vagas {
+    ocupadas: number
+    disponiveis: number
+    desativadas: number
+
+    constructor(data: {
+      ocupadas: number
+      disponiveis: number
+      desativadas: number
+    }) {
+      this.ocupadas = data.ocupadas
+      this.disponiveis = data.disponiveis
+      this.desativadas = data.desativadas
+    }
+  }
   class SalarioEspecifico {}
   class Obra {
     id: string
@@ -404,6 +419,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
     descricao_completa: string
     equipe: Vaga[]
     quantidades_vagas: Quantidade_Vaga[]
+    qtd_vagas: Qtd_Vagas
     status_obra: string
     altura: number
     isCardOpen: boolean
@@ -417,6 +433,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
       descricao_completa: string
       equipe: Vaga[]
       quantidades_vagas: Quantidade_Vaga[]
+      qtd_vagas: Qtd_Vagas
       status_obra: string
       id: string
       altura: number
@@ -430,6 +447,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
       this.equipe = data.equipe
       this.id = data.id
       this.quantidades_vagas = data.quantidades_vagas
+      this.qtd_vagas = data.qtd_vagas
       this.status_obra = data.status_obra
       this.centro_custo = data.centro_custo
       this.altura = data.altura
@@ -1401,6 +1419,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
           equipe: value.equipe,
           salarios_padroes_especificos: value.salarios_padroes_especificos,
           quantidades_vagas: value.quantidade_equipe,
+          qtd_vagas: value.qtd_vagas,
           status_obra: value.status_obra,
           centro_custo: value.centro_custo,
           isCardOpen: false,
@@ -1428,6 +1447,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
           equipe: value.equipe,
           salarios_padroes_especificos: value.salarios_padroes_especificos,
           quantidades_vagas: value.quantidade_equipe,
+          qtd_vagas: value.qtd_vagas,
           status_obra: value.status_obra,
           centro_custo: value.centro_custo,
           isCardOpen: false,
@@ -2783,7 +2803,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
       <DivGeral className={popUpOpen ? 'noScrolling' : ''}>
         <h1>Quadro de Pessoal</h1>
         <br></br>
-        {(nomeusur == 'David Senra' ||
+        {/* {(nomeusur == 'David Senra' ||
           nomeusur == 'Targino Azeredo' ||
           nomeusur == 'Dolores Belico') &&
           SituacaoExibicao == 'listaCarregada' && (
@@ -2807,7 +2827,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                 )}
               </DivRelatorioCompleto>
             </>
-          )}
+          )} */}
         {SituacaoExibicao == 'carregando' && (
           <TextoCarregando>Carregando...</TextoCarregando>
         )}
@@ -2853,7 +2873,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
           <>
             {obrasSantaBarbara.length > 0 && (
               <div>
-                <h3>Santa Bárbara</h3>
+                <h3>Santa Bárbara:</h3>
                 <ListaObras>
                   <GridCabecalhoSolto>
                     <li>
@@ -2921,74 +2941,212 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                           tamanho={obra.altura}
                           className={obra.isCardOpen ? 'open' : 'closed'}
                         >
-                          <DivTituloSecaoCard className="aberturaVagas">
-                            <h3>Quadro de Pessoal:</h3>
-                          </DivTituloSecaoCard>
-                          <GridCabecalhoItemsPedido
-                            id={obra.id}
-                            tipoSolicitacao={'AberturaVaga'}
-                          >
-                            <LinhaCabecalhoItems>
-                              <b>Cargo</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems>
-                              <b>Nome</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems>
-                              <b>Salário</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems>
-                              <b>Regime</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems className={'ultimaLinha'}>
-                              <b>Telefone</b>
-                            </LinhaCabecalhoItems>
-                          </GridCabecalhoItemsPedido>
+                          {obra.qtd_vagas.ocupadas == 0 &&
+                            obra.qtd_vagas.desativadas == 0 &&
+                            obra.qtd_vagas.disponiveis == 0 && (
+                              <DivTituloSecaoCard className="aberturaVagas">
+                                <h3
+                                  style={{
+                                    color: 'red'
+                                  }}
+                                >
+                                  Não foram abertas vagas para esta obra!
+                                </h3>
+                              </DivTituloSecaoCard>
+                            )}
+                          {obra.qtd_vagas.ocupadas > 0 && (
+                            <DivTituloSecaoCard className="aberturaVagas">
+                              <h3>Vagas Ocupadas:</h3>
+                            </DivTituloSecaoCard>
+                          )}
+                          {obra.qtd_vagas.ocupadas > 0 && (
+                            <GridCabecalhoItemsPedido
+                              id={obra.id}
+                              tipoSolicitacao={'AberturaVaga'}
+                            >
+                              <LinhaCabecalhoItems>
+                                <b>Cargo</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Nome</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Salário</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Regime</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Telefone</b>
+                              </LinhaCabecalhoItems>
+                            </GridCabecalhoItemsPedido>
+                          )}
                           {obra.equipe.length > 0 &&
-                            obra.equipe.map((colaborador) => (
-                              <GridItemsPedido
-                                key={colaborador.id}
-                                tipoSolicitacao={'AberturaVaga'}
-                                className={`classeItems ${
-                                  obra.status_obra != 'aberto' &&
-                                  obra.status_obra == 'entregue' &&
-                                  'boldText'
-                                }`}
-                                numeroFaltasAdicionalHoras={0}
-                              >
-                                <li>
-                                  <p>{colaborador.cargo}</p>
-                                </li>
-                                <li>
-                                  <p>{colaborador.nome}</p>
-                                </li>
-                                <li>
-                                  <p>
-                                    {colaborador.salario_padrao_obra == 0
-                                      ? formatarSalario(
-                                          colaborador.salario_padrao
-                                        )
-                                      : formatarSalario(
-                                          colaborador.salario_padrao_obra
-                                        )}
-                                  </p>
-                                </li>
-                                <li>
-                                  <p>
-                                    {colaborador.tipo_contrato == 'pj'
-                                      ? 'PJ-MEI'
-                                      : colaborador.tipo_contrato == 'clt'
-                                        ? 'CLT'
-                                        : colaborador.tipo_contrato == 'estagio'
-                                          ? 'ESTÁGIO'
-                                          : ''}
-                                  </p>
-                                </li>
-                                <li>
-                                  <p>{colaborador.telefone}</p>
-                                </li>
-                              </GridItemsPedido>
-                            ))}
+                            obra.qtd_vagas.ocupadas > 0 &&
+                            obra.equipe
+                              .filter((vaga) => vaga.situacao == 'ocupada')
+                              .map((colaborador) => (
+                                <GridItemsPedido
+                                  key={colaborador.id}
+                                  tipoSolicitacao={'AberturaVaga'}
+                                  numero_items={obra.qtd_vagas.ocupadas}
+                                  className={`classeItems ${
+                                    obra.status_obra != 'aberto' &&
+                                    obra.status_obra == 'entregue' &&
+                                    'boldText'
+                                  }`}
+                                  numeroFaltasAdicionalHoras={0}
+                                >
+                                  <li>
+                                    <p>{colaborador.cargo.slice(5)}</p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.nome}</p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.salario_padrao_obra == 0
+                                        ? formatarSalario(
+                                            colaborador.salario_padrao
+                                          )
+                                        : formatarSalario(
+                                            colaborador.salario_padrao_obra
+                                          )}
+                                    </p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.tipo_contrato == 'pj'
+                                        ? 'PJ-MEI'
+                                        : colaborador.tipo_contrato == 'clt'
+                                          ? 'CLT'
+                                          : colaborador.tipo_contrato ==
+                                              'estagio'
+                                            ? 'ESTÁGIO'
+                                            : ''}
+                                    </p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.telefone}</p>
+                                  </li>
+                                </GridItemsPedido>
+                              ))}
+                          {obra.qtd_vagas.ocupadas > 0 &&
+                            obra.qtd_vagas.disponiveis > 0 && <br></br>}
+                          {obra.qtd_vagas.disponiveis > 0 && (
+                            <DivTituloSecaoCard className="aberturaVagas">
+                              <h3>Vagas Disponíveis:</h3>
+                            </DivTituloSecaoCard>
+                          )}
+                          {obra.qtd_vagas.disponiveis > 0 && (
+                            <GridCabecalhoItemsPedido
+                              id={obra.id}
+                              tipoSolicitacao={'VagasDisponiveis'}
+                            >
+                              <LinhaCabecalhoItems>
+                                <b>ID Vaga</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Cargo</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Salário</b>
+                              </LinhaCabecalhoItems>
+                            </GridCabecalhoItemsPedido>
+                          )}
+                          {obra.equipe.length > 0 &&
+                            obra.qtd_vagas.disponiveis > 0 &&
+                            obra.equipe
+                              .filter((vaga) => vaga.situacao == 'disponivel')
+                              .map((colaborador) => (
+                                <GridItemsPedido
+                                  key={colaborador.id}
+                                  tipoSolicitacao={'VagasDisponiveis'}
+                                  numero_items={obra.qtd_vagas.disponiveis}
+                                  className={`classeItems ${
+                                    obra.status_obra != 'aberto' &&
+                                    obra.status_obra == 'entregue' &&
+                                    'boldText'
+                                  }`}
+                                  numeroFaltasAdicionalHoras={0}
+                                >
+                                  <li>
+                                    <p>{colaborador.id}</p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.cargo.slice(5)}</p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.salario_padrao_obra == 0
+                                        ? formatarSalario(
+                                            colaborador.salario_padrao
+                                          )
+                                        : formatarSalario(
+                                            colaborador.salario_padrao_obra
+                                          )}
+                                    </p>
+                                  </li>
+                                </GridItemsPedido>
+                              ))}
+                          {obra.qtd_vagas.disponiveis > 0 &&
+                            obra.qtd_vagas.desativadas > 0 && <br></br>}
+                          {obra.qtd_vagas.desativadas > 0 && (
+                            <DivTituloSecaoCard className="aberturaVagas">
+                              <h3>Vagas Desativadas:</h3>
+                            </DivTituloSecaoCard>
+                          )}
+                          {obra.qtd_vagas.desativadas > 0 && (
+                            <GridCabecalhoItemsPedido
+                              id={obra.id}
+                              tipoSolicitacao={'VagasDisponiveis'}
+                            >
+                              <LinhaCabecalhoItems>
+                                <b>ID Vaga</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Cargo</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Salário</b>
+                              </LinhaCabecalhoItems>
+                            </GridCabecalhoItemsPedido>
+                          )}
+                          {obra.equipe.length > 0 &&
+                            obra.qtd_vagas.desativadas > 0 &&
+                            obra.equipe
+                              .filter((vaga) => vaga.situacao == 'removida')
+                              .map((colaborador) => (
+                                <GridItemsPedido
+                                  key={colaborador.id}
+                                  tipoSolicitacao={'VagasDisponiveis'}
+                                  numero_items={obra.qtd_vagas.desativadas}
+                                  className={`classeItems ${
+                                    obra.status_obra != 'aberto' &&
+                                    obra.status_obra == 'entregue' &&
+                                    'boldText'
+                                  }`}
+                                  numeroFaltasAdicionalHoras={0}
+                                >
+                                  <li>
+                                    <p>{colaborador.id}</p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.cargo.slice(5)}</p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.salario_padrao_obra == 0
+                                        ? formatarSalario(
+                                            colaborador.salario_padrao
+                                          )
+                                        : formatarSalario(
+                                            colaborador.salario_padrao_obra
+                                          )}
+                                    </p>
+                                  </li>
+                                </GridItemsPedido>
+                              ))}
                         </DivGridCabecalho>
                       </CardObra>
                       {/* {!popUpOpen && (
@@ -3016,7 +3174,7 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
             )}
             {obrasCantaria.length > 0 && (
               <div>
-                <h3>Cantaria</h3>
+                <h3>Cantaria:</h3>
                 <ListaObras>
                   <GridCabecalhoSolto>
                     <li>
@@ -3084,74 +3242,212 @@ const QuadroPessoal = ({ nomeusur = '', nivelusur = 0 }) => {
                           tamanho={obra.altura}
                           className={obra.isCardOpen ? 'open' : 'closed'}
                         >
-                          <DivTituloSecaoCard className="aberturaVagas">
-                            <h3>Quadro de Pessoal:</h3>
-                          </DivTituloSecaoCard>
-                          <GridCabecalhoItemsPedido
-                            id={obra.id}
-                            tipoSolicitacao={'AberturaVaga'}
-                          >
-                            <LinhaCabecalhoItems>
-                              <b>Cargo</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems>
-                              <b>Nome</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems>
-                              <b>Salário</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems>
-                              <b>Regime</b>
-                            </LinhaCabecalhoItems>
-                            <LinhaCabecalhoItems className={'ultimaLinha'}>
-                              <b>Telefone</b>
-                            </LinhaCabecalhoItems>
-                          </GridCabecalhoItemsPedido>
+                          {obra.qtd_vagas.ocupadas == 0 &&
+                            obra.qtd_vagas.desativadas == 0 &&
+                            obra.qtd_vagas.disponiveis == 0 && (
+                              <DivTituloSecaoCard className="aberturaVagas">
+                                <h3
+                                  style={{
+                                    color: 'red'
+                                  }}
+                                >
+                                  Não foram abertas vagas para esta obra!
+                                </h3>
+                              </DivTituloSecaoCard>
+                            )}
+                          {obra.qtd_vagas.ocupadas > 0 && (
+                            <DivTituloSecaoCard className="aberturaVagas">
+                              <h3>Vagas Ocupadas:</h3>
+                            </DivTituloSecaoCard>
+                          )}
+                          {obra.qtd_vagas.ocupadas > 0 && (
+                            <GridCabecalhoItemsPedido
+                              id={obra.id}
+                              tipoSolicitacao={'AberturaVaga'}
+                            >
+                              <LinhaCabecalhoItems>
+                                <b>Cargo</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Nome</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Salário</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Regime</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Telefone</b>
+                              </LinhaCabecalhoItems>
+                            </GridCabecalhoItemsPedido>
+                          )}
                           {obra.equipe.length > 0 &&
-                            obra.equipe.map((colaborador) => (
-                              <GridItemsPedido
-                                key={colaborador.id}
-                                tipoSolicitacao={'AberturaVaga'}
-                                className={`classeItems ${
-                                  obra.status_obra != 'aberto' &&
-                                  obra.status_obra == 'entregue' &&
-                                  'boldText'
-                                }`}
-                                numeroFaltasAdicionalHoras={0}
-                              >
-                                <li>
-                                  <p>{colaborador.cargo}</p>
-                                </li>
-                                <li>
-                                  <p>{colaborador.nome}</p>
-                                </li>
-                                <li>
-                                  <p>
-                                    {colaborador.salario_padrao_obra == 0
-                                      ? formatarSalario(
-                                          colaborador.salario_padrao
-                                        )
-                                      : formatarSalario(
-                                          colaborador.salario_padrao_obra
-                                        )}
-                                  </p>
-                                </li>
-                                <li>
-                                  <p>
-                                    {colaborador.tipo_contrato == 'pj'
-                                      ? 'PJ-MEI'
-                                      : colaborador.tipo_contrato == 'clt'
-                                        ? 'CLT'
-                                        : colaborador.tipo_contrato == 'estagio'
-                                          ? 'ESTÁGIO'
-                                          : ''}
-                                  </p>
-                                </li>
-                                <li>
-                                  <p>{colaborador.telefone}</p>
-                                </li>
-                              </GridItemsPedido>
-                            ))}
+                            obra.qtd_vagas.ocupadas > 0 &&
+                            obra.equipe
+                              .filter((vaga) => vaga.situacao == 'ocupada')
+                              .map((colaborador) => (
+                                <GridItemsPedido
+                                  key={colaborador.id}
+                                  tipoSolicitacao={'AberturaVaga'}
+                                  numero_items={obra.qtd_vagas.ocupadas}
+                                  className={`classeItems ${
+                                    obra.status_obra != 'aberto' &&
+                                    obra.status_obra == 'entregue' &&
+                                    'boldText'
+                                  }`}
+                                  numeroFaltasAdicionalHoras={0}
+                                >
+                                  <li>
+                                    <p>{colaborador.cargo.slice(5)}</p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.nome}</p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.salario_padrao_obra == 0
+                                        ? formatarSalario(
+                                            colaborador.salario_padrao
+                                          )
+                                        : formatarSalario(
+                                            colaborador.salario_padrao_obra
+                                          )}
+                                    </p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.tipo_contrato == 'pj'
+                                        ? 'PJ-MEI'
+                                        : colaborador.tipo_contrato == 'clt'
+                                          ? 'CLT'
+                                          : colaborador.tipo_contrato ==
+                                              'estagio'
+                                            ? 'ESTÁGIO'
+                                            : ''}
+                                    </p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.telefone}</p>
+                                  </li>
+                                </GridItemsPedido>
+                              ))}
+                          {obra.qtd_vagas.ocupadas > 0 &&
+                            obra.qtd_vagas.disponiveis > 0 && <br></br>}
+                          {obra.qtd_vagas.disponiveis > 0 && (
+                            <DivTituloSecaoCard className="aberturaVagas">
+                              <h3>Vagas Disponíveis:</h3>
+                            </DivTituloSecaoCard>
+                          )}
+                          {obra.qtd_vagas.disponiveis > 0 && (
+                            <GridCabecalhoItemsPedido
+                              id={obra.id}
+                              tipoSolicitacao={'VagasDisponiveis'}
+                            >
+                              <LinhaCabecalhoItems>
+                                <b>ID Vaga</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Cargo</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Salário</b>
+                              </LinhaCabecalhoItems>
+                            </GridCabecalhoItemsPedido>
+                          )}
+                          {obra.equipe.length > 0 &&
+                            obra.qtd_vagas.disponiveis > 0 &&
+                            obra.equipe
+                              .filter((vaga) => vaga.situacao == 'disponivel')
+                              .map((colaborador) => (
+                                <GridItemsPedido
+                                  key={colaborador.id}
+                                  tipoSolicitacao={'VagasDisponiveis'}
+                                  numero_items={obra.qtd_vagas.disponiveis}
+                                  className={`classeItems ${
+                                    obra.status_obra != 'aberto' &&
+                                    obra.status_obra == 'entregue' &&
+                                    'boldText'
+                                  }`}
+                                  numeroFaltasAdicionalHoras={0}
+                                >
+                                  <li>
+                                    <p>{colaborador.id}</p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.cargo.slice(5)}</p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.salario_padrao_obra == 0
+                                        ? formatarSalario(
+                                            colaborador.salario_padrao
+                                          )
+                                        : formatarSalario(
+                                            colaborador.salario_padrao_obra
+                                          )}
+                                    </p>
+                                  </li>
+                                </GridItemsPedido>
+                              ))}
+                          {obra.qtd_vagas.disponiveis > 0 &&
+                            obra.qtd_vagas.desativadas > 0 && <br></br>}
+                          {obra.qtd_vagas.desativadas > 0 && (
+                            <DivTituloSecaoCard className="aberturaVagas">
+                              <h3>Vagas Desativadas:</h3>
+                            </DivTituloSecaoCard>
+                          )}
+                          {obra.qtd_vagas.desativadas > 0 && (
+                            <GridCabecalhoItemsPedido
+                              id={obra.id}
+                              tipoSolicitacao={'VagasDisponiveis'}
+                            >
+                              <LinhaCabecalhoItems>
+                                <b>ID Vaga</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems>
+                                <b>Cargo</b>
+                              </LinhaCabecalhoItems>
+                              <LinhaCabecalhoItems className={'ultimaLinha'}>
+                                <b>Salário</b>
+                              </LinhaCabecalhoItems>
+                            </GridCabecalhoItemsPedido>
+                          )}
+                          {obra.equipe.length > 0 &&
+                            obra.qtd_vagas.desativadas > 0 &&
+                            obra.equipe
+                              .filter((vaga) => vaga.situacao == 'removida')
+                              .map((colaborador) => (
+                                <GridItemsPedido
+                                  key={colaborador.id}
+                                  tipoSolicitacao={'VagasDisponiveis'}
+                                  numero_items={obra.qtd_vagas.desativadas}
+                                  className={`classeItems ${
+                                    obra.status_obra != 'aberto' &&
+                                    obra.status_obra == 'entregue' &&
+                                    'boldText'
+                                  }`}
+                                  numeroFaltasAdicionalHoras={0}
+                                >
+                                  <li>
+                                    <p>{colaborador.id}</p>
+                                  </li>
+                                  <li>
+                                    <p>{colaborador.cargo.slice(5)}</p>
+                                  </li>
+                                  <li>
+                                    <p>
+                                      {colaborador.salario_padrao_obra == 0
+                                        ? formatarSalario(
+                                            colaborador.salario_padrao
+                                          )
+                                        : formatarSalario(
+                                            colaborador.salario_padrao_obra
+                                          )}
+                                    </p>
+                                  </li>
+                                </GridItemsPedido>
+                              ))}
                         </DivGridCabecalho>
                       </CardObra>
                       {/* {!popUpOpen && (

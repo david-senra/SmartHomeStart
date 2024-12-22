@@ -273,6 +273,8 @@ export const GridCabecalhoItemsPedido = styled.ul<{
     const tipoPedido = props.tipoSolicitacao
     if (tipoPedido == 'AberturaVaga') {
       return '17vw 17vw 8vw 5vw 10vw'
+    } else if (tipoPedido == 'VagasDisponiveis') {
+      return '10vw 17vw 12vw'
     }
   }};
   justify-content: center;
@@ -308,6 +310,7 @@ export const GridCabecalhoItemsPedido = styled.ul<{
 
 export const GridItemsPedido = styled.ul<{
   tipoSolicitacao: string
+  numero_items: number
   numeroFaltasAdicionalHoras: number
 }>`
   display: grid;
@@ -315,6 +318,8 @@ export const GridItemsPedido = styled.ul<{
     const tipoPedido = props.tipoSolicitacao
     if (tipoPedido == 'AberturaVaga') {
       return '17vw 17vw 8vw 5vw 10vw'
+    } else if (tipoPedido == 'VagasDisponiveis') {
+      return '10vw 17vw 12vw'
     }
   }};
   grid-template-rows: 25px;
@@ -323,6 +328,11 @@ export const GridItemsPedido = styled.ul<{
   justify-content: center;
   white-space: nowrap;
   &:nth-last-of-type(1) {
+    li {
+      border-bottom: none;
+    }
+  }
+  &:nth-of-type(${(props) => props.numero_items + 1}) {
     li {
       border-bottom: none;
     }

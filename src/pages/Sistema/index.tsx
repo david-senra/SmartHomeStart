@@ -120,7 +120,7 @@ const Sistema = () => {
                 Exibir Solicitações
               </ItemMenuPrincipal>
             )}
-            {opcaoCategoria == 'mov_pessoal' && nivel_acesso_mp >= 4 && (
+            {opcaoCategoria == 'mov_pessoal' && nivel_acesso_mp >= 2 && (
               <ItemMenuPrincipal
                 onClick={() => setOpcao('exibir_quadro_pessoal')}
               >
