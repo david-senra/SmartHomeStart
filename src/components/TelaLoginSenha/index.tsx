@@ -6,29 +6,16 @@ import {
   ItemUserPass,
   TextError
 } from './styles'
-import { useNavigate } from 'react-router-dom'
 
 function TelaLoginSenha() {
   let usuario = ''
   let senha = ''
-  const navigate = useNavigate()
   const [acesso, setAcesso] = useState(false)
-  const [nivel_acesso, setNivelAcesso] = useState(0)
-  const [nivel_acesso_mp, setNivelAcessoMP] = useState(0)
-  const [nome_usuario, setNomeUsuario] = useState('')
-  const [usuarioId, setUsuarioId] = useState('')
   const [paginaAtual, setPaginaAtual] = useState('login')
   const [situacaoLogin, setSituacaoLogin] = useState('ocioso')
   useEffect(() => {
     if (acesso == true) {
-      navigate('/sistema', {
-        state: {
-          user: usuarioId,
-          niv_acesso: nivel_acesso,
-          niv_acesso_mp: nivel_acesso_mp,
-          nome_user: nome_usuario
-        }
-      })
+      window.location.href = `https://smart-home-azesen.vercel.app/?user=${usuario}&pass=${senha}`
     }
   })
   const resetMainPage = () => {
@@ -68,17 +55,10 @@ function TelaLoginSenha() {
       }
       return 'senha_incorreta'
     } else if (resposta == 'acesso_permitido') {
-      const nome_usuario = 'user'
-      const nivel_acesso = '4'
-      const nivel_acesso_mp = '4'
       const texto_erro = document.getElementById('text_error')
       if (texto_erro != null) {
         texto_erro.textContent = 'Acesso concedido! Carregando...'
         texto_erro.style.color = 'green'
-        setUsuarioId(usuario)
-        setNomeUsuario(nome_usuario)
-        setNivelAcesso(parseInt(nivel_acesso))
-        setNivelAcessoMP(parseInt(nivel_acesso_mp))
         return 'acesso'
       }
     }
