@@ -6,9 +6,11 @@ import { LogoStyle } from './styles'
 function TelaLogin() {
   const [acesso, setAcesso] = useState(false)
   const [situacaoLogin, setSituacaoLogin] = useState('ocioso')
+  const usuario = 'admin'
+  const senha = 'bigode518'
   useEffect(() => {
     if (acesso == true) {
-      window.location.href = 'https://smart-home-azesen.vercel.app'
+      window.location.href = `https://smart-home-azesen.vercel.app/?user=${usuario}&pass=${senha}`
       // window.location.href = 'https://smart-home-azesen.vercel.app/?q=ABC'
     }
   })
