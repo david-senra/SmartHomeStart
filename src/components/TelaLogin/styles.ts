@@ -8,6 +8,10 @@ export const LoginDiv = styled.div`
   color: ${cores.corPrincipal};
   h1 {
     font-size: 35px;
+    &.carregando {
+      color: darkgreen;
+      font-size: 40px;
+    }
   }
 `
 
@@ -128,6 +132,17 @@ export const TextError = styled.p`
   color: ${cores.corSecundaria};
   padding-bottom: 5px;
   font-size: 18px;
+`
+
+export const LogoStyle = styled.img`
+  margin-top: 20px;
+  width: 200px;
+  height: 250px;
+  background-color: transparent;
+  padding-top: 7px;
+  @media only screen and (max-width: 768px) {
+    height: 70%;
+  }
 `
 
 export const TextSenha = styled.p`

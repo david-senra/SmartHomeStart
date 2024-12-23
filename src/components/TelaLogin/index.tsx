@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import {
   LoginDiv,
+  DivBotaoInvisivelHome,
   UserPassDiv,
   ItemUserPass,
-  TextError,
-  DivBotaoCadastrarSenha,
-  DivBotaoInvisivelHome,
-  BotaoCadastrarSenha,
-  TextSenha,
-  TextSuccess,
-  ListaCondicoesSenha
+  TextError
 } from './styles'
 import { useNavigate } from 'react-router-dom'
+import LogoImg from '../../assets/images/house-icon-blue.png'
+import { LogoStyle } from './styles'
 
-function Login() {
+function TelaLogin() {
   let usuario = ''
   let senha = ''
   const navigate = useNavigate()
@@ -36,25 +33,12 @@ function Login() {
       })
     }
   })
-  const togglePage = () => {
-    if (paginaAtual == 'login') {
-      setPaginaAtual('cadastroSenha')
-    } else {
-      setPaginaAtual('login')
-    }
-  }
   const resetMainPage = () => {
     if (paginaAtual != 'login') {
       setPaginaAtual('login')
     }
     const texto_erro = document.getElementById('text_error')
     if (texto_erro != null) {
-      texto_erro.textContent = ''
-    }
-  }
-  const resetErrorMessage = () => {
-    const texto_erro = document.getElementById('text_error')
-    if (texto_erro != null && texto_erro.textContent != '') {
       texto_erro.textContent = ''
     }
   }
@@ -125,30 +109,12 @@ function Login() {
       </DivBotaoInvisivelHome>
       <LoginDiv>
         <main>
-          <h1>Login:</h1>
           <form onSubmit={handleSubmit}>
+            <div>
+              <LogoStyle src={LogoImg} alt="Logo Smart Home" />
+            </div>
             <UserPassDiv>
               <ItemUserPass>
-                <input
-                  id="usuario"
-                  name="usuario"
-                  type="text"
-                  required
-                  autoComplete="off"
-                  onChange={resetErrorMessage}
-                ></input>
-                <label>Usuário</label>
-              </ItemUserPass>
-              <ItemUserPass>
-                <input
-                  id="senha"
-                  name="senha"
-                  type="password"
-                  required
-                  autoComplete="off"
-                  onChange={resetErrorMessage}
-                ></input>
-                <label>Senha</label>
                 <button
                   className={situacaoLogin == 'logando' ? 'desativado' : ''}
                 >
@@ -165,4 +131,4 @@ function Login() {
   )
 }
 
-export default Login
+export default TelaLogin

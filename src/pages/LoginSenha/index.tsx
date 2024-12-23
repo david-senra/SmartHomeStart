@@ -1,16 +1,16 @@
 import Header from '../../containers/Header'
-import SplashScreen from '../../components/SplashScreen'
+import TelaLoginSenha from '../../components/TelaLoginSenha'
 import { Container } from '../../styles'
 
-const Home = () => {
+const LoginSenha = () => {
   return (
     <>
       <Header />
       <Container>
-        <SplashScreen />
+        <TelaLoginSenha />
       </Container>
     </>
   )
 }
 
-export default Home
+export default LoginSenha

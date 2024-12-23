@@ -4,17 +4,12 @@ import { Logo } from '../../components/Logo'
 const Header = ({ nomeusur = '' }) => {
   if (nomeusur == '') {
     return (
-      <S.Header>
+      <S.HeaderDiv>
         <Logo />
-      </S.Header>
+      </S.HeaderDiv>
     )
   } else {
-    return (
-      <S.Header>
-        <Logo />
-        <S.NomeUsuario>Usuário: {nomeusur}</S.NomeUsuario>
-      </S.Header>
-    )
+    return <S.HeaderDiv></S.HeaderDiv>
   }
 }
 

@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import {
   LoginDiv,
+  DivBotaoInvisivelHome,
   UserPassDiv,
   ItemUserPass,
-  TextError,
-  DivBotaoCadastrarSenha,
-  DivBotaoInvisivelHome,
-  BotaoCadastrarSenha,
-  TextSenha,
-  TextSuccess,
-  ListaCondicoesSenha
+  TextError
 } from './styles'
 import { useNavigate } from 'react-router-dom'
 
-function Login() {
+function TelaLoginSenha() {
   let usuario = ''
   let senha = ''
   const navigate = useNavigate()
@@ -36,13 +31,6 @@ function Login() {
       })
     }
   })
-  const togglePage = () => {
-    if (paginaAtual == 'login') {
-      setPaginaAtual('cadastroSenha')
-    } else {
-      setPaginaAtual('login')
-    }
-  }
   const resetMainPage = () => {
     if (paginaAtual != 'login') {
       setPaginaAtual('login')
@@ -165,4 +153,4 @@ function Login() {
   )
 }
 
-export default Login
+export default TelaLoginSenha

@@ -1,16 +1,16 @@
 import Header from '../../containers/Header'
-import SplashScreen from '../../components/SplashScreen'
+import TelaLogin from '../../components/TelaLogin'
 import { Container } from '../../styles'
 
-const Home = () => {
+const LoginDireto = () => {
   return (
     <>
       <Header />
       <Container>
-        <SplashScreen />
+        <TelaLogin />
       </Container>
     </>
   )
 }
 
-export default Home
+export default LoginDireto

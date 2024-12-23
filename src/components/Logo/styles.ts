@@ -2,13 +2,11 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 export const LogoDiv = styled.div`
-  width: 450px;
-  height: 72px;
-  margin-right: auto;
+  width: 750px;
+  height: 140px;
+  margin: auto;
   text-align: center;
   background-color: transparent;
-  margin-left: 49%;
-  transform: translate(-49%, -49%);
   @media only screen and (max-width: 768px) {
     width: 300px;
     min-width: 320px;
@@ -21,6 +19,9 @@ export const LogoDiv = styled.div`
 export const LogoButton = styled(Link)`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  justify-items: center;
+  margin: auto;
   width: 100%;
   height: 100%;
   background-color: transparent;
@@ -30,9 +31,9 @@ export const LogoButton = styled(Link)`
 `
 
 export const LogoStyle = styled.img`
-  margin-top: 30px;
-  width: 85%;
-  height: 95%;
+  margin-top: 20px;
+  width: 100%;
+  height: 100%;
   background-color: transparent;
   padding-top: 7px;
   @media only screen and (max-width: 768px) {

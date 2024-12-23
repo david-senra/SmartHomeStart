@@ -5,18 +5,14 @@ import {
   LogoStyleStaBarbara,
   DivStaBarbara
 } from './styles'
-import LogoImg from '../../assets/images/cantaria_logo.png'
-import LogoStaBarbaraImg from '../../assets/images/stabarbara_logo.jpg'
+import LogoImg from '../../assets/images/smart_home_logo.png'
 
 export const Logo = () => (
   <LogoDiv>
     <LogoButton to={'/'}>
       <div>
-        <LogoStyle src={LogoImg} alt="Logo Cantaria" />
+        <LogoStyle src={LogoImg} alt="Logo Smart Home" />
       </div>
-      <DivStaBarbara>
-        <LogoStyleStaBarbara src={LogoStaBarbaraImg} alt="Logo Cantaria" />
-      </DivStaBarbara>
     </LogoButton>
   </LogoDiv>
 )

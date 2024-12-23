@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom'
 import React, { useState } from 'react'
 import Header from '../../containers/Header'
+import { HeaderDiv } from '../../containers/Header/styles'
 import { ErroSistema } from '../../components/ErroSistema'
 import FormularioSolicitacao from '../../components/FormSolic'
 import ListaSolicitacao from '../../components/ListaSolic'
@@ -8,10 +9,18 @@ import ListaSolicitacaoMP from '../../components/ListaMovPessoal'
 import QuadroPessoal from '../../components/QuadroPessoal'
 import EditarParam from '../../components/EditarParam'
 import FormMovimentacaoPessoal from '../../components/FormMovPessoal'
-import { Container, MenuPrincipal, ItemMenuPrincipal } from '../../styles'
+import {
+  Container,
+  MenuPrincipal,
+  ItemMenuPrincipal,
+  IconeSmartHome
+} from '../../styles'
+import HouseIconImg from '../../assets/images/house-icon.png'
 
 const Sistema = () => {
   const [firstLoad, setFirstLoad] = useState<boolean>(true)
+  const [opcaoGeral, setOpcaoGeral] = useState('geral')
+  const [opcaoEspecifica, setOpcaoEspecifica] = useState('')
   const [opcaoCategoria, setOpcaoCategoria] = useState('')
   const [opcao, setOpcao] = useState('')
   const location = useLocation()
@@ -34,7 +43,7 @@ const Sistema = () => {
   if (nivel_acesso == 0) {
     return (
       <>
-        <Header />
+        <Header></Header>
         <Container>
           <ErroSistema />
         </Container>
@@ -43,108 +52,113 @@ const Sistema = () => {
   } else {
     return (
       <>
-        <Header nomeusur={nome_usuario} />
-        <Container>
-          <MenuPrincipal className={opcaoCategoria != '' ? 'comTraco' : ''}>
-            {nivel_acesso >= 1 && (
-              <ItemMenuPrincipal
-                onClick={() => {
-                  if (opcaoCategoria != 'compras') {
-                    setOpcaoCategoria('compras')
-                    setOpcao('')
-                  }
-                }}
-                className={opcaoCategoria == 'compras' ? 'ativo' : ''}
+        <HeaderDiv className={`${opcaoGeral == 'geral' ? 'comCasinha' : ''}`}>
+          <ul
+            className={`filaSuperior ${opcaoGeral == 'geral' ? 'comCasinha' : ''}`}
+          >
+            <li>
+              <button
+                type="button"
+                className={opcaoGeral == 'geral' ? 'ativo' : ''}
+                onClick={() => opcao != 'geral' && setOpcaoGeral('geral')}
               >
-                Compras
-              </ItemMenuPrincipal>
-            )}
-            {nivel_acesso_mp >= 1 && (
-              <ItemMenuPrincipal
-                onClick={() => {
-                  if (opcaoCategoria != 'mov_pessoal') {
-                    setOpcaoCategoria('mov_pessoal')
-                    setOpcao('')
-                  }
-                }}
-                className={opcaoCategoria == 'mov_pessoal' ? 'ativo' : ''}
+                Geral
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={opcaoGeral == 'comodos' ? 'ativo' : ''}
+                onClick={() => opcao != 'comodos' && setOpcaoGeral('comodos')}
               >
-                Mov. Pessoal
-              </ItemMenuPrincipal>
-            )}
-            {nivel_acesso >= 3 && (
-              <ItemMenuPrincipal
-                onClick={() => {
-                  if (opcaoCategoria != 'configuracoes') {
-                    setOpcaoCategoria('configuracoes')
-                    setOpcao('')
-                  }
-                }}
-                className={opcaoCategoria == 'configuracoes' ? 'ativo' : ''}
+                Cômodos
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={opcaoGeral == 'categorias' ? 'ativo' : ''}
+                onClick={() =>
+                  opcao != 'categorias' && setOpcaoGeral('categorias')
+                }
+              >
+                Categorias
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={opcaoGeral == 'configuracoes' ? 'ativo' : ''}
+                onClick={() =>
+                  opcao != 'configuracoes' && setOpcaoGeral('configuracoes')
+                }
               >
                 Configurações
-              </ItemMenuPrincipal>
-            )}
-          </MenuPrincipal>
-          <MenuPrincipal>
-            {opcaoCategoria == 'compras' &&
-              nivel_acesso >= 1 &&
-              nivel_acesso != 3 && (
-                <ItemMenuPrincipal
-                  onClick={() => setOpcao('solicitacao_compra')}
-                >
-                  Solicitar Compras
-                </ItemMenuPrincipal>
-              )}
-            {opcaoCategoria == 'compras' && nivel_acesso >= 2 && (
-              <ItemMenuPrincipal
-                onClick={() => setOpcao('exibir_solicitacoes_compra')}
-              >
-                Exibir Solicitações
-              </ItemMenuPrincipal>
-            )}
-            {opcaoCategoria == 'mov_pessoal' &&
-              (nivel_acesso_mp == 1 ||
-                nivel_acesso_mp == 2 ||
-                nivel_acesso_mp >= 4) && (
-                <ItemMenuPrincipal
-                  onClick={() => setOpcao('solicitar_movimentacao_pessoal')}
-                >
-                  Solicitar Mov. de Pessoal
-                </ItemMenuPrincipal>
-              )}
-            {opcaoCategoria == 'mov_pessoal' && nivel_acesso_mp >= 1 && (
-              <ItemMenuPrincipal
-                onClick={() => setOpcao('exibir_movimentacao_pessoal')}
-              >
-                Exibir Solicitações
-              </ItemMenuPrincipal>
-            )}
-            {opcaoCategoria == 'mov_pessoal' && nivel_acesso_mp >= 2 && (
-              <ItemMenuPrincipal
-                onClick={() => setOpcao('exibir_quadro_pessoal')}
-              >
-                Exibir Quadro de Pessoal
-              </ItemMenuPrincipal>
-            )}
-            {opcaoCategoria == 'configuracoes' && nivel_acesso >= 4 && (
-              <ItemMenuPrincipal
-                onClick={() => setOpcao('gerenciamento_usuarios')}
-              >
-                Gerenciar Usuários
-              </ItemMenuPrincipal>
-            )}
-            {opcaoCategoria == 'configuracoes' && nivel_acesso >= 4 && (
-              <ItemMenuPrincipal onClick={() => setOpcao('editar_parametros')}>
-                Editar Parâmetros
-              </ItemMenuPrincipal>
-            )}
-            {opcaoCategoria == 'configuracoes' && nivel_acesso >= 5 && (
-              <ItemMenuPrincipal onClick={() => setOpcao('config_sistema')}>
-                Configurações Avançadas
-              </ItemMenuPrincipal>
-            )}
-          </MenuPrincipal>
+              </button>
+            </li>
+          </ul>
+          {opcaoGeral == 'geral' && (
+            <ul className="listaIcone">
+              <li className="listaIcone">
+                <IconeSmartHome src={HouseIconImg} alt="Icone Smart Home" />
+              </li>
+            </ul>
+          )}
+          {opcaoGeral == '' && (
+            <ul className="listaInferior">
+              <li></li>
+            </ul>
+          )}
+          {opcaoGeral == 'comodos' && (
+            <ul className="listaInferior">
+              <li>
+                <button type="button">Sala</button>
+              </li>
+              <li>
+                <button type="button">Sala de TV</button>
+              </li>
+              <li>
+                <button type="button">Área Externa</button>
+              </li>
+              <li>
+                <button type="button">Quartos</button>
+              </li>
+              <li>
+                <button type="button">Cozinha</button>
+              </li>
+            </ul>
+          )}
+          {opcaoGeral == 'categorias' && (
+            <ul className="listaInferior">
+              <li>
+                <button type="button">Iluminação</button>
+              </li>
+              <li>
+                <button type="button">Multimídia</button>
+              </li>
+              <li>
+                <button type="button">Jardinagem</button>
+              </li>
+              <li>
+                <button type="button">Câmeras</button>
+              </li>
+              <li>
+                <button type="button">Outros</button>
+              </li>
+            </ul>
+          )}
+          {opcaoGeral == 'configuracoes' && (
+            <ul className="listaInferior">
+              <li>
+                <button type="button">Ações</button>
+              </li>
+              <li>
+                <button type="button">Automações</button>
+              </li>
+            </ul>
+          )}
+        </HeaderDiv>
+        <Container>
           {opcao == 'solicitacao_compra' && (
             <FormularioSolicitacao nomeusur={nome_usuario} />
           )}

@@ -55,6 +55,15 @@ export const ItemMenuPrincipal = styled.button`
   }
 `
 
+export const IconeSmartHome = styled.img`
+  height: 60px;
+  margin: 0px;
+  padding: 0px;
+  background-color: transparent;
+  text-align: center;
+  margin: auto;
+`
+
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;

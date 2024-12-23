@@ -1,13 +1,15 @@
 import { Routes, Route } from 'react-router-dom'
 
 import Home from './pages/Home'
-import Sistema from './pages/Sistema'
+import LoginDireto from './pages/LoginDireto'
+import LoginSenha from './pages/LoginSenha'
 
 function Rotas() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/sistema/" element={<Sistema />} />
+      <Route path="/directaccess/" element={<LoginDireto />} />
+      <Route path="/passaccess/" element={<LoginSenha />} />
     </Routes>
   )
 }

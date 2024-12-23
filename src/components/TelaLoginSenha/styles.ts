@@ -8,6 +8,10 @@ export const LoginDiv = styled.div`
   color: ${cores.corPrincipal};
   h1 {
     font-size: 35px;
+    &.carregando {
+      color: darkgreen;
+      font-size: 40px;
+    }
   }
 `
 
